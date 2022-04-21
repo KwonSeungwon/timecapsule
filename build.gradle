@@ -21,9 +21,16 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-batch'
+    // DB관련 H2(휘발성 DB로 종료되면 데이터는 사라짐) DB
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation group: 'com.h2database', name: 'h2', version: '2.1.210'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    // QueryDsl사용을 위한 querydsl 의존성추가
+    implementation 'com.querydsl:querydsl-jpa:5.0.0'
+    implementation 'com.querydsl:querydsl-apt:5.0.0'
+
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+    //implementation 'org.springframework.boot:spring-boot-starter-quartz'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
