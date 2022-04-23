@@ -4,7 +4,24 @@ plugins {
     id 'java'
     id 'war'
 }
-
+//qdomain auto create plugin
+apply plugin: "com.ewerk.gradle.plugins.querydsl"
+def querydslDir = "src/main/generated"
+querydsl {
+    library = "com.querydsl:querydsl-apt:5.0.0"
+    jpa = true
+    querydslSourcesDir = queryDslDir
+}
+sourceSets {
+    main {
+        java {
+            srcDir queryDslDir
+        }
+    }
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
 group = 'com.mini'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
@@ -13,6 +30,8 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    querydsl.extendsFrom compileClasspath
+
 }
 
 repositories {
@@ -21,16 +40,23 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-batch'
-    // DB관련 H2(휘발성 DB로 종료되면 데이터는 사라짐) DB
+    //Junit
+    implementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    implementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    implementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    //JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // DB관련 H2(휘발성 DB로 종료되면 데이터는 사라짐) DB
     implementation group: 'com.h2database', name: 'h2', version: '2.1.210'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     // QueryDsl사용을 위한 querydsl 의존성추가
     implementation 'com.querydsl:querydsl-jpa:5.0.0'
     implementation 'com.querydsl:querydsl-apt:5.0.0'
-
+    // mailing dependency
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    //오류로 인한 쿼츠 디펜던시 주석처리
     //implementation 'org.springframework.boot:spring-boot-starter-quartz'
+
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'

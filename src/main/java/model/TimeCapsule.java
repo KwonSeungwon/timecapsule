@@ -21,4 +21,21 @@ public class TimeCapsule {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private Integer sendingCount;
+
+    private String uiUrl;
+
+    private String name;
+
+    private String email;
+
+    public TimeCapsule() {} //default construct
+    public TimeCapsule(Integer sendingCount, String uiUrl, String name, String email) {
+        this.sendingCount = sendingCount;
+        this.uiUrl = uiUrl;
+        this.name = name;
+        this.email = email;
+    }
+
+
 }
