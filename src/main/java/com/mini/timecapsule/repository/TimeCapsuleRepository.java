@@ -1,6 +1,6 @@
-package repository;
+package com.mini.timecapsule.repository;
 
-import model.TimeCapsule;
+import com.mini.timecapsule.model.TimeCapsule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

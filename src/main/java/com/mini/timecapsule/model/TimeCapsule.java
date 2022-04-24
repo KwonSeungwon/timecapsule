@@ -1,4 +1,4 @@
-package model;
+package com.mini.timecapsule.model;
 
 import lombok.Getter;
 import lombok.Setter;
