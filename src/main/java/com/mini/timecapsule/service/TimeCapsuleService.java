@@ -17,7 +17,7 @@ public class TimeCapsuleService {
         BooleanBuilder predicate = new BooleanBuilder();
         QTimeCapsule qTimeCapsule = QTimeCapsule.timeCapsule;
 
-        Iterable<TimeCapsule> list = timeCapsuleRepository.findAll();
+        Iterable<TimeCapsule> list = timeCapsuleRepository.findAll(predicate);
         for(TimeCapsule timeCapsule : list) {
             System.out.println(timeCapsule.getId());
             System.out.println(timeCapsule.getName());
