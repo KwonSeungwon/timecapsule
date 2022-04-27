@@ -1,15 +1,17 @@
-package com.mini.timecapsule;
+package com.mini.timecapsule.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class TimeCapsuleVo {
+public class TimeCapsuleDto {
 
     private Long id;
 
     private String email;
+
+    private String uiUrl;
 
     private String name;
 

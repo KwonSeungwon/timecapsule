@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -29,12 +30,15 @@ public class TimeCapsule {
 
     private String email;
 
+    private ZonedDateTime createdAt;
+
     public TimeCapsule() {} //default construct
     public TimeCapsule(Integer sendingCount, String uiUrl, String name, String email) {
         this.sendingCount = sendingCount;
         this.uiUrl = uiUrl;
         this.name = name;
         this.email = email;
+        this.createdAt = ZonedDateTime.now();
     }
 
 
