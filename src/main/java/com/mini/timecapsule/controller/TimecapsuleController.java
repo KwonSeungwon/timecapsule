@@ -1,15 +1,16 @@
 package com.mini.timecapsule.controller;
 
+import com.mini.timecapsule.dto.TimeCapsuleDto;
+import com.mini.timecapsule.service.TimeCapsuleService;
+import com.mini.timecapsule.utils.CustomWebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.ModelAndView;
-import com.mini.timecapsule.service.TimeCapsuleService;
 
 @Controller
 public class TimecapsuleController {
@@ -18,24 +19,23 @@ public class TimecapsuleController {
 
     @GetMapping(value = "/timecapsule")
     public ModelAndView timecapsule() {
-        timeCapsuleService.create();
-        timeCapsuleService.list();
         return new ModelAndView("home");
     }
     @GetMapping(value = "/api/timecapsule")
-    public ModelAndView list() {
+    public ModelAndView list(CustomWebUtils customWebUtils, TimeCapsuleDto timeCapsuleDto) {
         ModelAndView modelAndView = new ModelAndView();
-        timeCapsuleService.list();
-        return null;
+        timeCapsuleService.list(customWebUtils, timeCapsuleDto);
+        return customWebUtils.callEmptyPage();
     }
-    @PostMapping("/timecapsule")
-    public ModelAndView create() {
+    @PostMapping("/api/timecapsule")
+    public ModelAndView create(CustomWebUtils customWebUtils, @RequestBody TimeCapsuleDto timeCapsuleDto) {
 
-        timeCapsuleService.create();
-        ModelAndView modelAndView = new ModelAndView("home");
+        timeCapsuleService.create(customWebUtils, timeCapsuleDto);
 
-        return modelAndView;
+        return customWebUtils.callEmptyPage();
     }
+
+//    @PatchMapping("/api/timecapsule") //트렌드는 patch인데 뭘 써야할까?
     @PutMapping("/api/timecapsule")
     public ModelAndView update() {
         timeCapsuleService.update();

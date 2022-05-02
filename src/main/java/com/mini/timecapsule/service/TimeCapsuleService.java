@@ -4,12 +4,11 @@ import com.mini.timecapsule.dto.TimeCapsuleDto;
 import com.mini.timecapsule.model.QTimeCapsule;
 import com.mini.timecapsule.model.TimeCapsule;
 import com.mini.timecapsule.repository.TimeCapsuleRepository;
+import com.mini.timecapsule.utils.CustomWebUtils;
 import com.querydsl.core.BooleanBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.ZonedDateTime;
 
 @Service
 @Slf4j
@@ -18,7 +17,7 @@ public class TimeCapsuleService {
     @Autowired
     private TimeCapsuleRepository timeCapsuleRepository;
 
-    public void list(TimeCapsuleDto timeCapsuleDto) {
+    public void list(CustomWebUtils customWebUtils, TimeCapsuleDto timeCapsuleDto) {
         BooleanBuilder predicate = new BooleanBuilder();
         QTimeCapsule qTimeCapsule = QTimeCapsule.timeCapsule;
 
@@ -33,16 +32,9 @@ public class TimeCapsuleService {
         }
 
         Iterable<TimeCapsule> list = timeCapsuleRepository.findAll(predicate);
-
-//        for(TimeCapsule timeCapsule : list) {
-//            System.out.println(timeCapsule.getId());
-//            System.out.println(timeCapsule.getName());
-//            System.out.println(timeCapsule.getEmail());
-//            System.out.println(timeCapsule.getUiUrl());
-//        }
     }
 
-    public void create(TimeCapsuleDto timeCapsuleDto) {
+    public void create(CustomWebUtils customWebUtils, TimeCapsuleDto timeCapsuleDto) {
         int sendingCount = 0;
         if (timeCapsuleDto.getEmail() != null) {
             sendingCount = timeCapsuleRepository.findByEmail(timeCapsuleDto.getEmail()).size();
