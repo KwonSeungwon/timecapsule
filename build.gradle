@@ -1,6 +1,15 @@
+//Qdomain 자동생성 빌드스크립트
+buildscript {
+    ext {
+        QUERY_DSL_VERSION = "5.0.0" // QueryDSL 버전 명시
+    }
+}
+//
+
 plugins {
     id 'org.springframework.boot' version '2.6.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10' // QueryDSL 플러그인 추가
     id 'java'
     id 'war'
 }
@@ -14,16 +23,29 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-batch'
+    //Junit
+    implementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    implementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    implementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    //JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // DB관련 H2(휘발성 DB로 종료되면 데이터는 사라짐) DB
+    implementation group: 'com.h2database', name: 'h2', version: '2.1.210'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    // QueryDsl사용을 위한 querydsl 의존성추가
+    implementation "com.querydsl:querydsl-jpa:${QUERY_DSL_VERSION}" // QueryDSL-JPA 의존성 추가
+    implementation "com.querydsl:querydsl-apt:${QUERY_DSL_VERSION}" // QueryDSL-APT 의존성 추가
+    // mailing dependency
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+    //오류로 인한 쿼츠 디펜던시 주석처리
+    //implementation 'org.springframework.boot:spring-boot-starter-quartz'
+
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -34,8 +56,42 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    //뭔지 모르는데 junit 뭐시기겠지
+    testImplementation("org.junit.vintage:junit-vintage-engine") {
+        exclude group: "org.hamcrest", module: "hamcrest-core"
+    }
+
 //    testImplementation 'org.springframework.batch:spring-batch-test'
 }
+//Qdomain 자동생성 관련
+def querydslDir = "$buildDir/generated/querydsl" // QType이 저장될 경로
+
+querydsl { // QueryDSL 설정
+    library = "com.querydsl:querydsl-apt:${QUERY_DSL_VERSION}" // QueryDSL-APT 의존성 등록
+    jpa = true // JPA 사용 등록
+    querydslSourcesDir = querydslDir // QType 출력 경로 지정
+}
+
+sourceSets {
+    main.java.srcDir querydslDir
+    // 빌드할 때 queryDslDir 경로를 추가
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+    // annotationProcessorPath를 configuration.querydsl로 지정
+}
+
+configurations {
+    querydsl.extendsFrom compileClasspath // queryDsl이 compileClassPath를 상속받도록 설정
+}
+
+/* comileQuerydsl.doFirst 추가: 재컴파일 시 q파일을 모두 지우도록 */
+//compileQuerydsl.doFirst {
+//    if(file(querydslDir).exists())
+//        delete(file(querydslDir))
+//}
+//끝
 
 tasks.named('test') {
     useJUnitPlatform()
