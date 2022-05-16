@@ -1,5 +1,7 @@
 package com.mini.timecapsule.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +28,7 @@ public class FilterOption {
 
     private Boolean used;
 
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
 
