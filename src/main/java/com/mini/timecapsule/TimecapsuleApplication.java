@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
  * 패키지 위치가 다른경우 아래 어노테이션 사용
  * 프로젝트명Application아래애 패키지들이 있어야 springboot가 스캔함
  */
-//@ComponentScan(basePackages = {"mainPakagePostion", "addpakagePostions"})
+//@ComponentS4can(basePackages = {"mainPakagePostion", "addpakagePostions"})
 public class TimecapsuleApplication {
 
     public static void main(String[] args) {
