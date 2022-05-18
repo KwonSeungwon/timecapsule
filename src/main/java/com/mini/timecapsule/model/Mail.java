@@ -1,45 +1,37 @@
 package com.mini.timecapsule.model;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
-@Table(name = "mailing_history")
+@Table(name = "mail")
 @DynamicUpdate
 public class Mail {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "mail_no")
     private Long id;
 
-    @Column(name = "email_address", nullable = false)
-    private String emailAddress;
+    private String address;//메일주소
 
-    @Column(nullable = false)
-    private String content;
+    private LocalDateTime firRequestDate; //첫요청일
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    private Template template;
+    private LocalDateTime lastRequestDate; //마지막요청일
+
+    private Long totalCount; //총 건수
+
+    private Long invalidCount; // 비유효건수
+    //private LocalDateTime lastRequestDate;//마지막 요청가능일
+
+    private String permission; //제한 이메일 여부 Y/N
 
 
-    public Mail() {}
-    public Mail(String emailAddress, String content, Template template) {
-        this.emailAddress = emailAddress;
-        this.content = content;
-        this.template = template;
-    }
+
+
+
+
 }
