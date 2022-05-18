@@ -22,23 +22,50 @@ public class TimeCapsule {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Integer sendingCount;
-
-    private String uiUrl;
-
-    private String name;
-
+    /**
+     * 요청 메일주소
+     */
     private String email;
 
+    /**
+     * 요청 총건수
+     */
+    private Long sendingCount;
+
+    /**
+     * 요청비대상건수
+     */
+    private Long invalidRequestCount;
+
+    /**
+     * 타임캡슐 탬플릿 아이디
+     */
+    private Long timeCapsuleTemplateId;
+
+    /**
+     * 첫요청일, 생성일
+     */
     private ZonedDateTime createdAt;
 
-    public TimeCapsule() {} //default construct
-    public TimeCapsule(Integer sendingCount, String uiUrl, String name, String email) {
-        this.sendingCount = sendingCount;
-        this.uiUrl = uiUrl;
-        this.name = name;
-        this.email = email;
-        this.createdAt = ZonedDateTime.now();
+    /**
+     * 마지막 요청일, 변경일
+     */
+    private ZonedDateTime updatedAt;
+
+    /**
+     * 요청가능일
+     */
+    private ZonedDateTime limitRequestedTime;
+
+    public static TimeCapsule newEntity(String email, Long timeCapsuleTemplateId, ZonedDateTime limitRequestedTime) {
+        TimeCapsule timeCapsule = new TimeCapsule();
+        timeCapsule.email = email;
+        timeCapsule.sendingCount = 1L;
+        timeCapsule.invalidRequestCount = 0L;
+        timeCapsule.timeCapsuleTemplateId = timeCapsuleTemplateId;
+        timeCapsule.limitRequestedTime = limitRequestedTime;
+        timeCapsule.createdAt = ZonedDateTime.now();
+        return timeCapsule;
     }
 
 

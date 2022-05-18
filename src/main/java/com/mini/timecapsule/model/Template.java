@@ -4,18 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "mailing_history")
+@Table(name = "template")
 @DynamicUpdate
 public class Template {
 
@@ -23,29 +18,37 @@ public class Template {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "url_link", nullable = false)
-    private String templateUrl;
+    private Type type;
 
-    private String explain;
+    private String name;
 
-    private String code;
+    private String explain; //템플릿 설명
 
-    @Column(name = "template_type")
-    private String type;
+    private String description;
 
-    @Column(name = "created_date")
-    private ZonedDateTime createdDate;
+    private String address;
 
-    @Column(name = "used")
-    private Boolean isUsed;
+    private ZonedDateTime createdAt;
 
-    public Template() {}
-    public Template(String templateUrl, String explain, String code, String type, ZonedDateTime createdDate, Boolean isUsed) {
-        this.templateUrl = templateUrl;
-        this.explain = explain;
-        this.code = code;
-        this.type = type;
-        this.createdDate = createdDate;
-        this.isUsed = isUsed;
+    private Status status;
+
+    public enum Type {
+        TIMECAPSULE,
+        LETTER,
     }
+
+    public enum Status {
+        ACTIVE,
+        INACTIVE,
+    }
+
+    /**
+     * id
+     * 템플릿타입
+     * 이름
+     * 설명
+     * 시트지 주소
+     * 시트지 등록일
+     * 시트지 사용여부
+     */
 }

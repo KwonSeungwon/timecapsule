@@ -35,13 +35,10 @@ public class TimeCapsuleService {
     }
 
     public void create(CustomWebUtils customWebUtils, TimeCapsuleDto timeCapsuleDto) {
-        int sendingCount = 0;
-        if (timeCapsuleDto.getEmail() != null) {
-            sendingCount = timeCapsuleRepository.findByEmail(timeCapsuleDto.getEmail()).size();
-        }
-        TimeCapsule timeCapsule = new TimeCapsule(sendingCount++, timeCapsuleDto.getUiUrl(), timeCapsuleDto.getName(), timeCapsuleDto.getEmail());
-        timeCapsuleRepository.save(timeCapsule);
-        log.info("Save new Data");
+//        int sendingCount = 0;
+//        TimeCapsule timeCapsule = TimeCapsule.newEntity(sendingCount++, timeCapsuleDto.getUiUrl(), timeCapsuleDto.getName(), timeCapsuleDto.getEmail());
+//        timeCapsuleRepository.save(timeCapsule);
+//        log.info("Save new Data");
     }
 
     public void update() {
