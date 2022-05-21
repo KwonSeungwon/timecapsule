@@ -10,28 +10,31 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.ZonedDateTime;
 
+/**
+ * id : 차단된 id 주소
+ * idType : 차단된 ip의 타입(고민해봐야 됨)
+ * memo : 메모(차단사유등의 이유)
+ * createdAt : 생성일
+ */
 @Entity
 @Getter
 @Setter
-@Table(name = "block_user_ip_address")
+@Table(name = "block_user")
 @DynamicUpdate
 public class BlockUser {
-
     @Id
     @Column(name = "ip")
     private String id;
-
     private String ipType;
-
     private String memo;
+    private ZonedDateTime createdAt;
 
-    private ZonedDateTime createdDate;
-
-    public BlockUser() {} //default construct
-    public BlockUser(String ip, String ipType, String memo) {
-        this.id = ip;
-        this.ipType = ipType;
-        this.memo = memo;
-        this.createdDate = ZonedDateTime.now();
+    public static BlockUser newBlockUser(String ip, String ipType, String memo) {
+        BlockUser blockUser = new BlockUser();
+        blockUser.id = ip;
+        blockUser.ipType = ipType;
+        blockUser.memo = memo;
+        blockUser.createdAt = ZonedDateTime.now();
+        return blockUser;
     }
 }

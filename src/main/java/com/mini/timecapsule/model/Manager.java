@@ -24,16 +24,11 @@ public class Manager {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "manager_no")
     private Long id;
-
     private String password;
-
     private String name;
-
     @Enumerated(EnumType.STRING)
     private Auth authority;
-
     private String uniqueness;
-
     public static Manager newManger(String password, String name, Auth authority, String uniqueness) {
         Manager manager = new Manager();
         manager.password = password;
@@ -42,13 +37,9 @@ public class Manager {
         manager.uniqueness = uniqueness;
         return manager;
     }
-
     public enum Auth {
         UNLIMITED,
         UPDATE,
         DELETE,
     }
-
-
-
 }

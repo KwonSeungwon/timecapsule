@@ -3,7 +3,6 @@ package com.mini.timecapsule.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,59 +10,38 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.ZonedDateTime;
 
+/**
+ * id : 생성일(date or String) yyyymmdd
+ * totalSendRequestCount : 해당일 총 전송 요청 건수
+ * mostRequestAddress : 가장 많이 요청된 이메일(어떻게 찾아낼 건지?)
+ * mostRequestAddressCount : 가장 많이 요청된 이메일의 카운트 수(위 문제와 동일)
+ * firstRequestAt : 첫 요청시간
+ * lastRequestAt : 마지막 요청시간
+ * validRequestCount : 유효한(했던) 요청 건수
+ * invalidRequestCount : 비유효(실패) 요청 건수
+ * 개인적 의견 : 해당 테이블은 통계쿼리로 대체가 가능하지 않을까?
+ */
 @Entity
 @Getter
 @Setter
-@Table(name = "daily_total_info")
+@Table(name = "daily_history")
 @DynamicUpdate
-public class DailyTotalInfo {
-
-    /**
-     * 아이디, 생성일 yyMMdd
-     */
+public class DailyHistory {
     @Id
     @Column(length = 6)
     private String id;
-
-    /**
-     * 해당일 총 전송 요청 건수
-     */
     private Long totalSendRequestCount;
-
-    /**
-     * 가장많이 요청된 메일주소
-     */
     private String mostRequestAddress;
-
-    /**
-     * 가장많이 요청된 메일주소의 요청수
-     */
     private Long mostRequestAddressCount;
-
-    /**
-     * 첫 요청 시간
-     */
     private ZonedDateTime firstRequestAt;
-
-    /**
-     * 마지막 요청 시간
-     */
     private ZonedDateTime lastRequestAt;
-
-    /**
-     * 유효 요청 건수
-     */
     private Long validRequestCount;
-
-    /**
-     * 비 유효 요청 건수
-     */
     private Long invalidRequestCount;
 
-    public static DailyTotalInfo newEntity(String date, Long totalSendRequestCount, String mostRequestAddress, Long mostRequestAddressCount,
-                                           ZonedDateTime firstRequestAt, ZonedDateTime lastRequestAt, Long validRequestCount,
-                                           Long invalidRequestCount) {
-        DailyTotalInfo dailyTotalInfo = new DailyTotalInfo();
+    public static DailyHistory newDailyHistory(String date, Long totalSendRequestCount, String mostRequestAddress, Long mostRequestAddressCount,
+                                         ZonedDateTime firstRequestAt, ZonedDateTime lastRequestAt, Long validRequestCount,
+                                         Long invalidRequestCount) {
+        DailyHistory dailyTotalInfo = new DailyHistory();
         dailyTotalInfo.id = date;
         dailyTotalInfo.totalSendRequestCount = totalSendRequestCount;
         dailyTotalInfo.mostRequestAddress = mostRequestAddress;

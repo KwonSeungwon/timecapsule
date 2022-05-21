@@ -11,6 +11,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.ZonedDateTime;
 
+
+/**
+ * id : id(auto_increment)
+ * requestEmail : 요청메일주소
+ * sendingCount : 요청 총 건수
+ * invalidRequestCount : 요청비대상 건수
+ * timeCapsuleTemplateId : 타임캡슐 템플릿 아이디(FK)
+ * createdAt : 생성일
+ * updatedAt : 변경일
+ * limitRequestedTime : 요청가능일
+ */
 @Entity
 @Getter
 @Setter
@@ -21,45 +32,18 @@ public class TimeCapsule {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    /**
-     * 요청 메일주소
-     */
-    private String email;
-
-    /**
-     * 요청 총건수
-     */
+    private String requestEmail;
     private Long sendingCount;
-
-    /**
-     * 요청비대상건수
-     */
     private Long invalidRequestCount;
-
-    /**
-     * 타임캡슐 탬플릿 아이디
-     */
     private Long timeCapsuleTemplateId;
-
-    /**
-     * 첫요청일, 생성일
-     */
     private ZonedDateTime createdAt;
 
-    /**
-     * 마지막 요청일, 변경일
-     */
     private ZonedDateTime updatedAt;
-
-    /**
-     * 요청가능일
-     */
     private ZonedDateTime limitRequestedTime;
 
-    public static TimeCapsule newEntity(String email, Long timeCapsuleTemplateId, ZonedDateTime limitRequestedTime) {
+    public static TimeCapsule newTimeCapsule(String requestEmail, Long timeCapsuleTemplateId, ZonedDateTime limitRequestedTime) {
         TimeCapsule timeCapsule = new TimeCapsule();
-        timeCapsule.email = email;
+        timeCapsule.requestEmail = requestEmail;
         timeCapsule.sendingCount = 1L;
         timeCapsule.invalidRequestCount = 0L;
         timeCapsule.timeCapsuleTemplateId = timeCapsuleTemplateId;
@@ -67,6 +51,4 @@ public class TimeCapsule {
         timeCapsule.createdAt = ZonedDateTime.now();
         return timeCapsule;
     }
-
-
 }
