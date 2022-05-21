@@ -1,14 +1,11 @@
 package com.mini.timecapsule.model;
 
-import jdk.vm.ci.meta.Local;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.stereotype.Controller;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Getter
