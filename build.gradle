@@ -60,6 +60,8 @@ dependencies {
     testImplementation("org.junit.vintage:junit-vintage-engine") {
         exclude group: "org.hamcrest", module: "hamcrest-core"
     }
+    // springboot auto-reload
+    implementation 'org.springframework.boot:spring-boot-devtools:2.6.2'
 
 //    testImplementation 'org.springframework.batch:spring-batch-test'
 }

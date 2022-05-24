@@ -1,4 +1,4 @@
-.main div {
+.main {
     height: 465px;
     width: 983px;
     left: 3708px;
@@ -6,4 +6,7 @@
     border-radius: 0px;
     position: absolute;
     background: url(../images/time_capsule_main.png);
+}
+.test p {
+    font-size: 60px;
 }

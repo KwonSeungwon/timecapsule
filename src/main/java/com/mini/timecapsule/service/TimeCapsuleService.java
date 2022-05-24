@@ -18,20 +18,20 @@ public class TimeCapsuleService {
     private TimeCapsuleRepository timeCapsuleRepository;
 
     public void list(CustomWebUtils customWebUtils, TimeCapsuleDto timeCapsuleDto) {
-        BooleanBuilder predicate = new BooleanBuilder();
-        QTimeCapsule qTimeCapsule = QTimeCapsule.timeCapsule;
-
-        if (timeCapsuleDto.getId() != null) {
-            predicate.and(qTimeCapsule.id.eq(timeCapsuleDto.getId()));
-        }
-        if (timeCapsuleDto.getName() != null) {
-            predicate.and(qTimeCapsule.name.eq(timeCapsuleDto.getName()));
-        }
-        if (timeCapsuleDto.getDate() != null) {
-//            ZonedDateTime start =
-        }
-
-        Iterable<TimeCapsule> list = timeCapsuleRepository.findAll(predicate);
+//        BooleanBuilder predicate = new BooleanBuilder();
+//        QTimeCapsule qTimeCapsule = QTimeCapsule.timeCapsule;
+//
+//        if (timeCapsuleDto.getId() != null) {
+//            predicate.and(qTimeCapsule.id.eq(timeCapsuleDto.getId()));
+//        }
+//        if (timeCapsuleDto.getName() != null) {
+//            predicate.and(qTimeCapsule.name.eq(timeCapsuleDto.getName()));
+//        }
+//        if (timeCapsuleDto.getDate() != null) {
+////            ZonedDateTime start =
+//        }
+//
+//        Iterable<TimeCapsule> list = timeCapsuleRepository.findAll(predicate);
     }
 
     public void create(CustomWebUtils customWebUtils, TimeCapsuleDto timeCapsuleDto) {
