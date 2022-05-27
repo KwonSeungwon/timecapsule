@@ -26,8 +26,11 @@ public class BlockUser {
     @Id
     @Column(name = "ip")
     private String id;
+
     private String ipType;
+
     private String memo;
+
     private ZonedDateTime createdAt;
 
     public static BlockUser newBlockUser(String ip, String ipType, String memo) {

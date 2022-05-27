@@ -19,23 +19,24 @@ import java.time.ZonedDateTime;
  * firstTargetAt : 첫대상일
  * lastAccessAt : 마지막접속일
  * dummy : 기타데이터
+ * ※ user라는 단어는 H2에서는 예약어이기 떄문에 사용할 수 없습니다.
  */
 @Entity
 @Getter
 @Setter
-@Table(name = "user")
+@Table(name = "users")
 @DynamicUpdate
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ip")
-    private String id;
+    private Integer id;
 
     private String userName;
 
     private String password;
 
-    private byte loginFailCount;
+    private Integer loginFailCount;
 
     private Status status;
 
@@ -46,6 +47,7 @@ public class User {
     private ZonedDateTime firstTargetAt;
 
     private ZonedDateTime lastAccessAt;
+
 
     private String dummy;
 
@@ -75,5 +77,4 @@ public class User {
         user.createdAt = ZonedDateTime.now();
         return user;
     }
-
 }

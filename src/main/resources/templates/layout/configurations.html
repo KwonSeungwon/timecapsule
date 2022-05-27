@@ -1,14 +1,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="commoncdn">
     <!-- Bootstrap CSS -->
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- Custom styles for this template -->
-    <link th:href="@{/css/jumbotron-narrow.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <!-- 우리꺼 css -->
-    <link th:href="@{/css/timecapsulue.css}" rel="stylesheet" />
+    <link th:href="@{/static/css/timecapsulue.css}" rel="stylesheet" />
     <!-- vue js cdn 일단은 최신버전으로.. -->
     <script th:src="@{https://cdn.jsdelivr.net/npm/vue/dist/vue.js}"></script>
-    <!-- vue dragble -->
+    <!-- vue moment -->
+    <script th:src="@{https://cdn.jsdelivr.net/npm/vue-moment@4.0.0-0/vue-moment.min.js}">
+        <!-- vue dragble -->
     <script th:src ="@{//cdn.jsdelivr.net/npm/sortablejs@1.8.4/Sortable.min.js}"></script>
     <script th:src="@{//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.20.0/vuedraggable.umd.min.js}"></script>
     <!-- axios -->

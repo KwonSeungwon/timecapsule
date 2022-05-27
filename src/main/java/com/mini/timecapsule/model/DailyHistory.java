@@ -30,12 +30,19 @@ public class DailyHistory {
     @Id
     @Column(length = 6)
     private String id;
+
     private Long totalSendRequestCount;
+
     private String mostRequestAddress;
+
     private Long mostRequestAddressCount;
+
     private ZonedDateTime firstRequestAt;
+
     private ZonedDateTime lastRequestAt;
+
     private Long validRequestCount;
+
     private Long invalidRequestCount;
 
     public static DailyHistory newDailyHistory(String date, Long totalSendRequestCount, String mostRequestAddress, Long mostRequestAddressCount,

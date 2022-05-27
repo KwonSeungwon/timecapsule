@@ -27,18 +27,24 @@ public class LetterPaper {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private Long timeCapsuleId;
 
     private ZonedDateTime createdAt;
+
     private Long letterTemplateId;
+
     private String content;
+
     private String requestorInfo;
+
     @Enumerated(EnumType.STRING)
     private RequestStatus requestStatus;
     public enum RequestStatus {
         ACTIVE,
         INACTIVE
     }
+
     public static LetterPaper newEntity(Long timeCapsuleId, Long letterTemplateId, String content, String requestorInfo) {
         LetterPaper letterPaper = new LetterPaper();
         letterPaper.timeCapsuleId = timeCapsuleId;
