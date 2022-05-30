@@ -1,0 +1,19 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="commoncdn">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- 우리꺼 css -->
+    <link th:href="@{/static/css/timecapsulue.css}" rel="stylesheet" />
+    <!-- vue js cdn 일단은 최신버전으로.. -->
+    <script th:src="@{https://cdn.jsdelivr.net/npm/vue/dist/vue.js}"></script>
+    <!-- vue moment -->
+    <script th:src="@{https://cdn.jsdelivr.net/npm/vue-moment@4.0.0-0/vue-moment.min.js}">
+        <!-- vue dragble -->
+    <script th:src ="@{//cdn.jsdelivr.net/npm/sortablejs@1.8.4/Sortable.min.js}"></script>
+    <script th:src="@{//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.20.0/vuedraggable.umd.min.js}"></script>
+    <!-- axios -->
+    <script th:src="@{https://unpkg.com/axios/dist/axios.min.js}"></script>
+</head>
+
+
+

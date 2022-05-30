@@ -1,6 +1,6 @@
-## Mini Web Project 
+## TimeCapsule
 
-### Send your memories
+### Keep your memories
 
 📝 technology used 📝
 

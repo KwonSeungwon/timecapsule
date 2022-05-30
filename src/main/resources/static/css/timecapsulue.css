@@ -1,0 +1,11 @@
+.main-img {
+    height: 465px;
+    width: 983px;
+    left: 3708px;
+    top: 842px;
+    border-radius: 0px;
+    background: url(../images/time_capsule_main.png);
+}
+.container {
+    min-width: 1360px;
+}

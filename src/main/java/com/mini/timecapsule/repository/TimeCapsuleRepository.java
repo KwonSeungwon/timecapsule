@@ -9,6 +9,4 @@ import java.util.List;
 
 @Repository
 public interface TimeCapsuleRepository extends JpaRepository<TimeCapsule, Long>, QuerydslPredicateExecutor<TimeCapsule> {
-
-    List<TimeCapsule> findByEmail(String email);
 }
