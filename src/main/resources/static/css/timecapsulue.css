@@ -7,5 +7,61 @@
     background: url(../images/time_capsule_main.png);
 }
 .container {
-    min-width: 1360px;
+    /*min-width: 1360px;*/
+    display: flex;
+}
+
+.main {
+    margin: auto;
+    width: 375px;
+    height: 812px;
+}
+
+.main.beach {
+    background: url(../images/beach.svg) no-repeat center;
+    background-size: cover;
+}
+
+.main .title {
+    padding-top: 100px;
+}
+.main .title span {
+    margin: 0 auto;
+    width: 248px;
+    height: 96px;
+    background: url(../images/title.png) no-repeat center transparent;
+    background-size: cover;
+}
+
+.main .title .capsule {
+    background: url(../images/pills.png) no-repeat center transparent;
+    background-size: cover;
+}
+
+.main .title,
+.main .menu {
+    display: flex;
+}
+
+.menu {
+    margin-top: 25px;
+    flex-direction: column;
+}
+
+.menu button {
+    width: 180px;
+    height: 25px;
+    margin: 5px auto;
+    border: 0;
+}
+
+.menu .tutorial {
+    background: url(../images/btn_tutorial.png) no-repeat center transparent;
+}
+
+.menu .start {
+    background: url(../images/btn_start.png) no-repeat center transparent;
+}
+.menu button:hover {
+
 }
