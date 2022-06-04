@@ -6,6 +6,10 @@
     border-radius: 0px;
     background: url(../images/time_capsule_main.png);
 }
-.container {
-    min-width: 1360px;
+.main-page {
+    position: relative;
+    width: 375px;
+    height: 812px;
+    left: 28%;
+    background: url(../images/main.png);
 }

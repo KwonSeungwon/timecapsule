@@ -1,9 +1,44 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="commoncdn">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head th:fragment="commoncdn" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        body {
+            background-color: olive;
+        }
+        /*
+                768px 이상 너비부터 olive>yellow
+                992px 이상 너비부터 yellow -> lime
+                1200px 이상 너비부터 lime -> orange
+            */
+        @media ( min-width : 768px) {
+            body {
+                background-color: yellow;
+            }
+        }
+
+        @media ( min-width : 992px) {
+            body {
+                background-color: lime;
+            }
+        }
+        @media ( min-width : 1200px) {
+            body {
+                background-color: orange;
+            }
+        }
+    </style>
+    <!-- jquery 아직 대부분의 웹에서 사용되서 안쓸 수 없음 -->
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js}"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <!-- 부가적인 테마 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+    <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js}"></script>
     <!-- 우리꺼 css -->
     <link th:href="@{/static/css/timecapsulue.css}" rel="stylesheet" />
+    <!-- axios -->
+    <script th:src="@{https://unpkg.com/axios/dist/axios.min.js}"></script>
     <!-- vue js cdn 일단은 최신버전으로.. -->
     <script th:src="@{https://cdn.jsdelivr.net/npm/vue/dist/vue.js}"></script>
     <!-- vue moment -->
@@ -11,8 +46,6 @@
         <!-- vue dragble -->
     <script th:src ="@{//cdn.jsdelivr.net/npm/sortablejs@1.8.4/Sortable.min.js}"></script>
     <script th:src="@{//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.20.0/vuedraggable.umd.min.js}"></script>
-    <!-- axios -->
-    <script th:src="@{https://unpkg.com/axios/dist/axios.min.js}"></script>
 </head>
 
 

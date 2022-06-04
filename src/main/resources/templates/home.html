@@ -1,17 +1,18 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head th:replace="layout/configurations :: commoncdn">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>우리들의 추억만들기 타임캡슐에 오신걸 환영합니다!</title>
 </head>
 <body>
     <div class="container">
-        <div class="main" style="height: 850px">
-            <img class="main-img"/>
+        <div class="row">
+            <div class="col">
+                <div class="main-page"></div>
+            </div>
         </div>
     </div>
-    <div th:replace="layout/footer :: footer">
-    </div>
+    <div th:replace="layout/footer :: footer"></div>
 </body>
 </html>
 <script>
