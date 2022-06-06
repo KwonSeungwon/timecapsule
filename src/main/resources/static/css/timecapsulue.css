@@ -11,5 +11,35 @@
     width: 375px;
     height: 812px;
     left: 28%;
-    background: url(../images/main.png);
+    background: url(../images/time_capsule_main_page.png);
+}
+.btn-tutorial {
+    width: 44%;
+    left: 29%;
+    top: 34%;
+    position: relative;
+    opacity: 0;
+}
+.btn-start {
+    width: 30%;
+    left: -9%;
+    top: 40%;
+    position: relative;
+    opacity: 0;
+}
+.arrow-tutorial {
+    background: url(../images/arrow.png);
+    width: 27px;
+    height: 24px;
+    left: 80px;
+    top: 34%;
+    position: absolute;
+}
+.arrow-start {
+    background: url(../images/arrow.png);
+    width: 27px;
+    height: 24px;
+    left: 108px;
+    top: 40%;
+    position: absolute;
 }

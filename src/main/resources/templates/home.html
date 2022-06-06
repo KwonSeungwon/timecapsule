@@ -5,20 +5,51 @@
     <title>우리들의 추억만들기 타임캡슐에 오신걸 환영합니다!</title>
 </head>
 <body>
-    <div class="container">
+    <div id="viewPoint" class="container">
         <div class="row">
             <div class="col">
-                <div class="main-page"></div>
+                <div class="main-page">
+                        <img class="arrow-tutorial" v-show="isTutorialOver"/>
+                        <button class="btn-tutorial" @click="movePage(false)" @mouseover="isTutorialOver = !isTutorialOver" @mouseout="isTutorialOver = false">mvttr</button>
+                        <img class="arrow-start" v-show="isStartOver"/>
+                        <button class="btn-start" @click="movePage(true)" @mouseover="isStartOver = !isStartOver" @mouseout="isStartOver = false">mvnst</button>
+                </div>
             </div>
         </div>
     </div>
-    <div th:replace="layout/footer :: footer"></div>
+<!--    <div th:replace="layout/footer :: footer"></div>-->
 </body>
 </html>
 <script>
     ((doc) => {
         var vueModel = new Vue({
-
+            el: '#viewPoint',
+            data : {
+                isTutorialOver : false,
+                isStartOver : false,
+                filter : {},
+            },
+            methods : {
+                movePage : function(targetPage) {
+                    let url = '';
+                    if (targetPage) {
+                        url = '/api/timcapsule/start';
+                    } else {
+                        alert('듀토리얼 페이지 이동준비중입니다.');
+                    }
+                    axios.get(url).then((response) => {
+                        console.log(response);
+                    }).catch((error) => {
+                        alert('오류가 발생했습니다.\n 잠시후 이용해주세요');
+                    });
+                },
+            },
+            mounted : function() {
+                // this.$nextTick(() => {
+                //     this.filteredSheets = this.originSheets;
+                //     this.getReceipts();
+                // });
+            }
         });
     })(document);
 </script>
