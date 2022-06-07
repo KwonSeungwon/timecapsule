@@ -12,13 +12,18 @@
                 <span></span>
             </div>
             <div class="menu">
-                <button class="tutorial"></button>
-                <button class="start"></button>
+                <div class="holder">
+                    <button id="tutorial" class="tutorial"></button>
+                    <label for="tutorial"></label>
+                </div>
+                <div class="holder">
+                    <button id="start" class="start"></button>
+                    <label for="start"></label>
+                </div>
             </div>
         </div>
     </div>
-    <div th:replace="layout/footer :: footer">
-    </div>
+<!--    <div th:replace="layout/footer :: footer"></div>-->
 </body>
 </html>
 <script>

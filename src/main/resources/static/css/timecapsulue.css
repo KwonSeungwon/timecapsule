@@ -14,7 +14,9 @@
 .main {
     margin: auto;
     width: 375px;
-    height: 812px;
+    /*height: 812px;*/
+    height: 100vh;
+    max-height: 812px;
 }
 
 .main.beach {
@@ -33,9 +35,17 @@
     background-size: cover;
 }
 
+.main.svg .title span {
+    background: url(../images/title.svg) no-repeat center transparent;
+}
+
 .main .title .capsule {
     background: url(../images/pills.png) no-repeat center transparent;
     background-size: cover;
+}
+
+.main.svg .capsule {
+    background: url(../images/pills.svg) no-repeat center transparent;
 }
 
 .main .title,
@@ -48,20 +58,53 @@
     flex-direction: column;
 }
 
-.menu button {
-    width: 180px;
-    height: 25px;
+.menu div.holder {
+    position: relative;
     margin: 5px auto;
-    border: 0;
 }
 
+.holder button {
+    border: 0;
+    height: 25px;
+}
+
+/*.menu button {*/
+/*    width: 180px;*/
+/*    height: 25px;*/
+/*    margin: 5px auto;*/
+/*    border: 0;*/
+/*}*/
+
 .menu .tutorial {
+    width: 230px;
     background: url(../images/btn_tutorial.png) no-repeat center transparent;
+}
+.svg .menu .tutorial {
+    width: 230px;
+    background: url(../images/btn_tutorial.svg) no-repeat center transparent;
 }
 
 .menu .start {
+    width: 180px;
     background: url(../images/btn_start.png) no-repeat center transparent;
 }
-.menu button:hover {
 
+.svg .menu .start {
+    width: 180px;
+    background: url(../images/btn_start.svg) no-repeat center transparent;
+}
+
+.menu label[for='start'],
+.menu label[for='tutorial'] {
+    position: absolute;
+    display: none;
+    left: 0;
+    width: 25px;
+    height: 25px;
+    margin: 0;
+    background: url(../images/arrow.png) no-repeat;
+}
+.menu button#start:hover + label,
+.menu button#tutorial:hover + label {
+    display: inline-block;
 }
