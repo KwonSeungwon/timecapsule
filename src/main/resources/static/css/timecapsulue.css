@@ -10,6 +10,7 @@
     min-width: 1360px;
 }*/
 
+/*
 @media all and (min-width:768px) and (max-width:1023px) {
     .test {
         margin-top: 9%;
@@ -21,3 +22,22 @@
         background: url(../images/beach.png);
     }
 }
+*/
+
+/*두번째방법 */
+.container {
+    width: 70%;
+    height: 100%;
+    overflow: hidden;
+}
+.container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+body {
+     background-image: url(../images/beach.png);
+     background-repeat: no-repeat;
+     background-position: center;
+     background-size: cover;
+ }
