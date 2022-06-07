@@ -1,4 +1,4 @@
-.main-img {
+/*.main-img {
     height: 465px;
     width: 983px;
     left: 3708px;
@@ -8,4 +8,16 @@
 }
 .container {
     min-width: 1360px;
+}*/
+
+@media all and (min-width:768px) and (max-width:1023px) {
+    .test {
+        margin-top: 9%;
+        min-width: 100%;
+        min-height: 191%;
+        height: auto;
+        width: auto;
+        border-radius: 0px;
+        background: url(../images/beach.png);
+    }
 }
