@@ -1,111 +1,45 @@
-/*.main-img {*/
-/*    height: 465px;*/
-/*    width: 983px;*/
-/*    left: 3708px;*/
-/*    top: 842px;*/
-/*    border-radius: 0px;*/
-/*    background: url(../images/time_capsule_main.png);*/
-/*}*/
-.container {
-    /*min-width: 1360px;*/
-    display: flex;
+.main-img {
+    height: 465px;
+    width: 983px;
+    left: 3708px;
+    top: 842px;
+    border-radius: 0px;
+    background: url(../images/time_capsule_main.png);
 }
-
-.main {
-    margin: auto;
-    width: 375px;
-    /*height: 812px;*/
-    height: 100vh;
-    max-height: 812px;
-}
-
-.main.beach {
-    background: url(../images/beach.svg) no-repeat center;
-    background-size: cover;
-}
-
-.main .title {
-    padding-top: 100px;
-}
-.main .title span {
-    margin: 0 auto;
-    width: 250px;
-    height: 96px;
-    background: url(../images/title2.png) no-repeat center transparent;
-    background-size: cover;
-}
-
-.main.svg .title span {
-    background: url(../images/title.svg) no-repeat center transparent;
-}
-
-.main .title .capsule {
-    background: url(../images/pills.png) no-repeat center transparent;
-    background-size: cover;
-}
-
-.main.svg .capsule {
-    background: url(../images/pills.svg) no-repeat center transparent;
-}
-
-.main .title,
-.main .menu {
-    display: flex;
-}
-
-.menu {
-    margin-top: 25px;
-    flex-direction: column;
-}
-
-.menu div.holder {
+.main-page {
     position: relative;
-    margin: 5px auto;
+    width: 375px;
+    height: 812px;
+    left: 28%;
+    background: url(../images/time_capsule_main_page.png);
 }
-
-.holder button {
-    border: 0;
-    height: 25px;
+.btn-tutorial {
+    width: 44%;
+    left: 29%;
+    top: 34%;
+    position: relative;
+    opacity: 0;
 }
-
-/*.menu button {*/
-/*    width: 180px;*/
-/*    height: 25px;*/
-/*    margin: 5px auto;*/
-/*    border: 0;*/
-/*}*/
-
-.menu .tutorial {
-    width: 230px;
-    background: url(../images/btn_tutorial.png) no-repeat center transparent;
+.btn-start {
+    width: 30%;
+    left: -9%;
+    top: 40%;
+    position: relative;
+    opacity: 0;
 }
-.svg .menu .tutorial {
-    width: 230px;
-    background: url(../images/btn_tutorial.svg) no-repeat center transparent;
-}
-
-.menu .start {
-    width: 180px;
-    background: url(../images/btn_start.png) no-repeat center transparent;
-}
-
-.svg .menu .start {
-    width: 180px;
-    background: url(../images/btn_start.svg) no-repeat center transparent;
-}
-
-.menu label[for='start'],
-.menu label[for='tutorial'] {
+.arrow-tutorial {
+    background: url(../images/arrow.png);
+    width: 27px;
+    height: 24px;
+    left: 80px;
+    top: 34%;
     position: absolute;
-    display: none;
-    left: 0;
-    width: 25px;
-    height: 25px;
-    margin: 0;
-    background: url(../images/arrow.png) no-repeat;
 }
-.menu button#start:hover + label,
-.menu button#tutorial:hover + label {
-    display: inline-block;
+.arrow-start {
+    background: url(../images/arrow.png);
+    width: 27px;
+    height: 24px;
+    left: 108px;
+    top: 40%;
+    position: absolute;
 }
-

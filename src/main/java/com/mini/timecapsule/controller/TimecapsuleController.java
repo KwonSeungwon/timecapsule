@@ -19,7 +19,7 @@ public class TimecapsuleController {
 
     @GetMapping(value = "/timecapsule")
     public ModelAndView timecapsule() {
-        return new ModelAndView("home");
+        return new ModelAndView("");
     }
     @GetMapping(value = "/api/timecapsule")
     public ModelAndView list(CustomWebUtils customWebUtils, TimeCapsuleDto timeCapsuleDto) {
