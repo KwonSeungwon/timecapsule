@@ -29,9 +29,9 @@
 }
 .main .title span {
     margin: 0 auto;
-    width: 248px;
+    width: 250px;
     height: 96px;
-    background: url(../images/title.png) no-repeat center transparent;
+    background: url(../images/title2.png) no-repeat center transparent;
     background-size: cover;
 }
 
