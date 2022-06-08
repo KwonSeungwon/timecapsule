@@ -5,19 +5,23 @@
     <title>우리들의 추억만들기 타임캡슐에 오신걸 환영합니다!</title>
 </head>
 <body>
-    <div id="viewPoint" class="container">
-        <div class="row">
-            <div class="col">
-                <div class="main-page">
-                        <img class="arrow-tutorial" v-show="isTutorialOver"/>
-                        <button class="btn-tutorial" @click="movePage(false)" @mouseover="isTutorialOver = !isTutorialOver" @mouseout="isTutorialOver = false">mvttr</button>
-                        <img class="arrow-start" v-show="isStartOver"/>
-                        <button class="btn-start" @click="movePage(true)" @mouseover="isStartOver = !isStartOver" @mouseout="isStartOver = false">mvnst</button>
-                </div>
+<div id="viewPoint" class="container">
+    <div class="main beach">
+        <div class="title">
+            <span></span>
+        </div>
+        <div class="menu">
+            <div class="holder">
+                <button id="tutorial" class="tutorial" @click="movePage(false)"></button>
+                <label for="tutorial"></label>
+            </div>
+            <div class="holder">
+                <button id="start" class="start" @click="movePage(true)"></button>
+                <label for="start"></label>
             </div>
         </div>
     </div>
-<!--    <div th:replace="layout/footer :: footer"></div>-->
+</div>
 </body>
 </html>
 <script>
