@@ -1,43 +1,111 @@
-/*.main-img {
-    height: 465px;
-    width: 983px;
-    left: 3708px;
-    top: 842px;
-    border-radius: 0px;
-    background: url(../images/time_capsule_main.png);
-}
+/*.main-img {*/
+/*    height: 465px;*/
+/*    width: 983px;*/
+/*    left: 3708px;*/
+/*    top: 842px;*/
+/*    border-radius: 0px;*/
+/*    background: url(../images/time_capsule_main.png);*/
+/*}*/
 .container {
-    min-width: 1360px;
-}*/
+    /*min-width: 1360px;*/
+    display: flex;
+}
 
-/*
-@media all and (min-width:768px) and (max-width:1023px) {
-    .test {
-        margin-top: 9%;
-        min-width: 100%;
-        min-height: 191%;
-        height: auto;
-        width: auto;
-        border-radius: 0px;
-        background: url(../images/beach.png);
-    }
+.main {
+    margin: auto;
+    width: 375px;
+    /*height: 812px;*/
+    height: 100vh;
+    max-height: 812px;
 }
-*/
 
-/*두번째방법 */
-.container {
-    width: 70%;
-    height: 100%;
-    overflow: hidden;
+.main.beach {
+    background: url(../images/beach.svg) no-repeat center;
+    background-size: cover;
 }
-.container img {
-    max-width: 100%;
-    height: auto;
-    display: block;
+
+.main .title {
+    padding-top: 100px;
 }
-body {
-     background-image: url(../images/beach.png);
-     background-repeat: no-repeat;
-     background-position: center;
-     background-size: cover;
- }
+.main .title span {
+    margin: 0 auto;
+    width: 250px;
+    height: 96px;
+    background: url(../images/title2.png) no-repeat center transparent;
+    background-size: cover;
+}
+
+.main.svg .title span {
+    background: url(../images/title.svg) no-repeat center transparent;
+}
+
+.main .title .capsule {
+    background: url(../images/pills.png) no-repeat center transparent;
+    background-size: cover;
+}
+
+.main.svg .capsule {
+    background: url(../images/pills.svg) no-repeat center transparent;
+}
+
+.main .title,
+.main .menu {
+    display: flex;
+}
+
+.menu {
+    margin-top: 25px;
+    flex-direction: column;
+}
+
+.menu div.holder {
+    position: relative;
+    margin: 5px auto;
+}
+
+.holder button {
+    border: 0;
+    height: 25px;
+}
+
+/*.menu button {*/
+/*    width: 180px;*/
+/*    height: 25px;*/
+/*    margin: 5px auto;*/
+/*    border: 0;*/
+/*}*/
+
+.menu .tutorial {
+    width: 230px;
+    background: url(../images/btn_tutorial.png) no-repeat center transparent;
+}
+.svg .menu .tutorial {
+    width: 230px;
+    background: url(../images/btn_tutorial.svg) no-repeat center transparent;
+}
+
+.menu .start {
+    width: 180px;
+    background: url(../images/btn_start.png) no-repeat center transparent;
+}
+
+.svg .menu .start {
+    width: 180px;
+    background: url(../images/btn_start.svg) no-repeat center transparent;
+}
+
+.menu label[for='start'],
+.menu label[for='tutorial'] {
+    position: absolute;
+    display: none;
+    left: 0;
+    width: 25px;
+    height: 25px;
+    margin: 0;
+    background: url(../images/arrow.png) no-repeat;
+}
+.menu button#start:hover + label,
+.menu button#tutorial:hover + label {
+    display: inline-block;
+}
+
