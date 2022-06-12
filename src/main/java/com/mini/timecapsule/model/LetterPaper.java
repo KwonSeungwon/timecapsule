@@ -1,5 +1,6 @@
 package com.mini.timecapsule.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -10,7 +11,8 @@ import java.time.ZonedDateTime;
 
 /**
  * id : id(auto_increment)
- * timeCapsuleId : 타입캡슐 아이디(FK)
+ * user : 발송하는 대상
+ * email : 열어볼 수 있는 날짜알림을 원할경우 이메일주소 받음
  * createdAt : 전송요청일
  * letterTemplateId : 템플릿(view) id /FK?
  * content : 내용/컨텐츠
@@ -28,7 +30,14 @@ public class LetterPaper {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Long timeCapsuleId;
+    private String senderName;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id", nullable = false)
+    @JsonIgnore
+    private User user;
+
+    private String email;
 
     private ZonedDateTime createdAt;
 
@@ -45,9 +54,10 @@ public class LetterPaper {
         INACTIVE
     }
 
-    public static LetterPaper newEntity(Long timeCapsuleId, Long letterTemplateId, String content, String requestorInfo) {
+    public static LetterPaper newEntity(User user, String email, Long letterTemplateId, String content, String requestorInfo) {
         LetterPaper letterPaper = new LetterPaper();
-        letterPaper.timeCapsuleId = timeCapsuleId;
+        letterPaper.user = user;
+        letterPaper.email = email;
         letterPaper.letterTemplateId = letterTemplateId;
         letterPaper.content = content;
         letterPaper.requestorInfo = requestorInfo;
