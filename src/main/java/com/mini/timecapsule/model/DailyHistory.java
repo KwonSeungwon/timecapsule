@@ -17,8 +17,7 @@ import java.time.ZonedDateTime;
  * mostRequestAddressCount : 가장 많이 요청된 이메일의 카운트 수(위 문제와 동일)
  * firstRequestAt : 첫 요청시간
  * lastRequestAt : 마지막 요청시간
- * validRequestCount : 유효한(했던) 요청 건수
- * invalidRequestCount : 비유효(실패) 요청 건수
+ * notificationCount : 알람요청건수
  * 개인적 의견 : 해당 테이블은 통계쿼리로 대체가 가능하지 않을까?
  */
 @Entity
@@ -41,13 +40,10 @@ public class DailyHistory {
 
     private ZonedDateTime lastRequestAt;
 
-    private Long validRequestCount;
-
-    private Long invalidRequestCount;
+    private Long notificationCount;
 
     public static DailyHistory newDailyHistory(String date, Long totalSendRequestCount, String mostRequestAddress, Long mostRequestAddressCount,
-                                         ZonedDateTime firstRequestAt, ZonedDateTime lastRequestAt, Long validRequestCount,
-                                         Long invalidRequestCount) {
+                                         ZonedDateTime firstRequestAt, ZonedDateTime lastRequestAt, Long notificationCount) {
         DailyHistory dailyTotalInfo = new DailyHistory();
         dailyTotalInfo.id = date;
         dailyTotalInfo.totalSendRequestCount = totalSendRequestCount;
@@ -55,8 +51,7 @@ public class DailyHistory {
         dailyTotalInfo.mostRequestAddressCount = mostRequestAddressCount;
         dailyTotalInfo.firstRequestAt = firstRequestAt;
         dailyTotalInfo.lastRequestAt = lastRequestAt;
-        dailyTotalInfo.validRequestCount = validRequestCount;
-        dailyTotalInfo.invalidRequestCount = invalidRequestCount;
+        dailyTotalInfo.notificationCount = notificationCount;
 
         return dailyTotalInfo;
     }

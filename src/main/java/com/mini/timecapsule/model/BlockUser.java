@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import java.time.ZonedDateTime;
 
 /**
+ * 불필요로생각됨
  * 디자이너분의 컨셉대로 본인메일입력및 간단 인증절차를 넣는건어떤지? 서비스 안정성이 많이 보장될거같음BlockUser
  * id : 차단된 id 주소
  * idType : 차단된 ip의 타입(고민해봐야 됨)
