@@ -33,7 +33,7 @@ public class LetterPaper {
     private String senderName;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "id", insertable = false, updatable = false)
     @JsonIgnore
     private User user;
 
