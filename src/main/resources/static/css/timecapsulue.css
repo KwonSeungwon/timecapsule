@@ -7,11 +7,14 @@
     background: url(../images/time_capsule_main.png);
 }
 .container {
+    /*min-width: 1360px;*/
     display: flex;
 }
+
 .main {
     margin: auto;
     width: 375px;
+    /*height: 812px;*/
     height: 100vh;
     max-height: 812px;
 }
@@ -28,6 +31,7 @@
     margin: 0 auto;
     width: 250px;
     height: 96px;
+    cursor: pointer;
     background: url(../images/title2.png) no-repeat center transparent;
     background-size: cover;
 }
@@ -64,6 +68,14 @@
     border: 0;
     height: 25px;
 }
+
+/*.menu button {*/
+/*    width: 180px;*/
+/*    height: 25px;*/
+/*    margin: 5px auto;*/
+/*    border: 0;*/
+/*}*/
+
 .menu .tutorial {
     width: 230px;
     background: url(../images/btn_tutorial.png) no-repeat center transparent;
@@ -73,9 +85,13 @@
     background: url(../images/btn_tutorial.svg) no-repeat center transparent;
 }
 
-.menu .start {
+.menu .my {
     width: 180px;
-    background: url(../images/btn_start.png) no-repeat center transparent;
+    background: url(../images/btn-my.png) no-repeat center transparent;
+}
+.menu .send {
+    width: 180px;
+    background: url(../images/btn-send.png) no-repeat center transparent;
 }
 
 .svg .menu .start {
@@ -83,7 +99,8 @@
     background: url(../images/btn_start.svg) no-repeat center transparent;
 }
 
-.menu label[for='start'],
+.menu label[for='my'],
+.menu label[for='send'],
 .menu label[for='tutorial'] {
     position: absolute;
     display: none;
@@ -93,7 +110,8 @@
     margin: 0;
     background: url(../images/arrow.png) no-repeat;
 }
-.menu button#start:hover + label,
+.menu button#my:hover + label,
+.menu button#send:hover + label,
 .menu button#tutorial:hover + label {
     display: inline-block;
 }
