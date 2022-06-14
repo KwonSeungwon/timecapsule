@@ -82,7 +82,7 @@ public class User {
     private List<LetterPaper> letterPapers;
 
     /**
-     * 생성가능일
+     * 생성일
      */
     private ZonedDateTime createdAt;
 
