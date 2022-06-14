@@ -8,7 +8,7 @@
 <div id="viewPoint" class="container">
     <div class="main beach">
         <div class="title">
-            <span></span>
+            <span @click="reloadPage"></span>
         </div>
         <div class="menu">
             <div class="holder">
@@ -16,8 +16,18 @@
                 <label for="tutorial"></label>
             </div>
             <div class="holder">
-                <button id="start" class="start" @click="movePage(true)"></button>
-                <label for="start"></label>
+                <button id="my" class="my" @click="movePage(true)"></button>
+                <label for="my"></label>
+            </div>
+            <div class="holder">
+                <button id="send" class="send" @click="movePage(true)"></button>
+                <label for="send"></label>
+            </div>
+            <div class="holder">
+                <span>대충 이런느낌으로 글씨가 나올거에요!</span>
+            </div>
+            <div class="holder" style="margin-top: 105%">
+                <img src="../static/images/copyright.png">
             </div>
         </div>
     </div>
@@ -58,6 +68,9 @@
                         alert('오류가 발생했습니다.\n 잠시후 이용해주세요');
                     });
                 },
+                reloadPage : function() {
+                    alert('홈으로 돌아가기 구현');
+                }
             },
             mounted : function() {
                 // this.$nextTick(() => {
