@@ -3,6 +3,7 @@ package com.mini.timecapsule.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
@@ -10,12 +11,14 @@ import java.time.ZonedDateTime;
 
 /**
  * id : id(auto_increment)
- * timeCapsuleId : 타입캡슐 아이디(FK)
+ * name : 보내는사람명
+ * userId : 타입캡슐(user) 아이디(FK)
+ * letterTemplateType : 편지지타입(이미지 나오는대로 enum class화)
+ * status : 상태(작성, 오픈, 삭제)
  * createdAt : 전송요청일
- * letterTemplateId : 템플릿(view) id /FK?
  * content : 내용/컨텐츠
  * requestorInfo : 전송자 정보
- * requestStatus : 전송상태(활성, 비활성)
+ * openedAt : 열어본날짜
  */
 @Entity
 @Getter
@@ -28,30 +31,60 @@ public class LetterPaper {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Long timeCapsuleId;
+    private String name;
 
+    @ManyToOne
+    private User user;
+
+    /**
+     * 편지지타입
+     * - 이미지 나오는대로 enum class 화
+     */
+    private String letterTemplateType;
+
+    /**
+     * 편지상태
+     * - 미오픈, 오픈, 삭제(계정요청)
+     */
+    @Enumerated(EnumType.STRING)
+    private LetterStatus status;
+
+    /**
+     * 작성일
+     */
     private ZonedDateTime createdAt;
 
-    private Long letterTemplateId;
-
+    /**
+     * 내용
+     */
     private String content;
 
+    /**
+     * 작성자정보
+     */
     private String requestorInfo;
 
-    @Enumerated(EnumType.STRING)
-    private RequestStatus requestStatus;
-    public enum RequestStatus {
-        ACTIVE,
-        INACTIVE
+    /**
+     * 열어본 날짜
+     */
+    private ZonedDateTime openedAt;
+
+    public enum LetterStatus {
+        UNOPENED,
+        OPENED,
+        REMOVE
     }
 
-    public static LetterPaper newEntity(Long timeCapsuleId, Long letterTemplateId, String content, String requestorInfo) {
+    public static LetterPaper newEntity(String name, User user, String letterTemplateType,
+                                        String content, String requestorInfo) {
         LetterPaper letterPaper = new LetterPaper();
-        letterPaper.timeCapsuleId = timeCapsuleId;
-        letterPaper.letterTemplateId = letterTemplateId;
+        letterPaper.name = name;
+        letterPaper.user = user;
+        letterPaper.letterTemplateType = letterTemplateType;
+        letterPaper.status = LetterStatus.UNOPENED;
         letterPaper.content = content;
+        letterPaper.createdAt = ZonedDateTime.now();
         letterPaper.requestorInfo = requestorInfo;
-        letterPaper.requestStatus = RequestStatus.ACTIVE;
         return letterPaper;
     }
 }

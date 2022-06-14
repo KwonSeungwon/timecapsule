@@ -13,6 +13,7 @@ import java.time.ZonedDateTime;
 
 
 /**
+ * 불필요로생각됨
  * id : id(auto_increment)
  * requestEmail : 요청메일주소
  * sendingCount : 요청 총 건수

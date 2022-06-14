@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 /**
+ * 불필요로 생각됨
  * id
  * type : 템플릿타입
  * name : 템플릿이름
