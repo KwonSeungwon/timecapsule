@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TimeCapsuleDto {
+public class UserDTO {
 
     private Long id;
 
