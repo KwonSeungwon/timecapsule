@@ -10,28 +10,55 @@
         <div class="title">
             <span @click="reloadPage"></span>
         </div>
-        <div class="menu">
-            <div class="holder">
-                <button id="tutorial" class="tutorial" @click="movePage(false)"></button>
-                <label for="tutorial"></label>
+        <template v-if="type == 'main'">
+            <div class="menu">
+                <div class="holder">
+                    <button id="tutorial" class="tutorial" @click="movePage(tutorial)"></button>
+                    <label for="tutorial"></label>
+                </div>
+                <div class="holder">
+                    <button id="my" class="my" @click="movePage(my)"></button>
+                    <label for="my"></label>
+                </div>
+                <div class="holder">
+                    <button id="send" class="send" @click="movePage(send)"></button>
+                    <label for="send"></label>
+                </div>
+<!--                <div class="holder">-->
+<!--                    <button id="send" class="send" @click="movePage(signUp)"></button>-->
+<!--                    <label for="send"></label>-->
+<!--                </div>-->
             </div>
-            <div class="holder">
-                <button id="my" class="my" @click="movePage(true)"></button>
-                <label for="my"></label>
+            <div ref="popup" style="position:absolute; width: 300px; height: 180px; top: calc(50% - 70px); left: calc(50% - 150px); background: antiquewhite; display: none;">
+                <span style="margin: auto;">이동준비중입니다.</span>
             </div>
-            <div class="holder">
-                <button id="send" class="send" @click="movePage(true)"></button>
-                <label for="send"></label>
+        </template>
+        <template v-else-if="type == 'my'">
+            <div class="holder" style="margin-left: 20%; margin-top: 7%;">
+                <label>아이디</label><br>
+                <input type="text" id="" style="background: url(./static/images/input-img.png); width: 240px;">
             </div>
-            <div class="holder" style="margin-top: 105%">
-                <img src="../static/images/copyright.png">
+            <div class="holder" style="margin-left: 20%; margin-top: 7%;">
+                <label>비밀번호</label><br>
+                <input type="text" style="background: url(./static/images/input-img.png); width: 240px">
             </div>
+            <div class="holder" style="margin-left: 20%; margin-top: 7%;">
+                <a click="movePage(signUp)" style="cursor: pointer">아이디가 없으시다면 신규가입하세요!</a>
+            </div>
+        </template>
+        <template v-else-if="type =='signUp'">
+            <p>
+                신규가입
+            </p>
+        </template>
+        <div class="holder" style="position: relative;  top: calc(60% - 70px); left: calc(64% - 150px);">
+            <img src="../static/images/copyright.png">
         </div>
     </div>
-    <div ref="popup" style="position:absolute; width: 300px; height: 180px; top: calc(50% - 70px); left: calc(50% - 150px); background: antiquewhite; display: none;">
-        <span style="margin: auto;">이동준비중입니다.</span>
-    </div>
 </div>
+<template id="time-capsule-sigh-up-template">
+
+</template>
 </body>
 </html>
 <script>
@@ -39,6 +66,7 @@
         var vueModel = new Vue({
             el: '#viewPoint',
             data : {
+                type : 'my',
                 isTutorialOver : false,
                 isStartOver : false,
                 filter : {},
@@ -46,27 +74,35 @@
             methods : {
                 movePage : function(targetPage) {
                     let url = '';
-                    if (targetPage) {
-                        url = '/api/timcapsule/start';
-                    } else {
-                        this.$refs.popup.style.display = 'flex';
-                        let time = 3;
-                        let t = setInterval(() => {
-                           time--;
-                           if (time === 0) {
-                               clearInterval(t);
-                               this.$refs.popup.style.display = 'none';
-                           }
-                        }, 1000);
-                    }
-                    axios.get(url).then((response) => {
-                        console.log(response);
-                    }).catch((error) => {
-                        alert('오류가 발생했습니다.\n 잠시후 이용해주세요');
-                    });
+                    this.type = targetPage;
+                    console.log(this.type);
+                    // if (targetPage === 'my') {
+                    // } else if (targetPage === 'send') {
+                    //
+                    // } else if (targetPage === 'tutorial') {
+                    //
+                    // }
+                    // if (targetPage) {
+                    //     url = '/api/timcapsule/start';
+                    // } else {
+                    //     this.$refs.popup.style.display = 'flex';
+                    //     let time = 3;
+                    //     let t = setInterval(() => {
+                    //        time--;
+                    //        if (time === 0) {
+                    //            clearInterval(t);
+                    //            this.$refs.popup.style.display = 'none';
+                    //        }
+                    //     }, 1000);
+                    // }
+                    // axios.get(url).then((response) => {
+                    //     console.log(response);
+                    // }).catch((error) => {
+                    //     alert('오류가 발생했습니다.\n 잠시후 이용해주세요');
+                    // });
                 },
                 reloadPage : function() {
-                    alert('홈으로 돌아가기 구현');
+                    this.type = 'main';
                 }
             },
             mounted : function() {
@@ -77,4 +113,18 @@
             }
         });
     })(document);
+    // Vue.component('time-capsule-sigh-up-template', {
+    //     template: '#time-capsule-sigh-up-template',
+    //     data: () => {
+    //         return {
+    //         }
+    //     },
+    //     methods: {
+    //         getReceipts : function() {
+    //     },
+    //     mounted: function() {
+    //         modalSizing();
+    //         this.getReceipts();
+    //     }
+    // });
 </script>
