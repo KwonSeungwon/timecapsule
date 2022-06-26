@@ -1,0 +1,119 @@
+.container {
+    display: flex;
+}
+.main {
+    margin: auto;
+    width: 375px;
+    height: 100vh;
+    max-height: 812px;
+}
+
+.main.beach {
+    background: url(../images/beach.svg) no-repeat center;
+    background-size: cover;
+}
+
+.main .title {
+    padding-top: 100px;
+}
+.main .title span {
+    margin: 0 auto;
+    width: 250px;
+    height: 96px;
+    cursor: pointer;
+    background: url(../images/title2.png) no-repeat center transparent;
+    background-size: cover;
+}
+
+.main.svg .title span {
+    background: url(../images/title.svg) no-repeat center transparent;
+}
+
+.main .title .capsule {
+    background: url(../images/pills.png) no-repeat center transparent;
+    background-size: cover;
+}
+
+.main.svg .capsule {
+    background: url(../images/pills.svg) no-repeat center transparent;
+}
+
+.main .title,
+.main .menu {
+    display: flex;
+}
+
+.menu {
+    margin-top: 25px;
+    flex-direction: column;
+}
+
+.menu div.holder {
+    position: relative;
+    margin: 5px auto;
+}
+
+.holder button {
+    border: 0;
+    height: 25px;
+}
+.menu .tutorial {
+    width: 230px;
+    background: url(../images/btn_tutorial.png) no-repeat center transparent;
+}
+.svg .menu .tutorial {
+    width: 230px;
+    background: url(../images/btn_tutorial.svg) no-repeat center transparent;
+}
+
+.menu .my {
+    width: 180px;
+    background: url(../images/btn-my.png) no-repeat center transparent;
+}
+.menu .send {
+    width: 180px;
+    background: url(../images/btn-send.png) no-repeat center transparent;
+}
+
+.svg .menu .start {
+    width: 180px;
+    background: url(../images/btn_start.svg) no-repeat center transparent;
+}
+
+.menu label[for='my'],
+.menu label[for='send'],
+.menu label[for='tutorial'] {
+    position: absolute;
+    display: none;
+    left: 0;
+    width: 25px;
+    height: 25px;
+    margin: 0;
+    background: url(../images/arrow.png) no-repeat;
+}
+.menu button#my:hover + label,
+.menu button#send:hover + label,
+.menu button#tutorial:hover + label {
+    display: inline-block;
+}
+@font-face {
+    font-family: tcf;
+    src: url(../font/DungGeunMo.woff) format('woff');
+}
+body {
+    font-family: tcf, sans-serif;
+    /*-webkit-text-size-adjust: none;*/
+    /*-moz-text-size-adjust: none;*/
+    /*-ms-text-size-adjust: none;*/
+}
+/* cdn방식 */
+/*@font-face {*/
+/*    font-family: 'DungGeunMo';*/
+/*    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');*/
+/*    font-weight: normal;*/
+/*    font-style: normal;*/
+/*}*/
+
+/** {*/
+/*    font-family: 'DungGeunMo', sans-serif;*/
+/*}*/
