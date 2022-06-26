@@ -1,0 +1,23 @@
+{
+  "name": "timecapsule",
+  "version": "1.0.0",
+  "description": "📝 technology used 📝",
+  "main": "index.js",
+  "dependencies": {
+    "vue": "^3.2.37"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KwonSeungwon/timecapsule.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KwonSeungwon/timecapsule/issues"
+  },
+  "homepage": "https://github.com/KwonSeungwon/timecapsule#readme"
+}
