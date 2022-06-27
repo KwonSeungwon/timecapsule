@@ -8,7 +8,7 @@
       <label for="tutorial"></label>
     </div>
     <div class="holder">
-      <button id="my" class="my" @click="movePage(true)"></button>
+      <button id="my" class="my" @click="$router.push('/login')"></button>
       <label for="my"></label>
     </div>
     <div class="holder">
@@ -25,8 +25,8 @@
 export default {
   name: "cTitle",
   methods : {
-    movePage (state, e) {
-      console.log(state, e);
+    login () {
+
     },
     reloadPage () {
       alert('홈으로 돌아가기 구현');

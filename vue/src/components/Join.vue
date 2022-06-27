@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="field">
     <div>
       <label>내 좌표</label>
       <input>
@@ -26,5 +26,10 @@ export default {
 </script>
 
 <style scoped>
-
+.field {
+  margin: 20% auto;
+  width: 90%;
+  height: 80%;
+  background: url(../assets/images/field.png) no-repeat center transparent;
+}
 </style>
