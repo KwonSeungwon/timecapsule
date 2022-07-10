@@ -42,15 +42,37 @@ export default {
 .title span {
   margin: 0 auto;
   width: 250px;
-  height: 96px;
+  height: 86px;
   cursor: pointer;
-  background: url(../assets/images/title2.png) no-repeat center transparent;
+}
+
+.beach .title span {
+  background: url(../assets/images/title_bc.png) no-repeat center transparent;
   background-size: cover;
 }
 
+.mountain .title span {
+  background: url(../assets/images/title_mountain.png) no-repeat center transparent;
+  background-size: cover;
+}
 
-.title .capsule {
+.desert .title span {
+  background: url(../assets/images/title_dt.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.beach .title .capsule {
   background: url(../assets/images/pills.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.mountain .title .capsule {
+  background: url(../assets/images/pills_mt.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.desert .title .capsule {
+  background: url(../assets/images/pills_dt.png) no-repeat center transparent;
   background-size: cover;
 }
 
@@ -73,27 +95,50 @@ export default {
   border: 0;
   height: 25px;
 }
-.menu .tutorial {
+
+.beach .menu .tutorial {
   width: 230px;
   background: url(../assets/images/btn_tutorial.png) no-repeat center transparent;
 }
-.svg .menu .tutorial {
+
+.mountain .menu .tutorial {
   width: 230px;
-  background: url(../assets/images/btn_tutorial.svg) no-repeat center transparent;
+  background: url(../assets/images/btn_tutorial_mt.png) no-repeat center transparent;
+}
+.desert .menu .tutorial {
+  width: 230px;
+  background: url(../assets/images/btn_tutorial_dt.png) no-repeat center transparent;
 }
 
-.menu .my {
+.beach .menu .my {
   width: 180px;
   background: url(../assets/images/btn-my.png) no-repeat center transparent;
 }
-.menu .send {
+
+.mountain .menu .my {
+  width: 180px;
+  background: url(../assets/images/btn_my_mt.png) no-repeat center transparent;
+}
+
+.desert .menu .my {
+  width: 180px;
+  background: url(../assets/images/btn_my_dt.png) no-repeat center transparent;
+}
+
+
+.beach .menu .send {
   width: 180px;
   background: url(../assets/images/btn-send.png) no-repeat center transparent;
 }
 
-.svg .menu .start {
+.mountain .menu .send {
   width: 180px;
-  background: url(../assets/images/btn_start.svg) no-repeat center transparent;
+  background: url(../assets/images/btn_start_mt.png) no-repeat center transparent;
+}
+
+.desert .menu .send {
+  width: 180px;
+  background: url(../assets/images/btn_start_dt.png) no-repeat center transparent;
 }
 
 .menu label[for='my'],

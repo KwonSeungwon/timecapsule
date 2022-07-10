@@ -13,11 +13,12 @@ export default {
   data () {
     return {
       theme : null,
-      themes : ['beach', 'mountain', 'desert', 'jungle']
+      themes : ['beach', 'mountain', 'desert']
     }
   },
   methods : {
     setTheme () {
+      //TODO :  login 상태 or 주소입력시 선택한 theme 표시
       this.theme = this.themes[Math.floor(Math.random() * this.themes.length)];
     }
   },

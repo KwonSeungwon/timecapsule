@@ -21,22 +21,16 @@
     width: 250px;
     height: 96px;
     cursor: pointer;
-    background: url(../images/title2.png) no-repeat center transparent;
+    background: url(../images/title_bc.png) no-repeat center transparent;
     background-size: cover;
 }
 
-.main.svg .title span {
-    background: url(../images/title.svg) no-repeat center transparent;
-}
 
 .main .title .capsule {
     background: url(../images/pills.png) no-repeat center transparent;
     background-size: cover;
 }
 
-.main.svg .capsule {
-    background: url(../images/pills.svg) no-repeat center transparent;
-}
 
 .main .title,
 .main .menu {
@@ -60,10 +54,6 @@
 .menu .tutorial {
     width: 230px;
     background: url(../images/btn_tutorial.png) no-repeat center transparent;
-}
-.svg .menu .tutorial {
-    width: 230px;
-    background: url(../images/btn_tutorial.svg) no-repeat center transparent;
 }
 
 .menu .my {
