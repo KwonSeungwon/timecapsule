@@ -1,3 +1,4 @@
+/*
 import { createRouter, createWebHistory } from 'vue-router'
 import Title from '@/components/Title'
 import Login from '@/components/Login'
@@ -27,3 +28,4 @@ const router = createRouter({
 })
 
 export default router
+*/

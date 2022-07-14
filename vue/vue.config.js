@@ -1,3 +1,4 @@
+/*
 // vue.config.js
 module.exports = {
   // proxy all webpack dev-server requests starting with /api
@@ -15,3 +16,15 @@ module.exports = {
     }
   },
 };
+*/
+module.exports = {
+  outputDir: '../src/main/resources/static',
+  devServer: {
+    port: 8085,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8086'
+      }
+    }
+  }
+}
