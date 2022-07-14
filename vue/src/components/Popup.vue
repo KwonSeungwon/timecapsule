@@ -7,8 +7,8 @@
       <span>{{contents}}</span>
     </div>
     <div class="footer">
-      <button class="cancel" @click="">{{cancel}}</button>
-      <button class="confirm" @click="">{{confirm}}</button>
+      <button class="cancel" @click="confirm_f">{{cancel}}</button>
+      <button class="confirm" @click="confirm_f">{{confirm}}</button>
     </div>
   </div>
   <div class="dim"></div>
@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  name: "popup",
+  name: "cPopup",
   props : {
     contents : {
       type : String,

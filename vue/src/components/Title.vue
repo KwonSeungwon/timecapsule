@@ -12,7 +12,7 @@
       <label for="my"></label>
     </div>
     <div class="holder">
-      <button id="send" class="send" @click="movePage(true)"></button>
+      <button id="send" class="send" @click="$router.push('/target')"></button>
       <label for="send"></label>
     </div>
     <div class="holder" style="margin-top: 105%">
@@ -27,9 +27,6 @@ export default {
   methods : {
     login () {
 
-    },
-    reloadPage () {
-      alert('홈으로 돌아가기 구현');
     }
   }
 }
