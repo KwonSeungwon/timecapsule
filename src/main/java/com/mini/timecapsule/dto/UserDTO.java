@@ -9,11 +9,16 @@ public class UserDTO {
 
     private Long id;
 
-    private String email;
-
     private String uiUrl;
 
     private String name;
 
-    private String date;
+    private String createdAt;
+
+    private String writeableAt;
+
+    private String firstTargetAt;
+
+    private String lastAccessAt;
+
 }

@@ -1,5 +1,7 @@
 package com.mini.timecapsule.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -84,22 +86,26 @@ public class User {
     /**
      * 생성일
      */
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime createdAt;
 
     /**
      * 작성가능일
      * 오픈일로부터 1~2개월이내, 최소작성기간에대한 고민필요
      */
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime writeableAt;
 
     /**
      * 첫편지일수
      */
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime firstTargetAt;
 
     /**
      * 마지막 접속일
      */
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime lastAccessAt;
 
     /**
