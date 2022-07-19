@@ -70,7 +70,7 @@ public class User {
      * 캡슐타입
      * 컵셉 정의되는대로 enum class화
      */
-    private String capsuleType;
+    private CapsuleType capsuleType;
 
     /**
      * 오픈 가능일
@@ -135,8 +135,15 @@ public class User {
         }
     }
 
+    public enum CapsuleType {
+        EGG, // 계란형
+        LETTERBOTTLE, //편지가 들어있는 병
+        BAMBOOTUBE, // 죽통(대나무통)
+        CANDYCASE // 사탕통
+    }
+
     public static User joinUser(String coordinates, String password, String name,
-                                String capsuleType, OpenDay openDayType,
+                                CapsuleType capsuleType, OpenDay openDayType,
                                 ZonedDateTime writeableAt, String dummy) {
         User user = new User();
         user.coordinates = coordinates;

@@ -6,15 +6,24 @@ import com.mini.timecapsule.model.QUser;
 import com.mini.timecapsule.model.User;
 import com.mini.timecapsule.utils.CustomWebUtils;
 import com.querydsl.core.BooleanBuilder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.Random;
 import java.util.TimeZone;
 
+@Service
+@Log4j2
 public class UserService {
 
     @Autowired
@@ -77,31 +86,69 @@ public class UserService {
 
     public void createUser(CustomWebUtils.Payload payload, UserDTO userDTO) {
 
+        String coordinates = this.createCoordinates();
+        ZonedDateTime writeableAt = this.calculationWritingDays(userDTO.getOpenDayType());
+        User user = User.joinUser(coordinates, userDTO.getPassword(), userDTO.getName(), userDTO.getCapsuleType(),
+                userDTO.getOpenDayType(), writeableAt, null);
 
+        userRepository.save(user);
 
-        //좌표생성로직 추가
-//
-//        User user = User.joinUser("12345", "1234", "1234", "1234", "1234", "1234",
-//                "1234");
+        FullCoordinate fullCoordinate = this.decodeCoordinates(user.getCoordinates());
 
-//        userRepository.save(user);
-
-        //생성 후 사용자의 좌표 표시
-
-//        payload.addData("coordinates", user.getCoordinates());
+        payload.addData("coordinates", fullCoordinate);
     }
 
     /**
-     * 새로운좌표를 생성하는 메서드
+     * TODO : Spring security 암호화 방법 확인필요
+     * @param password
      * @return
      */
-    private int createCoordinates() {
+    private String passwordEncryption(String password) {
+
+
+        return "";
+
+    }
+
+    /**
+     * 작성가능 날짜는 임시로 오픈일로부터 3개월 전 까지만 가능하도록 계산함
+     * @param openDay
+     * @return
+     */
+    private ZonedDateTime calculationWritingDays(User.OpenDay openDay) {
+        LocalDate renderOpenDay = LocalDate.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy")) + openDay, DateTimeFormatter.ISO_LOCAL_DATE);
+        return LocalDate.parse(renderOpenDay.toString(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(TimeZone.getDefault().toZoneId()).minusMonths(3);
+    }
+
+    /**
+     * 새로운좌표를 생성하는 메서드(임시로 Base64 암호화 / 암호화에 큰 의미는 없는듯?)
+     * @return
+     */
+    private String createCoordinates() {
         Random random = new Random();
         int xCoordinates = random.nextInt(2000);
         int yCoordinates = random.nextInt(4000);
+        String coordinates =  xCoordinates + "," + yCoordinates;
+        BASE64Encoder base64Encoder = new BASE64Encoder();
+        base64Encoder.encode(coordinates.getBytes());
 
+        return coordinates;
+    }
 
-        return 0;
+    private FullCoordinate decodeCoordinates(String coordinates) {
+        FullCoordinate fullCoordinate = null;
+        try {
+            BASE64Decoder base64Decoder = new BASE64Decoder();
+            String decodedCoordinates = new String(base64Decoder.decodeBuffer(String.valueOf(coordinates.getBytes())));
+            String[] cutCoordinates =  decodedCoordinates.split(",");
+
+            if (cutCoordinates.length > 1) {
+                fullCoordinate = new FullCoordinate(cutCoordinates[0], cutCoordinates[1]);
+            }
+        } catch (Exception e) {
+            log.error("decodeException!");
+        }
+        return fullCoordinate;
     }
 
     /**
@@ -115,5 +162,16 @@ public class UserService {
 
 //        userRepository.delete(us);
     }
+    
 
+    @Getter
+    @Setter
+    static class FullCoordinate {
+        private String x;
+        private String y;
+        public FullCoordinate(String x, String y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
 }
