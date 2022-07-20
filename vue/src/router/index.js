@@ -2,7 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Title from '@/components/Title'
 import Login from '@/components/Login'
 import Join from '@/components/Join'
-import Target from "@/components/Target";
+import Target from "@/components/Target"
+import MyCapsule from '@/components/myCapsule'
+import SelectCapsule from '@/components/SelectCapsule'
 
 const routes = [
   {
@@ -24,7 +26,17 @@ const routes = [
     path: '/target',
     name: 'cTarget',
     component: Target
-  }
+  },
+  {
+    path: '/myCapsule',
+    name: 'myCapsule',
+    component: MyCapsule
+  },
+  {
+    path: '/selectCapsule',
+    name: 'selectCapsule',
+    component: SelectCapsule
+  },
 ]
 
 const router = createRouter({

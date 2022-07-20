@@ -1,5 +1,8 @@
 <template>
   <div class="field">
+    <div class="title">
+      <p>타임캡슐 생성</p>
+    </div>
     <div>
       <label>내 좌표</label>
       <input>
@@ -16,12 +19,19 @@
         <option>12.31</option>
       </select>
     </div>
+    <Footer></Footer>
   </div>
 </template>
 
 <script>
+import Footer from "@/components/Footer"
+
 export default {
-  name: "cJoin"
+  name: "cJoin",
+  components : {Footer},
+  methods : {
+
+  }
 }
 </script>
 

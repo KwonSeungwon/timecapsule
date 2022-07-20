@@ -12,6 +12,7 @@
       </div>
       <p>좌표가 없으신가요? <router-link to="/join">새로 만들기 ></router-link></p>
     </div>
+    <Footer></Footer>
   </div>
 </template>
 

@@ -12,11 +12,6 @@
       <label>보내는 사람</label>
       <input>
     </div>
-    <div class="input-field">
-      <label>오픈 알람 이메일(선택)</label>
-      <input type="email">
-      <p>타임캡슐 오픈일에 이메일로 알람을 보내드려요.</p>
-    </div>
     <Footer></Footer>
   </div>
   <Popup></Popup>
@@ -24,7 +19,7 @@
 
 <script>
 import Footer from '@/components/Footer';
-import Popup from "@/components/Popup";
+import Popup from '@/components/Popup';
 
 export default {
   name: "cTarget",

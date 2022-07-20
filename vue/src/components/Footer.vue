@@ -23,7 +23,7 @@ export default {
   },
   methods : {
     prev_f () {
-
+      this.$router.go(-1);
     },
     next_f () {
 
