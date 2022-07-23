@@ -24,11 +24,6 @@ export default {
       //TODO :  login 상태 or 주소입력시 선택한 theme 표시
       this.theme = this.themes[Math.floor(Math.random() * this.themes.length)];
     },
-    axiosTest: function (){
-      axios.get('localhost:8085/api/test').then(res =>{
-        console.log(res)
-      })
-    },
     save : function() {
       axios.post('/api/boards/post')
           .then(() => {
