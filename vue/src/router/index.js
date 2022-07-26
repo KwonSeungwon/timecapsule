@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Title from '@/components/Title'
 import Login from '@/components/Login'
+import LoginTest from '@/components/LoginTest'
 import Join from '@/components/Join'
 import Target from '@/components/Target'
 import MyCapsule from '@/components/myCapsule'
@@ -8,6 +9,7 @@ import SelectCapsule from '@/components/SelectCapsule'
 import SelectLetterPaper from '@/components/SelectLetterPaper'
 import Tutorial from '@/components/Tutorial'
 import WriteLetter from '@/components/WriteLetter'
+
 
 const routes = [
   {
@@ -19,6 +21,11 @@ const routes = [
     path: '/login',
     name: 'cLogin',
     component: Login
+  },
+  {
+    path: '/loginTest',
+    name: 'cLoginTest',
+    component: LoginTest
   },
   {
     path: '/join',
@@ -63,4 +70,3 @@ const router = createRouter({
 })
 
 export default router
-

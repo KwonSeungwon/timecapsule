@@ -12,6 +12,7 @@ import java.sql.SQLOutput;
 @AllArgsConstructor
 public class TestController {
 
+
     @PostMapping("/api/boards/post")
     public void Test(){
         System.out.println("teststst");
