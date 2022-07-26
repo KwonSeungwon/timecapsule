@@ -19,7 +19,7 @@
         <option>12.31</option>
       </select>
     </div>
-    <Footer></Footer>
+    <Footer prev="취소" v-on:footer_res="footer_res"></Footer>
   </div>
 </template>
 
@@ -30,7 +30,11 @@ export default {
   name: "cJoin",
   components : {Footer},
   methods : {
-
+    footer_res (next) {
+      if (next) {
+        this.$router.push('/join/capsule');
+      }
+    }
   }
 }
 </script>

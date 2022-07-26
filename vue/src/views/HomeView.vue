@@ -1,15 +1,13 @@
 <template>
   <div class="container">
     <div class="main" :class="theme">
-      <button @click="save()">Test</button>
-      왜안돼
       <router-view/>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+//import axios from 'axios';
 
 export default {
   name: 'HomeView',
@@ -24,12 +22,6 @@ export default {
       //TODO :  login 상태 or 주소입력시 선택한 theme 표시
       this.theme = this.themes[Math.floor(Math.random() * this.themes.length)];
     },
-    save : function() {
-      axios.post('/api/boards/post')
-          .then(() => {
-            console.log("test")
-          })
-    }
   },
   created() {
     this.setTheme();

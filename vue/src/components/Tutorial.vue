@@ -19,7 +19,7 @@ import Footer from '@/components/Footer';
 import Popup from "@/components/Popup";
 
 export default {
-  name: "tutorial",
+  name: "cTutorial",
   components : {Footer, Popup},
   data () {
     return {

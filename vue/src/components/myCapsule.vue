@@ -34,7 +34,7 @@
       <button class="capsule"></button>
       <span class="content"></span>
     </div>
-    <Footer></Footer>
+    <Footer prev="홈으로" one-button :prev_back="false" v-on:footer_res="next"></Footer>
   </div>
   <Popup></Popup>
 </template>
@@ -53,7 +53,12 @@ export default {
     }
   },
   methods : {
-
+    next (next) {
+      if (!next) {
+        //TODO : 로그아웃필요
+        this.$router.replace('/');
+      }
+    }
   }
 }
 </script>

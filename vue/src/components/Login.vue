@@ -5,20 +5,48 @@
     </div>
     <div class="content">
       <div class="input-field">
-        <input id="id" placeholder="좌표명">
-      </div>
-      <div class="input-field">
-        <input id="pw" placeholder="password" type="password">
+        <label for="id">내 좌표</label>
+        <input id="id" placeholder="좌표명" v-model="id">
       </div>
       <p>좌표가 없으신가요? <router-link to="/join">새로 만들기 ></router-link></p>
+      <div class="input-field">
+        <label for="pw">비밀번호</label>
+        <input id="pw" placeholder="password" type="password" v-model="pw">
+      </div>
+      <p class="error-content">{{error}}</p>
     </div>
-    <Footer></Footer>
+    <Footer prev="취소" v-on:footer_res="next"></Footer>
   </div>
 </template>
 
 <script>
+import Footer from "@/components/Footer"
 export default {
-  name: "cLogin"
+  name: "cLogin",
+  components : {Footer},
+  data () {
+    return {
+      id : null,
+      pw : null,
+      error : null
+    }
+  },
+  methods : {
+    next (next) {
+      if (next) {
+        //로그인 로직
+        if (!this.id) {
+          this.error = '아이디가 입력되지 않았습니다.';
+        } else if (!this.pw) {
+          //TODO : 비번 양식체크 들어가야함
+          this.error = '비밀번호가 입력되지 않았습니다.';
+        } else {
+          //로그인 api
+          this.$router.push('/mypage');
+        }
+      }
+    }
+  }
 }
 </script>
 
