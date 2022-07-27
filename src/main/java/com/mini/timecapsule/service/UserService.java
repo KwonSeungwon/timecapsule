@@ -126,7 +126,7 @@ public class UserService {
      */
     private String createCoordinates() {
         Random random = new Random();
-        int xCoordinates = random.nextInt(2000);
+        int xCoordinates = random.nextInt(4000);
         int yCoordinates = random.nextInt(4000);
         String coordinates =  xCoordinates + "," + yCoordinates;
         BASE64Encoder base64Encoder = new BASE64Encoder();
