@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -22,6 +23,12 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.TimeZone;
 
+/**
+ * 유저에 관한 모든기능들이 들어있는 서빗스
+ * @author 카와이승원
+ * @since 2022
+ * TODO : Base64 암호화 API가 없어진다는데 뭐씀?
+ */
 @Service
 @Log4j2
 public class UserService {
@@ -29,6 +36,22 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+    /**
+     * TODO : 로긴뿐만 아니라 세션에 관한 기능 구현필요..
+     * @apiNote 암호화 되있는게 너무 많아서 존나괴로움
+     * @param userDTO
+     */
+    public void login(UserDTO userDTO) {
+
+        String coordinates = userDTO.getCoordinates();
+        BASE64Encoder base64Encoder = new BASE64Encoder();
+        Optional<User> user = userRepository.findByCoordinates(base64Encoder.encode(coordinates.getBytes()));
+        user.ifPresent(value -> passwordEncoder.matches(userDTO.getPassword(), value.getPassword())); // user가 입력한 패쓰와드와 비교
+    }
 
     /**
      * 전체 User의 목록을 가져오는 메소드 / 관리자또는 통계화면에서 사용할 것으로 예상됨
@@ -87,8 +110,9 @@ public class UserService {
     public void createUser(CustomWebUtils.Payload payload, UserDTO userDTO) {
 
         String coordinates = this.createCoordinates();
+        String password = passwordEncoder.encode(userDTO.getPassword());
         ZonedDateTime writeableAt = this.calculationWritingDays(userDTO.getOpenDayType());
-        User user = User.joinUser(coordinates, userDTO.getPassword(), userDTO.getName(), userDTO.getCapsuleType(),
+        User user = User.joinUser(coordinates, password, userDTO.getName(), userDTO.getCapsuleType(),
                 userDTO.getOpenDayType(), writeableAt, null);
 
         userRepository.save(user);
