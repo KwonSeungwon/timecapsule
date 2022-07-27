@@ -1,13 +1,13 @@
 <template>
   <div class="container">
     <div class="main" :class="theme">
-
       <router-view/>
     </div>
   </div>
 </template>
 
 <script>
+//import axios from 'axios';
 export default {
   name: 'HomeView',
   data () {

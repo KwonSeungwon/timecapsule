@@ -9,7 +9,7 @@
       <p>3.</p>
       <p>4.</p>
     </div>
-    <Footer></Footer>
+    <Footer prev="닫기" one-button></Footer>
   </div>
   <Popup></Popup>
 </template>
@@ -19,7 +19,7 @@ import Footer from '@/components/Footer';
 import Popup from "@/components/Popup";
 
 export default {
-  name: "tutorial",
+  name: "cTutorial",
   components : {Footer, Popup},
   data () {
     return {

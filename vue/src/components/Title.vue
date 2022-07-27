@@ -1,10 +1,10 @@
 <template>
   <div class="title">
-    <span @click="reloadPage"></span>
+    <span @click="$router.go(0)"></span>
   </div>
   <div class="menu">
     <div class="holder">
-      <button id="tutorial" class="tutorial" @click="movePage(false)"></button>
+      <button id="tutorial" class="tutorial" @click="$router.push('/tutorial')"></button>
       <label for="tutorial"></label>
     </div>
     <div class="holder">
