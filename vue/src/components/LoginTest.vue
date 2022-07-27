@@ -8,14 +8,16 @@
   <div class="field">
   <div class="content">
     <div class="name"></div>
-
+<!--    <div class="v229_577"></div>-->
     <span class="title">타임캡슐 확인</span>
     <div class="v229_580">
-
+<!--      <div class="v254_1477"></div>
+      <div class="v254_1479"></div>
+      <div class="v254_1478"></div>-->
     </div>
     <div class="inputField">
       <input id="id" placeholder="좌표명">
-
+<!--      <div class="v229_584"></div>-->
      </div>
     <span class="v238_590">좌표가 없으신가요? 새로 만들기 ></span>
     <div class="v229_595">
@@ -46,7 +48,21 @@
   </div>
   </body>
   </html>
-
+  <!--  <div class="field">
+      <div class="title">
+        <p>내 좌표</p>
+      </div>
+      <div class="content">
+        <div class="input-field">
+          <input id="id" placeholder="좌표명">
+        </div>
+        <div class="input-field">
+          <input id="pw" placeholder="password" type="password">
+        </div>
+        <p>좌표가 없으신가요? <router-link to="/join">새로 만들기 ></router-link></p>
+      </div>
+      <Footer></Footer>
+    </div>-->
 </template>
 
 <script>
@@ -481,6 +497,37 @@ body {
 .name {
   color: #fff;
 }
+
+/*.field {
+  margin: 20% auto;
+  width: 88%;
+  height: 80%;
+  background: url(../assets/images/field.png) no-repeat center transparent;
+  !*background-size: cover;*!
+}
+
+.title {
+  height: 20%;
+}
+.title p {
+  text-align: center;
+  margin: 0;
+  padding: 10%;
+}
+.content {
+  height: 60%;
+  display: flex;
+}
+
+.content .input-field {
+  margin: 10px auto;
+  width: 100%;
+  padding: 10px;
+}
+
+.input-field input {
+  width: 100%;
+}*/
 
 
 </style>
