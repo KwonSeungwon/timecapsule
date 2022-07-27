@@ -1,7 +1,15 @@
 <template>
   <div class="footer">
-    <button class="btn cancel" @click="prev_f">{{prev}}</button>
-    <button class="btn confirm" v-if="!oneButton" @click="next_f">{{next}}</button>
+    <button class="btn cancel"
+            @click="prev_f">
+      {{prev}}
+    </button>
+    <button class="btn confirm"
+            v-if="!oneButton"
+            @click="next_f"
+            :disabled="disable_next">
+      {{next}}
+    </button>
   </div>
 </template>
 
@@ -22,6 +30,10 @@ export default {
       default : true
     },
     oneButton : {
+      type : Boolean,
+      default : false
+    },
+    disable_next : {
       type : Boolean,
       default : false
     }

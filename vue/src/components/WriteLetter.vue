@@ -8,7 +8,10 @@
       <p>해당 캡슐은 {{openDay}}일에 오픈돼요.</p>
       <p>편지는 오픈되기 한 달 전까지 보낼 수 있어요.</p>
     </div>
-    <Footer></Footer>
+    <Footer
+        next="전송"
+        :disable_next="letter === null || letter.length < 10"
+        v-on:footer_res="next"></Footer>
   </div>
   <Popup></Popup>
 </template>
@@ -27,7 +30,11 @@ export default {
     }
   },
   methods : {
-
+    next (next) {
+      if (next) {
+        //전송완료 팝업
+      }
+    }
   }
 }
 </script>

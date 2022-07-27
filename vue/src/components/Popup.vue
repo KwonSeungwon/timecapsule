@@ -53,10 +53,14 @@ export default {
   display: none;
 }
 .dim {
+  display: none;
+  position: fixed;
+  top : 0;
+  left: 0;
   z-index: 1;
   width: 100vh;
   height: 100vh;
   background-color: black;
-  opacity: 0.2%;
+  opacity: 0.6;
 }
 </style>
