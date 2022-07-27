@@ -1,8 +1,5 @@
 <template>
   <div class="popup">
-    <div class="header">
-
-    </div>
     <div class="body">
       <span>{{contents}}</span>
     </div>
@@ -50,5 +47,16 @@ export default {
   width: 90%;
   height: 80%;
   background: url(../assets/images/field.png) no-repeat center transparent;
+}
+.popup {
+  position: relative;
+  display: none;
+}
+.dim {
+  z-index: 1;
+  width: 100vh;
+  height: 100vh;
+  background-color: black;
+  opacity: 0.2%;
 }
 </style>

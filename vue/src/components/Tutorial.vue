@@ -1,16 +1,13 @@
 <template>
   <div class="field">
-    <div>
-      <h1>캡슐 찾기</h1>
+    <div class="title">
+      <p>사용법</p>
     </div>
-    <div class="input-field">
-      <label>받는 사람</label>
-      <input>
-      <p></p>
-    </div>
-    <div class="input-field">
-      <label>보내는 사람</label>
-      <input>
+    <div class="content">
+      <p>1.</p>
+      <p>2.</p>
+      <p>3.</p>
+      <p>4.</p>
     </div>
     <Footer></Footer>
   </div>
@@ -19,11 +16,19 @@
 
 <script>
 import Footer from '@/components/Footer';
-import Popup from '@/components/Popup';
+import Popup from "@/components/Popup";
 
 export default {
-  name: "cTarget",
-  components : {Footer, Popup}
+  name: "cTutorial",
+  components : {Footer, Popup},
+  data () {
+    return {
+
+    }
+  },
+  methods : {
+
+  }
 }
 </script>
 
