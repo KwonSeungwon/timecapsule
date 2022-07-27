@@ -49,6 +49,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-test'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
@@ -64,6 +66,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-devtools:2.6.2'
     //apache utils
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
+    //spring security
 
 //    testImplementation 'org.springframework.batch:spring-batch-test'
 }

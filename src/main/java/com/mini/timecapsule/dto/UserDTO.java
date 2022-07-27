@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 public class UserDTO {
 
+    private String coordinates;
+
     private Long id;
 
     private String password;
