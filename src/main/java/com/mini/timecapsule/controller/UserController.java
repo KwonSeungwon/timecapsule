@@ -22,8 +22,15 @@ public class UserController {
 
         return payload.toModelAndView();
     }
+    @GetMapping(value = "/api/timecapsule/userCreate")
+    public ModelAndView createUser(CustomWebUtils.Payload payload, UserDTO userDTO) {
 
-    @GetMapping(value = "/api/timecapsule/users")
+        userService.createUser(payload, userDTO);
+
+        return payload.toModelAndView();
+    }
+
+    @PostMapping(value = "/api/timecapsule/users")
     public ModelAndView getList(CustomWebUtils.Payload payload, UserDTO userDTO) {
 
         userService.getUserList(payload, userDTO);

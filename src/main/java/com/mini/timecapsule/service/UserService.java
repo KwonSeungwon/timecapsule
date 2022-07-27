@@ -12,8 +12,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+/*import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;*/
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,10 +47,10 @@ public class UserService {
      */
     public void login(UserDTO userDTO) {
 
-        String coordinates = userDTO.getCoordinates();
+        /*String coordinates = userDTO.getCoordinates();
         BASE64Encoder base64Encoder = new BASE64Encoder();
         Optional<User> user = userRepository.findByCoordinates(base64Encoder.encode(coordinates.getBytes()));
-        user.ifPresent(value -> passwordEncoder.matches(userDTO.getPassword(), value.getPassword())); // user가 입력한 패쓰와드와 비교
+        user.ifPresent(value -> passwordEncoder.matches(userDTO.getPassword(), value.getPassword())); // user가 입력한 패쓰와드와 비교*/
     }
 
     /**
@@ -149,18 +149,19 @@ public class UserService {
      * @return
      */
     private String createCoordinates() {
-        Random random = new Random();
+   /*     Random random = new Random();
         int xCoordinates = random.nextInt(2000);
         int yCoordinates = random.nextInt(4000);
         String coordinates =  xCoordinates + "," + yCoordinates;
         BASE64Encoder base64Encoder = new BASE64Encoder();
         base64Encoder.encode(coordinates.getBytes());
 
-        return coordinates;
+        return coordinates;*/
+        return null;
     }
 
     private FullCoordinate decodeCoordinates(String coordinates) {
-        FullCoordinate fullCoordinate = null;
+     /*   FullCoordinate fullCoordinate = null;
         try {
             BASE64Decoder base64Decoder = new BASE64Decoder();
             String decodedCoordinates = new String(base64Decoder.decodeBuffer(String.valueOf(coordinates.getBytes())));
@@ -172,7 +173,8 @@ public class UserService {
         } catch (Exception e) {
             log.error("decodeException!");
         }
-        return fullCoordinate;
+        return fullCoordinate;*/
+        return null;
     }
 
     /**
@@ -186,7 +188,7 @@ public class UserService {
 
 //        userRepository.delete(us);
     }
-    
+
 
     @Getter
     @Setter
