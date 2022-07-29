@@ -37,7 +37,12 @@ export default {
       }
     },
     join: function (){
-      axios.post('/api/timecapsule/userCreate').then((res)=> {
+      axios.get('/api/timecapsule/userCreate',{
+        params :{
+          id : 1,
+          password: 'test'
+        }
+      }).then((res)=> {
         console.log(res);
       });
     },
