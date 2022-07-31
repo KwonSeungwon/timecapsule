@@ -52,23 +52,22 @@ export default {
 </script>
 
 <style scoped>
-.popup {
-  position: absolute;
-  top : 40%;
-  z-index: 2;
-  left: calc(50% - 125px);
-  z-index: 2;
-  width: 250px;
+.field {
+  margin: 20% auto;
+  width: 90%;
+  height: 80%;
   background: url(../assets/images/field.png) no-repeat center transparent;
-  background-size: cover;
+}
+.popup {
+  position: relative;
 }
 .dim {
   position: fixed;
   top : 0;
   left: 0;
   z-index: 1;
-  width: 100%;
-  height: 100%;
+  width: 100vh;
+  height: 100vh;
   background-color: black;
   opacity: 0.6;
 }

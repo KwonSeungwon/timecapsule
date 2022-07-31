@@ -36,20 +36,21 @@
     </div>
     <Footer prev="홈으로" one-button :prev_back="false" v-on:footer_res="next"></Footer>
   </div>
-  <Popup></Popup>
+  <Letter v-if="openLetterId !== null"></Letter>
 </template>
 
 <script>
 import Footer from '@/components/Footer';
-import Popup from "@/components/Popup";
+import Letter from "@/components/Letter";
 
 export default {
   name: "MyCapsule",
-  components : {Footer, Popup},
+  components : {Footer, Letter},
   data () {
     return {
       newCount : 0,
-      totalCount : 0
+      totalCount : 0,
+      openLetterId : null,
     }
   },
   methods : {
