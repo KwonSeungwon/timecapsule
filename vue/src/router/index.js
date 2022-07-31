@@ -3,6 +3,7 @@ import Title from '@/components/Title'
 import Login from '@/components/Login'
 import LoginTest from '@/components/LoginTest'
 import Join from '@/components/Join'
+import JoinTest from '@/components/JoinTest'
 import Target from '@/components/Target'
 import MyCapsule from '@/components/myCapsule'
 import SelectCapsule from '@/components/SelectCapsule'
@@ -31,6 +32,11 @@ const routes = [
     path: '/join',
     name: 'cJoin',
     component: Join
+  },
+  {
+    path: '/joinTest',
+    name: 'cJoinTest',
+    component: JoinTest
   },
   {
     path: '/target',

@@ -2,6 +2,7 @@
   <div class="field">
     <div class="title">
       <p>타임캡슐 생성</p>
+      <button @click="join()">테스트</button>
     </div>
     <div>
       <label>내 좌표</label>
@@ -25,7 +26,7 @@
 
 <script>
 import Footer from "@/components/Footer"
-
+import axios from 'axios';
 export default {
   name: "cJoin",
   components : {Footer},
@@ -34,7 +35,17 @@ export default {
       if (next) {
         this.$router.push('/join/capsule');
       }
-    }
+    },
+    join: function (){
+      axios.get('/api/timecapsule/userCreate',{
+        params :{
+          id : 1,
+          password: 'test'
+        }
+      }).then((res)=> {
+        console.log(res);
+      });
+    },
   }
 }
 </script>

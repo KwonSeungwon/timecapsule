@@ -1,31 +1,38 @@
 <template>
   <html>
   <head>
-    <link href="https://fonts.googleapis.com/css?family=DungGeunMo&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css?family=SF+Pro+Text&display=swap" rel="stylesheet"/>
+<!--    <link href="https://fonts.googleapis.com/css?family=DungGeunMo&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=SF+Pro+Text&display=swap" rel="stylesheet"/>-->
   </head>
   <body>
   <div class="field">
   <div class="content">
     <div class="name"></div>
-
     <span class="title">타임캡슐 확인</span>
-    <div class="v229_580">
-
+    <div style="top: 129px; position: absolute; left: 41px;">
+      <div class="box">
+        <a>좌표</a>
+      </div>
+      <div style="margin-top: 8px;">
+        <div class="inputField">
+          <input id="id" placeholder="좌표명">
+          <!--      <div class="v229_584"></div>-->
+        </div>
+      </div>
     </div>
-    <div class="inputField">
-      <input id="id" placeholder="좌표명">
 
-     </div>
     <span class="v238_590">좌표가 없으신가요? 새로 만들기 ></span>
-    <div class="v229_595">
-      <div class="v229_596">
-        <div class="v229_597"></div>
-        <span class="v229_598"></span></div>
-      <div class="v229_599">
-        <div class="v229_600"></div>
-        <input id="id" placeholder="비밀번호"></div>
+    <div style="top: 305px; left: 41px; position: absolute;">
+      <div class="v229_595">
+        <div class="v229_596">
+          <div class="v229_597"></div>
+          <span class="v229_598"></span></div>
+        <div class="v229_599">
+          <div class="v229_600"></div>
+          <input id="id" placeholder="비밀번호"></div>
+      </div>
     </div>
+
     <div class="v229_631">
       <div class="next"></div>
       <div class="cancel"></div>
@@ -46,7 +53,21 @@
   </div>
   </body>
   </html>
-
+  <!--  <div class="field">
+      <div class="title">
+        <p>내 좌표</p>
+      </div>
+      <div class="content">
+        <div class="input-field">
+          <input id="id" placeholder="좌표명">
+        </div>
+        <div class="input-field">
+          <input id="pw" placeholder="password" type="password">
+        </div>
+        <p>좌표가 없으신가요? <router-link to="/join">새로 만들기 ></router-link></p>
+      </div>
+      <Footer></Footer>
+    </div>-->
 </template>
 
 <script>
@@ -100,30 +121,34 @@ body {
   width: 166px;
   color: rgba(255, 255, 255, 1);
   position: absolute;
-  top: 113px;
-  left: 40px;
-  text-shadow: 1px 1px 0px rgba(0.1921568661928177, 0.37254902720451355, 0.8274509906768799, 1);
-  font-family: DungGeunMo;
+  top: 48px;
+  left: 39px;
+  text-shadow: 1px 1px 0px rgb(0 0 1);
   font-weight: Regular;
   font-size: 25px;
   opacity: 1;
   text-align: left;
+  text-shadow: -1px 0px #6698ff, 3px 1px #6698ff, 3px 0px #6698ff, 2px -2px #6698ff;
 }
 
-.v229_580 {
+.box {
   width: 124px;
   height: 37px;
-  background: url("../assets/images/myCodinate.png");
+  background: url("../assets/images/boxImage.png");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
   opacity: 1;
-  position: absolute;
-  top: 172px;
-  left: 41px;
   overflow: hidden;
 }
-
+.box a{
+  color: white;
+  text-shadow: -1px 0 #677ce3, 0 1px #3949b7, 1px 0 #000, 0 -1px #000;
+  font-size: 13px;
+  margin-left: 48px;
+  position: absolute;
+  top: 11px;
+}
 .v254_1477 {
   width: 124px;
   height: 37px;
@@ -154,18 +179,22 @@ body {
   left: 34px;
 }
 
-.inputField {
-  width: 293px;
-  height: 42px;
-  /*  background: url("../images/v229_583.png");*/
+.inputField input{
+  width: 260px;
+  height: 34px;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASUAAAAqCAYAAAD1Rk0WAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAFKSURBVHgB7dfBSSRRFIbR96QdhlmN7sUQxAhsMzADzcRYzKBDqBBsIxBEFwriTkW7rl2gKZT/4pzF4/IC+Li3t283VSdjbYYGMLPqdXrcd4dpXkzPuur8X23O9tpOA5jbY42X6/o8POqLq8W0If2pzcXf1pf7vTeAub1WX75VvWx7dNuvx8862G5IggT8pueqdtdG9xqQRZSAKKIERBElIIooAVFECYgiSkAUUQKiiBIQRZSAKKIERBElIIooAVFECYgiSkAUUQKiiBIQRZSAKKIERBElIIooAVFECYgiSkAUUQKiiBIQRZSAKKIERBElIIooAVFECYgiSkAUUQKiiBIQRZSAKKIERNmpXqcvva3ua2wAv+Fh25+nPg5TjxbHfXdYVx1+tPH/c6tlA5jZW++r91arqUf95/Om6mSszdAAZjZtSFOQpvkLj0xVbXJ/DsgAAAAASUVORK5CYII=);
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
+  background-repeat: round;
   opacity: 1;
   position: absolute;
-  top: 217px;
-  left: 41px;
   overflow: hidden;
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  border-radius: 8px;
 }
 
 .v229_584 {
@@ -481,6 +510,37 @@ body {
 .name {
   color: #fff;
 }
+
+/*.field {
+  margin: 20% auto;
+  width: 88%;
+  height: 80%;
+  background: url(../assets/images/field.png) no-repeat center transparent;
+  !*background-size: cover;*!
+}
+
+.title {
+  height: 20%;
+}
+.title p {
+  text-align: center;
+  margin: 0;
+  padding: 10%;
+}
+.content {
+  height: 60%;
+  display: flex;
+}
+
+.content .input-field {
+  margin: 10px auto;
+  width: 100%;
+  padding: 10px;
+}
+
+.input-field input {
+  width: 100%;
+}*/
 
 
 </style>
