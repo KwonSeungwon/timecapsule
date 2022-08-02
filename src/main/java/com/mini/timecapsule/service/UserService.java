@@ -140,8 +140,8 @@ public class UserService {
      * @return
      */
     private Coordinates encodeCoordinates(Coordinates coordinates) {
-        Base64 base64 = new Base64();
 
+        Base64 base64 = new Base64();
         coordinates.setXCoordinates(Arrays.toString(base64.encode(coordinates.getXCoordinates().getBytes())));
         coordinates.setYCoordinates(Arrays.toString(base64.encode(coordinates.getYCoordinates().getBytes())));
 
@@ -155,6 +155,17 @@ public class UserService {
         coordinates.setYCoordinates(Arrays.toString(base64.decode(coordinates.getYCoordinates().getBytes())));
 
         return coordinates;
+    }
+
+    /**
+     * TODO: 통계학과 zl존Natural킹왕짱세젤예초미녀 "조현수" 님이 x와 y의 값의 최대값이 999일때 나올 수 있는 경우의 수를 구해줄 것임..
+     */
+    public void createRandomCoordinates() {
+
+        Random random = new Random();
+        int xCoordinates = random.nextInt(999);
+        int yCoordinates = random.nextInt(999);
+
     }
 
     /**
