@@ -15,16 +15,15 @@
     <p class="error-content">{{error}}</p>
     <Footer prev="취소" v-on:footer_res="next"></Footer>
   </div>
-  <Popup></Popup>
 </template>
 
 <script>
 import Footer from '@/components/Footer';
-import Popup from '@/components/Popup';
+//import Popup from '@/components/Popup';
 
 export default {
   name: "cTarget",
-  components : {Footer, Popup},
+  components : {Footer},
   data () {
     return {
       coordinates : null,

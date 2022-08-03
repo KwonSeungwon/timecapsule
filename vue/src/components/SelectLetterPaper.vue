@@ -5,7 +5,7 @@
     </div>
     <div class="capsule-info">
       <span>받은 사람이 설정한 캡슐</span>
-      <button></button>
+      <button @click="capsuleInfo"></button>
     </div>
     <div class="selectField">
       <button class="letter-paper" :class="{'on' : paperId === '1'}" @click="selectPaper(1)"></button>
@@ -25,7 +25,11 @@
     </div>
     <Footer :disable_next="paperId === null" v-on:footer_res="next"></Footer>
   </div>
-  <Popup></Popup>
+  <Popup v-if="popup.open"
+         one-button
+         cancel="확인"
+         :contents="popup.content"
+         v-on:popup_res="popup_f"></Popup>
 </template>
 
 <script>
@@ -37,7 +41,11 @@ export default {
   components : {Footer, Popup},
   data () {
     return {
-      paperId : null
+      paperId : null,
+      popup : {
+        open : false,
+        content : '캡슐정보'
+      },
     }
   },
   methods : {
@@ -54,6 +62,16 @@ export default {
           this.$router.push('/target/letter/write');
         }
       }
+    },
+    popup_f (close) {
+      if (!close) {
+        this.popup.open = false;
+      }
+    },
+    capsuleInfo () {
+      //캡슐정보 바인딩
+      //this.popup.content = '';
+      this.popup.open = true;
     }
   }
 }
