@@ -1,6 +1,7 @@
 <template>
   <div class="title">
     <span @click="$router.go(0)"></span>
+    <i class="capsule"></i>
   </div>
   <div class="menu">
     <div class="holder">
@@ -33,14 +34,29 @@ export default {
 </script>
 
 <style scoped>
+
+.title,
+.menu {
+  display: flex;
+}
+
 .title {
   padding-top: 100px;
+  position: relative;
 }
 .title span {
   margin: 0 auto;
   width: 250px;
   height: 86px;
   cursor: pointer;
+}
+
+.title .capsule {
+  position: absolute;
+  top: 55px;
+  right: 55px;
+  width: 80px;
+  height: 80px;
 }
 
 .beach .title span {
@@ -55,6 +71,11 @@ export default {
 
 .desert .title span {
   background: url(../assets/images/title_dt.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.space .title span {
+  background: url(../assets/images/title_sc.png) no-repeat center transparent;
   background-size: cover;
 }
 
@@ -73,10 +94,12 @@ export default {
   background-size: cover;
 }
 
-.title,
-.menu {
-  display: flex;
+.space .title .capsule {
+  background: url(../assets/images/pills_sc.png) no-repeat center transparent;
+  background-size: cover;
 }
+
+
 
 .menu {
   margin-top: 25px;
@@ -107,6 +130,11 @@ export default {
   background: url(../assets/images/btn_tutorial_dt.png) no-repeat center transparent;
 }
 
+.space .menu .tutorial {
+  width: 230px;
+  background: url(../assets/images/btn_tutorial_sc.png) no-repeat center transparent;
+}
+
 .beach .menu .my {
   width: 180px;
   background: url(../assets/images/btn-my.png) no-repeat center transparent;
@@ -122,6 +150,10 @@ export default {
   background: url(../assets/images/btn_my_dt.png) no-repeat center transparent;
 }
 
+.space .menu .my {
+  width: 180px;
+  background: url(../assets/images/btn_my_sc.png) no-repeat center transparent;
+}
 
 .beach .menu .send {
   width: 180px;
@@ -138,6 +170,11 @@ export default {
   background: url(../assets/images/btn_start_dt.png) no-repeat center transparent;
 }
 
+.space .menu .send {
+  width: 180px;
+  background: url(../assets/images/btn_start_sc.png) no-repeat center transparent;
+}
+
 .menu label[for='my'],
 .menu label[for='send'],
 .menu label[for='tutorial'] {
@@ -149,6 +186,13 @@ export default {
   margin: 0;
   background: url(../assets/images/arrow.png) no-repeat;
 }
+
+.space menu label[for='my'],
+.space menu label[for='send'],
+.space menu label[for='tutorial'] {
+  background: url(../assets/images/arrow_sc.png) no-repeat;
+}
+
 .menu button#my:hover + label,
 .menu button#send:hover + label,
 .menu button#tutorial:hover + label {
