@@ -68,12 +68,12 @@ export default {
       }else if(this.pw == null){
         this.error = '비밀번호가 입력되지 않았습니다.';
       }else{
-        axios.get('/api/timecapsule/user',{
-          params :{
-            id : 1,
-            password: 'test'
-          }
-        }).then((res)=> {
+        axios.post('/api/timecapsule/user', {
+
+                  id: 1,
+                  password: 'test'
+                }
+        ).then((res)=> {
           console.log(res);
         });
       }
