@@ -103,8 +103,8 @@ public class UserService {
             predicate.and(qUser.id.eq(qUser.id));
         }
 
-        if (userDTO.getName() != null) {
-            predicate.and(qUser.name.eq(qUser.name));
+        if (userDTO.getPassword() != null) {
+            predicate.and(qUser.password.eq(qUser.password));
         }
 
         Optional<User> user = userRepository.findOne(predicate);
