@@ -1,6 +1,10 @@
 package com.mini.timecapsule.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.ModelAndView;
 import java.util.Map;
@@ -111,4 +115,123 @@ public interface CustomWebUtils {
 //    }
 
     }
+    public class PayloadImpl implements Payload {
+        private EndResult result;
+        private PropertyMap data;
+        private PropertyMap info;
+        @JsonIgnore
+        private PropertyMap viewData;
+
+        private PayloadImpl(EndResult result, PropertyMap data, PropertyMap info) {
+            this.result = result;
+            this.data = data;
+            this.info = info;
+            this.viewData = new PropertyMap();
+        }
+
+        public void addViewData(String name, Object value) {
+            this.viewData.put(name, value);
+        }
+
+        public Object getViewData(String name) {
+            return this.viewData.get(name);
+        }
+
+        public ModelAndView toModelAndView(String viewName) {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName(viewName);
+            modelAndView.addObject("result", this.result);
+            modelAndView.addObject("data", this.data);
+            modelAndView.addObject("info", this.info);
+            modelAndView.addAllObjects(this.viewData);
+            return modelAndView;
+        }
+
+        public static Payload newInstance(EndResult result) {
+            return new PayloadImpl(result, new PropertyMap(), new PropertyMap());
+        }
+
+        public EndResult getResult() {
+            return this.result;
+        }
+
+        public PropertyMap getData() {
+            return this.data;
+        }
+
+        public PropertyMap getInfo() {
+            return this.info;
+        }
+
+        public PropertyMap getViewData() {
+            return this.viewData;
+        }
+
+        public void setResult(EndResult result) {
+            this.result = result;
+        }
+
+        public void setData(PropertyMap data) {
+            this.data = data;
+        }
+
+        public void setInfo(PropertyMap info) {
+            this.info = info;
+        }
+
+        public void setViewData(PropertyMap viewData) {
+            this.viewData = viewData;
+        }
+
+
+    }
+    public class EndResult extends UObject {
+        private int code;
+        private String message;
+
+        protected EndResult(int code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+
+        @JsonIgnore
+        public int getStatus() {
+            return this.code / 1000;
+        }
+
+        public static EndResult of(int code, String message) {
+            return new EndResult(code, message);
+        }
+
+        public int getCode() {
+            return this.code;
+        }
+
+        public String getMessage() {
+            return this.message;
+        }
+    }
+
+    public abstract class UObject {
+        public UObject() {
+           }
+
+        public String toString() {
+            return UObjects.toString(this);
+        }
+    }
+    public abstract class UObjects {
+        public UObjects() {
+        }
+
+        public static boolean isEqual(Object value1, Object value2) {
+            return value1 != null && value2 != null && value1.equals(value2);
+        }
+
+        public static String toString(Object object) {
+            return ToStringBuilder.reflectionToString(object, ToStringStyle.MULTI_LINE_STYLE);
+        }
+    }
+
+
 }

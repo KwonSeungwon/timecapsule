@@ -1,7 +1,9 @@
 package com.mini.timecapsule.service;
 
+import com.mini.timecapsule.dao.CoordinatesRepository;
 import com.mini.timecapsule.dao.UserRepository;
 import com.mini.timecapsule.dto.UserDTO;
+import com.mini.timecapsule.model.Coordinates;
 import com.mini.timecapsule.model.QUser;
 import com.mini.timecapsule.model.User;
 import com.mini.timecapsule.utils.CustomWebUtils;
@@ -9,16 +11,16 @@ import com.querydsl.core.BooleanBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.TimeZone;
@@ -39,6 +41,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private CoordinatesRepository coordinatesRepository;
+
 
     /**
      * TODO : 로긴뿐만 아니라 세션에 관한 기능 구현필요..
@@ -48,9 +53,9 @@ public class UserService {
     public void login(UserDTO userDTO) {
 
         String coordinates = userDTO.getCoordinates();
-        BASE64Encoder base64Encoder = new BASE64Encoder();
-        Optional<User> user = userRepository.findByCoordinates(base64Encoder.encode(coordinates.getBytes()));
-        user.ifPresent(value -> passwordEncoder.matches(userDTO.getPassword(), value.getPassword())); // user가 입력한 패쓰와드와 비교
+        Base64 base64 = new Base64();
+//        Optional<User> user = userRepository.findByCoordinates(base64.encode(coordinates.getBytes()));
+//        user.ifPresent(value -> passwordEncoder.matches(userDTO.getPassword(), value.getPassword())); // user가 입력한 패쓰와드와 비교
     }
 
     /**
@@ -98,8 +103,8 @@ public class UserService {
             predicate.and(qUser.id.eq(qUser.id));
         }
 
-        if (userDTO.getName() != null) {
-            predicate.and(qUser.name.eq(qUser.name));
+        if (userDTO.getPassword() != null) {
+            predicate.and(qUser.password.eq(qUser.password));
         }
 
         Optional<User> user = userRepository.findOne(predicate);
@@ -109,29 +114,15 @@ public class UserService {
 
     public void createUser(CustomWebUtils.Payload payload, UserDTO userDTO) {
 
-        String coordinates = this.createCoordinates();
         String password = passwordEncoder.encode(userDTO.getPassword());
         ZonedDateTime writeableAt = this.calculationWritingDays(userDTO.getOpenDayType());
-        User user = User.joinUser(coordinates, password, userDTO.getName(), userDTO.getCapsuleType(),
+        List<Coordinates> coordinates = coordinatesRepository.findAll();
+        User user = User.joinUser(coordinates.get(0), password, userDTO.getName(), userDTO.getCapsuleType(),
                 userDTO.getOpenDayType(), writeableAt, null);
 
         userRepository.save(user);
 
-        FullCoordinate fullCoordinate = this.decodeCoordinates(user.getCoordinates());
-
-        payload.addData("coordinates", fullCoordinate);
-    }
-
-    /**
-     * TODO : Spring security 암호화 방법 확인필요
-     * @param password
-     * @return
-     */
-    private String passwordEncryption(String password) {
-
-
-        return "";
-
+        payload.addData("coordinates", user.getCoordinates());
     }
 
     /**
@@ -148,31 +139,33 @@ public class UserService {
      * 새로운좌표를 생성하는 메서드(임시로 Base64 암호화 / 암호화에 큰 의미는 없는듯?)
      * @return
      */
-    private String createCoordinates() {
-        Random random = new Random();
-        int xCoordinates = random.nextInt(4000);
-        int yCoordinates = random.nextInt(4000);
-        String coordinates =  xCoordinates + "," + yCoordinates;
-        BASE64Encoder base64Encoder = new BASE64Encoder();
-        base64Encoder.encode(coordinates.getBytes());
+    private Coordinates encodeCoordinates(Coordinates coordinates) {
+
+        Base64 base64 = new Base64();
+        coordinates.setXCoordinates(Arrays.toString(base64.encode(coordinates.getXCoordinates().getBytes())));
+        coordinates.setYCoordinates(Arrays.toString(base64.encode(coordinates.getYCoordinates().getBytes())));
 
         return coordinates;
     }
 
-    private FullCoordinate decodeCoordinates(String coordinates) {
-        FullCoordinate fullCoordinate = null;
-        try {
-            BASE64Decoder base64Decoder = new BASE64Decoder();
-            String decodedCoordinates = new String(base64Decoder.decodeBuffer(String.valueOf(coordinates.getBytes())));
-            String[] cutCoordinates =  decodedCoordinates.split(",");
+    private Coordinates decodeCoordinates(Coordinates coordinates) {
 
-            if (cutCoordinates.length > 1) {
-                fullCoordinate = new FullCoordinate(cutCoordinates[0], cutCoordinates[1]);
-            }
-        } catch (Exception e) {
-            log.error("decodeException!");
-        }
-        return fullCoordinate;
+        Base64 base64 = new Base64();
+        coordinates.setXCoordinates(Arrays.toString(base64.decode(coordinates.getXCoordinates().getBytes())));
+        coordinates.setYCoordinates(Arrays.toString(base64.decode(coordinates.getYCoordinates().getBytes())));
+
+        return coordinates;
+    }
+
+    /**
+     * TODO: 통계학과 zl존Natural킹왕짱세젤예초미녀 "조현수" 님이 x와 y의 값의 최대값이 999일때 나올 수 있는 경우의 수를 구해줄 것임..
+     */
+    public void createRandomCoordinates() {
+
+        Random random = new Random();
+        int xCoordinates = random.nextInt(999);
+        int yCoordinates = random.nextInt(999);
+
     }
 
     /**
@@ -186,16 +179,5 @@ public class UserService {
 
 //        userRepository.delete(us);
     }
-    
 
-    @Getter
-    @Setter
-    static class FullCoordinate {
-        private String x;
-        private String y;
-        public FullCoordinate(String x, String y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
 }

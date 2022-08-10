@@ -44,8 +44,9 @@ public class User {
      * - 좌표에 따른 배경 변화
      * 좌표 테이블 만들기 + 좌표 세션유지
      */
-    @Column(nullable = false, length = 6)
-    private String coordinates;
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="id", nullable = false)
+    private Coordinates coordinates;
 
     /**
      * 캡슐명
@@ -143,7 +144,7 @@ public class User {
         CANDYCASE // 사탕통
     }
 
-    public static User joinUser(String coordinates, String password, String name,
+    public static User joinUser(Coordinates coordinates, String password, String name,
                                 CapsuleType capsuleType, OpenDay openDayType,
                                 ZonedDateTime writeableAt, String dummy) {
         User user = new User();

@@ -4,21 +4,29 @@ import com.mini.timecapsule.dto.UserDTO;
 import com.mini.timecapsule.service.UserService;
 import com.mini.timecapsule.utils.CustomWebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+@RestController
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "/api/timecapsule/user")
-    public ModelAndView get(CustomWebUtils.Payload payload, UserDTO userDTO) {
+    @PostMapping(value = "/api/timecapsule/user")
+    public ModelAndView get(CustomWebUtils.PayloadImpl payload, UserDTO userDTO) {
 
         userService.getUser(payload, userDTO);
+
+        return payload.toModelAndView();
+        //return "success";
+    }
+    @GetMapping(value = "/api/timecapsule/userCreate")
+    public ModelAndView createUser(CustomWebUtils.Payload payload, UserDTO userDTO) {
+
+        System.out.println(userDTO);
+        userService.createUser(payload, userDTO);
 
         return payload.toModelAndView();
     }
@@ -30,12 +38,12 @@ public class UserController {
 
         return payload.toModelAndView();
     }
-
+/*
     @PostMapping(value = "/api/timecapsule/user")
     public ModelAndView post(CustomWebUtils.Payload payload, UserDTO userDTO) {
 
         return payload.toModelAndView();
-    }
+    }*/
 
     @PutMapping(value = "/api/timecapsule/user")
     public ModelAndView update(CustomWebUtils.Payload payload, UserDTO userDTO) {

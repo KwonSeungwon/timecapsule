@@ -5,27 +5,31 @@
     </div>
     <div class="capsule-info">
       <span>받은 사람이 설정한 캡슐</span>
-      <button></button>
+      <button @click="capsuleInfo"></button>
     </div>
     <div class="selectField">
-      <button class="letter-paper" @click="selectPaper(1)"></button>
+      <button class="letter-paper" :class="{'on' : paperId === '1'}" @click="selectPaper(1)"></button>
       <span class="content">잘 찢은 연습장</span>
     </div>
     <div class="selectField">
-      <button class="letter-paper" @click="selectPaper(2)"></button>
+      <button class="letter-paper" :class="{'on' : paperId === '2'}" @click="selectPaper(2)"></button>
       <span class="content">고급스러운 양피지</span>
     </div>
     <div class="selectField">
-      <button class="letter-paper" @click="selectPaper(3)"></button>
+      <button class="letter-paper" :class="{'on' : paperId === '3'}" @click="selectPaper(3)"></button>
       <span class="content">평범한 편지지</span>
     </div>
     <div class="selectField">
-      <button class="letter-paper" @click="selectPaper(4)"></button>
+      <button class="letter-paper" :class="{'on' : paperId === '4'}" @click="selectPaper(4)"></button>
       <span class="content">편지성</span>
     </div>
-    <Footer></Footer>
+    <Footer :disable_next="paperId === null" v-on:footer_res="next"></Footer>
   </div>
-  <Popup></Popup>
+  <Popup v-if="popup.open"
+         one-button
+         cancel="확인"
+         :contents="popup.content"
+         v-on:popup_res="popup_f"></Popup>
 </template>
 
 <script>
@@ -37,12 +41,37 @@ export default {
   components : {Footer, Popup},
   data () {
     return {
-
+      paperId : null,
+      popup : {
+        open : false,
+        content : '캡슐정보'
+      },
     }
   },
   methods : {
     selectPaper(paperId) {
-      console.log(paperId);
+      if (this.paperId === paperId) {
+        this.paperId = null;
+      } else {
+        this.paperId = paperId;
+      }
+    },
+    next (next) {
+      if (next) {
+        if (this.paperId) {
+          this.$router.push('/target/letter/write');
+        }
+      }
+    },
+    popup_f (close) {
+      if (!close) {
+        this.popup.open = false;
+      }
+    },
+    capsuleInfo () {
+      //캡슐정보 바인딩
+      //this.popup.content = '';
+      this.popup.open = true;
     }
   }
 }
