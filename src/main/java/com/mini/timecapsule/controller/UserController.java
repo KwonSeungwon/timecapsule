@@ -4,6 +4,7 @@ import com.mini.timecapsule.dto.UserDTO;
 import com.mini.timecapsule.service.UserService;
 import com.mini.timecapsule.utils.CustomWebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -15,11 +16,11 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(value = "/api/timecapsule/user")
-    public ModelAndView get(CustomWebUtils.PayloadImpl payload, UserDTO userDTO) {
+    public ResponseEntity<ModelAndView> get(CustomWebUtils.PayloadImpl payload, UserDTO userDTO) {
 
         userService.getUser(payload, userDTO);
 
-        return payload.toModelAndView();
+        return ResponseEntity.ok(payload.toModelAndView());
         //return "success";
     }
     @GetMapping(value = "/api/timecapsule/userCreate")
