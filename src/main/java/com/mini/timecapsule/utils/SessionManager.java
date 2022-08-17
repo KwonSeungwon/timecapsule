@@ -27,7 +27,7 @@ public class SessionManager {
     }
 
     /**
-     * 세션 조회
+     * 세션 조회ㅎ
      */
     public Object getSession(HttpServletRequest request){
 
