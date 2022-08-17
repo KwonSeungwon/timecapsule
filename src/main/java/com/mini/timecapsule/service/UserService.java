@@ -8,8 +8,6 @@ import com.mini.timecapsule.model.QUser;
 import com.mini.timecapsule.model.User;
 import com.mini.timecapsule.utils.CustomWebUtils;
 import com.querydsl.core.BooleanBuilder;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,7 +130,7 @@ public class UserService {
      */
     private ZonedDateTime calculationWritingDays(User.OpenDay openDay) {
         LocalDate renderOpenDay = LocalDate.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy")) + openDay, DateTimeFormatter.ISO_LOCAL_DATE);
-        return LocalDate.parse(renderOpenDay.toString(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(TimeZone.getDefault().toZoneId()).minusMonths(3);
+        return LocalDate.parse(renderOpenDay.toString(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(TimeZone.getDefault().toZoneId()).minusMonths(1);
     }
 
     /**
@@ -167,6 +165,16 @@ public class UserService {
         int yCoordinates = random.nextInt(999);
 
     }
+
+    /**
+     * TODO : 미리 좌표를 할당해놔서
+     *
+     */
+    public void createAutoCoordinates() {
+
+    }
+
+
 
     /**
      * User 삭제기능 / 관리자에 의해 일부만 사용될 것으로 생각됨
