@@ -1,8 +1,10 @@
 <template>
   <div class="container">
+    <div class="dim"></div>
     <div class="main" :class="theme">
       <router-view/>
     </div>
+    <div class="dim right"></div>
   </div>
 </template>
 
@@ -37,6 +39,17 @@ export default {
   width: 375px;
   height: 100vh;
   max-height: 812px;
+}
+/*더 우아한 방법이있나 고민*/
+.dim {
+  position: fixed;
+  width: calc(50% - 187.5px);
+  height: 100vh;
+  background-color: white;
+  z-index: 5;
+}
+.dim.right {
+  right: 0;
 }
 
 .main.beach {
