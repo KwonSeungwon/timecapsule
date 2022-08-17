@@ -80,8 +80,26 @@ export default {
 <style scoped>
 .field {
   margin: 20% auto;
-  width: 90%;
-  height: 80%;
-  background: url(../assets/images/field.png) no-repeat center transparent;
+  width: 341px;
+  height: 652px;
+}
+.beach .field {
+  background: url(../assets/images/field_bc.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.mountain .field {
+  background: url(../assets/images/field_mt.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.desert .field {
+  background: url(../assets/images/field_dt.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.space .field {
+  background: url(../assets/images/field_bc.png) no-repeat center transparent;
+  background-size: cover;
 }
 </style>

@@ -56,7 +56,6 @@ export default {
 <style scoped>
 .field-holder {
   position: relative;
-  touch-action: pan-y;
 }
 
 .field {
@@ -66,40 +65,6 @@ export default {
   width: 341px;
   height: 652px;
   transition: all .5s;
-}
-
-.field.none {
-  /*display: none;*/
-}
-
-.slide-next-leave-active,
-.slide-next-enter-active,
-.slide-prev-enter-active,
-.slide-prev-leave-active {
-  transition: 10s;
-}
-.slide-next-enter,
-.slide-next-leave,
-.slide-prev-leave-to {
-  transform: translate(100%, 0);
-}
-
-.slide-next-leave-to,
-.slide-prev-enter,
-.slide-prev-leave {
-  transform: translate(-100%, 0);
-}
-
-.slide-prev-move {
-  /*transform: translate(-100%, 0);*/
-  /*transition: opacity 1s;*/
-  /*opacity: 0;*/
-}
-
-.slide-next-move {
-  /*transform: translate(100%, 0);*/
-  /*transition: opacity 1s;*/
-  /*opacity: 0;*/
 }
 
 .field.next {
