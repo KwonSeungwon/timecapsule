@@ -1,9 +1,10 @@
 <template>
   <div class="field-holder">
-    <div class="field prev" v-if="selectIdx > 0" @click="prevIdx">
-    </div>
-    <transition :name="transition" v-for="(item, idx) in tutorialItem" :key="idx">
-      <div class="field" v-if="selectIdx === idx">
+    <transition-group :name="transition">
+      <div class="field"
+           v-for="(item, idx) in tutorialItem" :key="idx"
+           :class="{'prev' : selectIdx > idx, 'next' : selectIdx < idx, 'none' : selectIdx - idx > 1 || selectIdx - idx < -1}"
+           @click="moveField(selectIdx - 1 === idx ? 'prev' : selectIdx + 1 === idx ? 'next' : false)">
         <div class="title">
           <p>사용법</p>
         </div>
@@ -15,9 +16,7 @@
         </div>
         <Footer prev="닫기" one-button></Footer>
       </div>
-    </transition>
-    <div class="field next" v-if="tutorialItem.length > selectIdx + 1" @click="nextIdx">
-    </div>
+    </transition-group>
   </div>
 </template>
 
@@ -35,11 +34,20 @@ export default {
     }
   },
   methods : {
+    moveField (type) {
+      if (!type) {
+        return;
+      } else if (type === 'prev') {
+        this.prevIdx();
+      } else if (type === 'next') {
+        this.nextIdx();
+      }
+    },
     prevIdx () {
-      if (this.selectIdx) this.selectIdx--; this.transition = 'slide-prev';
+      if (this.selectIdx) this.transition = 'slide-prev'; this.selectIdx--;
     },
     nextIdx() {
-      if (this.tutorialItem.length > this.selectIdx + 1) this.selectIdx++; this.transition = 'slide-next'
+      if (this.tutorialItem.length > this.selectIdx + 1)  this.transition = 'slide-next'; this.selectIdx++;
     }
   }
 }
@@ -48,7 +56,6 @@ export default {
 <style scoped>
 .field-holder {
   position: relative;
-  touch-action: pan-y;
 }
 
 .field {
@@ -57,32 +64,23 @@ export default {
   margin: 20% auto;
   width: 341px;
   height: 652px;
-}
-
-.slide-next-leave-active,
-.slide-next-enter-active,
-.slide-prev-enter-active,
-.slide-prev-leave-active {
-  transition: 0.5s;
-}
-.slide-next-enter,
-.slide-next-leave,
-.slide-prev-leave-to {
-  transform: translate(100%, 0);
-}
-
-.slide-next-leave-to,
-.slide-prev-enter,
-.slide-prev-leave {
-  transform: translate(-100%, 0);
+  transition: all .5s;
 }
 
 .field.next {
   left: 365px;
 }
 
+.field.next.none {
+  left : 500px;
+}
+
 .field.prev {
   left: -330px;
+}
+
+.field.prev.none {
+  left: -500px;
 }
 
 .beach .field {
