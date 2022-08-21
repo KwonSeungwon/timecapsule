@@ -14,6 +14,7 @@
           <p>3.</p>
           <p>4.</p>
         </div>
+        <span class="pagination" :class="{'first' : idx === 0, 'middle' : idx > 0 && tutorialItem.length > idx, 'last' : idx === tutorialItem.length - 1 && idx !== 0}"></span>
         <Footer prev="닫기" one-button></Footer>
       </div>
     </transition-group>
@@ -81,6 +82,27 @@ export default {
 
 .field.prev.none {
   left: -500px;
+}
+
+.pagination {
+  width: 43px;
+  height: 9px;
+  display: block;
+}
+
+.pagination.first {
+  background: url(../assets/images/pagination-first.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.pagination.middle {
+  background: url(../assets/images/pagination-middle.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.pagination.last {
+  background: url(../assets/images/pagination-last.png) no-repeat center transparent;
+  background-size: cover;
 }
 
 .beach .field {
