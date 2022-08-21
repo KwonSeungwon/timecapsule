@@ -2,13 +2,19 @@ package com.mini.timecapsule.controller;
 
 import com.mini.timecapsule.dto.UserDTO;
 import com.mini.timecapsule.service.UserService;
-import com.mini.timecapsule.utils.CustomWebUtils;
+import com.mini.timecapsule.utils.Payload;
 import com.mini.timecapsule.utils.bind.GetRestMapping;
 import com.mini.timecapsule.utils.bind.PostRestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -18,7 +24,7 @@ public class UserController {
     private UserService userService;
 
     @PostRestMapping(value = "/api/timecapsule/user")
-    public ResponseEntity<ModelAndView> get(CustomWebUtils.PayloadImpl payload, UserDTO userDTO) {
+    public ResponseEntity<ModelAndView> get(Payload payload, UserDTO userDTO) {
 
         userService.getUser(payload, userDTO);
 
@@ -26,16 +32,15 @@ public class UserController {
         //return "success";
     }
     @GetRestMapping(value = "/api/timecapsule/userCreate")
-    public ModelAndView createUser(CustomWebUtils.Payload payload, UserDTO userDTO) {
+    public Map<String, String> createUser(Payload payload, UserDTO userDTO) {
 
         System.out.println(userDTO);
-        userService.createUser(payload, userDTO);
-
-        return payload.toModelAndView();
+        return userService.createUser(payload, userDTO);
+//        return payload.toModelAndView();
     }
 
     @GetMapping(value = "/api/timecapsule/users")
-    public ModelAndView getList(CustomWebUtils.Payload payload, UserDTO userDTO) {
+    public ModelAndView getList(Payload payload, UserDTO userDTO) {
 
         userService.getUserList(payload, userDTO);
 
@@ -44,13 +49,13 @@ public class UserController {
 
 
     @PutMapping(value = "/api/timecapsule/user")
-    public ModelAndView update(CustomWebUtils.Payload payload, UserDTO userDTO) {
+    public ModelAndView update(Payload payload, UserDTO userDTO) {
 
         return payload.toModelAndView();
     }
 
     @DeleteMapping(value = "/api/timecapsule/user")
-    public ModelAndView delete(CustomWebUtils.Payload payload, UserDTO userDTO) {
+    public ModelAndView delete(Payload payload, UserDTO userDTO) {
 
         return payload.toModelAndView();
     }

@@ -42,6 +42,7 @@ public class User {
      * 좌표
      * - 'xxxyyy' 형식
      * - 좌표에 따른 배경 변화
+     * 좌표 테이블 만들기 + 좌표 세션유지
      */
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name="id", nullable = false)

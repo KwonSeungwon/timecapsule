@@ -6,10 +6,8 @@ import com.mini.timecapsule.dto.UserDTO;
 import com.mini.timecapsule.model.Coordinates;
 import com.mini.timecapsule.model.QUser;
 import com.mini.timecapsule.model.User;
-import com.mini.timecapsule.utils.CustomWebUtils;
+import com.mini.timecapsule.utils.Payload;
 import com.querydsl.core.BooleanBuilder;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,8 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.TimeZone;
@@ -63,7 +62,7 @@ public class UserService {
      * @param payload
      * @param userDTO
      */
-    public void getUserList(CustomWebUtils.Payload payload, UserDTO userDTO) {
+    public void getUserList(Payload payload, UserDTO userDTO) {
 
         BooleanBuilder predicate = new BooleanBuilder();
         QUser qUser = QUser.user;
@@ -94,7 +93,7 @@ public class UserService {
      * @param payload
      * @param userDTO
      */
-    public void getUser(CustomWebUtils.Payload payload, UserDTO userDTO) {
+    public void getUser(Payload payload, UserDTO userDTO) {
 
         BooleanBuilder predicate = new BooleanBuilder();
         QUser qUser = QUser.user;
@@ -112,17 +111,22 @@ public class UserService {
         user.ifPresent(value -> payload.addData("user", value));
     }
 
-    public void createUser(CustomWebUtils.Payload payload, UserDTO userDTO) {
+    public Map<String, String> createUser(Payload payload, UserDTO userDTO) {
 
-        String password = passwordEncoder.encode(userDTO.getPassword());
-        ZonedDateTime writeableAt = this.calculationWritingDays(userDTO.getOpenDayType());
-        List<Coordinates> coordinates = coordinatesRepository.findAll();
-        User user = User.joinUser(coordinates.get(0), password, userDTO.getName(), userDTO.getCapsuleType(),
-                userDTO.getOpenDayType(), writeableAt, null);
+//        String password = passwordEncoder.encode(userDTO.getPassword());
+//        ZonedDateTime writeableAt = this.calculationWritingDays(userDTO.getOpenDayType());
+//        List<Coordinates> coordinates = coordinatesRepository.findAll();
+//        User user = User.joinUser(coordinates.get(0), password, userDTO.getName(), userDTO.getCapsuleType(),
+//                userDTO.getOpenDayType(), writeableAt, null);
+//
+//        userRepository.save(user);
 
-        userRepository.save(user);
+//        payload.addData("coordinates", user.getCoordinates());
 
-        payload.addData("coordinates", user.getCoordinates());
+//        payload.addData("coordinates", "test");
+        Map<String, String> result = new HashMap<>();
+        result.put("1234", "1234");
+        return result;
     }
 
     /**
@@ -132,7 +136,7 @@ public class UserService {
      */
     private ZonedDateTime calculationWritingDays(User.OpenDay openDay) {
         LocalDate renderOpenDay = LocalDate.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy")) + openDay, DateTimeFormatter.ISO_LOCAL_DATE);
-        return LocalDate.parse(renderOpenDay.toString(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(TimeZone.getDefault().toZoneId()).minusMonths(3);
+        return LocalDate.parse(renderOpenDay.toString(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(TimeZone.getDefault().toZoneId()).minusMonths(1);
     }
 
     /**
@@ -169,11 +173,21 @@ public class UserService {
     }
 
     /**
+     * TODO : 미리 좌표를 할당해놔서
+     *
+     */
+    public void createAutoCoordinates() {
+
+    }
+
+
+
+    /**
      * User 삭제기능 / 관리자에 의해 일부만 사용될 것으로 생각됨
      * @param payload
      * @param userDTO
      */
-    public void deleteUser(CustomWebUtils.Payload payload, UserDTO userDTO) {
+    public void deleteUser(Payload payload, UserDTO userDTO) {
 
 //        User user = userRepository.findOne()
 
