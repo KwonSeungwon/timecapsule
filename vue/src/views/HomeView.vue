@@ -53,17 +53,17 @@ export default {
 }
 
 .main.beach {
-  background: url(../assets/images/beach.svg) no-repeat center;
+  background: url(../assets/images/beach/beach.png) no-repeat center;
   background-size: cover;
 }
 
 .main.mountain {
-  background: url(../assets/images/bg_mountain.png) no-repeat center;
+  background: url(../assets/images/mountain/mountain.png) no-repeat center;
   background-size: cover;
 }
 
 .main.desert {
-  background: url(../assets/images/bg_desert.png) no-repeat center;
+  background: url(../assets/images/desert/desert.png) no-repeat center;
   background-size: cover;
 }
 .main.space {

@@ -55,6 +55,14 @@ export default {
 </script>
 
 <style scoped>
+
+.title p {
+  margin: 0;
+  color : white;
+  font-size: 25px;
+  text-shadow: 3px 0 #315fd3, 0 2px #315fd3, 2px 0 #315fd3, 0 -2px #315fd3;
+}
+
 .field-holder {
   position: relative;
 }
@@ -63,8 +71,9 @@ export default {
   position: absolute;
   left: 17px;
   margin: 20% auto;
-  width: 341px;
-  height: 652px;
+  padding: 25px 20px;
+  width: 301px;
+  height: 602px;
   transition: all .5s;
 }
 
@@ -74,6 +83,7 @@ export default {
 
 .field.next.none {
   left : 500px;
+  width: 1px;
 }
 
 .field.prev {
@@ -82,6 +92,7 @@ export default {
 
 .field.prev.none {
   left: -500px;
+  width: 1px;
 }
 
 .pagination {
