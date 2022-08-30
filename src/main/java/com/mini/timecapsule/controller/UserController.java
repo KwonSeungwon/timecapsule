@@ -3,6 +3,7 @@ package com.mini.timecapsule.controller;
 import com.mini.timecapsule.dto.UserDTO;
 import com.mini.timecapsule.service.UserService;
 import com.mini.timecapsule.utils.Payload;
+import com.mini.timecapsule.utils.PayloadImpl;
 import com.mini.timecapsule.utils.bind.GetRestMapping;
 import com.mini.timecapsule.utils.bind.PostRestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,11 @@ public class UserController {
         //return "success";
     }
     @GetRestMapping(value = "/api/timecapsule/userCreate")
-    public Map<String, String> createUser(Payload payload, UserDTO userDTO) {
+    public void createUser(PayloadImpl payload, UserDTO userDTO) {
 
-        System.out.println(userDTO);
-        return userService.createUser(payload, userDTO);
-//        return payload.toModelAndView();
+//        System.out.println(userDTO);
+//        return userService.createUser(payload, userDTO);
+        userService.createUser(payload, userDTO);
     }
 
     @GetMapping(value = "/api/timecapsule/users")

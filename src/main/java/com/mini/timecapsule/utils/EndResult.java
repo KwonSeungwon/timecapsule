@@ -1,7 +1,9 @@
 package com.mini.timecapsule.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
 
+@Getter
 public class EndResult extends UObject {
     private int code;
     private String message;
@@ -13,19 +15,11 @@ public class EndResult extends UObject {
 
     @JsonIgnore
     public int getStatus() {
-        return this.code / 1000;
+        return code / 1000;
     }
 
     public static EndResult of(int code, String message) {
         return new EndResult(code, message);
-    }
-
-    public int getCode() {
-        return this.code;
-    }
-
-    public String getMessage() {
-        return this.message;
     }
 }
 

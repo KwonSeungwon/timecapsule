@@ -7,6 +7,7 @@ import com.mini.timecapsule.model.Coordinates;
 import com.mini.timecapsule.model.QUser;
 import com.mini.timecapsule.model.User;
 import com.mini.timecapsule.utils.Payload;
+import com.mini.timecapsule.utils.PayloadImpl;
 import com.querydsl.core.BooleanBuilder;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -111,7 +112,7 @@ public class UserService {
         user.ifPresent(value -> payload.addData("user", value));
     }
 
-    public Map<String, String> createUser(Payload payload, UserDTO userDTO) {
+    public void createUser(PayloadImpl payload, UserDTO userDTO) {
 
 //        String password = passwordEncoder.encode(userDTO.getPassword());
 //        ZonedDateTime writeableAt = this.calculationWritingDays(userDTO.getOpenDayType());
@@ -123,10 +124,7 @@ public class UserService {
 
 //        payload.addData("coordinates", user.getCoordinates());
 
-//        payload.addData("coordinates", "test");
-        Map<String, String> result = new HashMap<>();
-        result.put("1234", "1234");
-        return result;
+        payload.addData("test", "tttadd");
     }
 
     /**
