@@ -11,6 +11,7 @@
 }
 #app {
   font-family: tcf, sans-serif;
+  overflow-x: hidden;
 }
 </style>
 <script>

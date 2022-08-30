@@ -11,32 +11,32 @@
           <p>안읽음 {{newCount}}</p>
           <p>전체 {{totalCount}}</p>
         </div>
-        <div class="select-letter top left">
-          <button class="capsule"></button>
-          <span class="content"></span>
-        </div>
-        <div class="select-letter top center">
-          <button class="capsule"></button>
-          <span class="content"></span>
-        </div>
-        <div class="select-letter top right">
-          <button class="capsule"></button>
-          <span></span>
-        </div>
-        <div class="capsule">
-          <button></button>
-        </div>
-        <div class="select-letter bottom left">
-          <button class="capsule"></button>
-          <span></span>
-        </div>
-        <div class="select-letter bottom center">
-          <button class="capsule"></button>
-          <span class="content"></span>
-        </div>
-        <div class="select-letter bottom right">
-          <button class="capsule"></button>
-          <span class="content"></span>
+        <div class="letter-holder">
+          <div class="select-letter position-1">
+            <button class="letter"></button>
+            <span>보낸사람1</span>
+          </div>
+          <div class="select-letter position-2">
+            <button class="letter note"></button>
+            <span>보낸사람2</span>
+          </div>
+          <div class="select-letter position-3">
+            <button class="letter polaroid"></button>
+            <span>보낸사람4</span>
+          </div>
+          <div class="select-letter position-4">
+            <button class="letter sheepskin"></button>
+            <span>보낸사람5</span>
+          </div>
+          <div class="select-letter position-5">
+            <button class="letter"></button>
+            <span>보낸사람3</span>
+          </div>
+          <div class="select-letter position-6">
+            <button class="letter polaroid"></button>
+            <span>보낸사람6</span>
+          </div>
+          <button class="capsule bamboo"></button>
         </div>
         <Footer prev="홈으로" one-button :prev_back="false" v-on:footer_res="next"></Footer>
       </div>
@@ -59,6 +59,7 @@ export default {
       openLetterId : null,
       transition : 'slide-next', //slide-next, slide-prev
       tutorialItem : [1,2,3],
+      letters : [],
       selectIdx : 0
     }
   },
@@ -130,4 +131,110 @@ export default {
   background: url(../assets/images/field_bc.png) no-repeat center transparent;
   background-size: cover;
 }
+
+.letter-holder {
+  position: relative;
+  height: 400px;
+}
+
+.letter-holder .capsule {
+  position: absolute;
+  top : calc(50% - 43px);
+  left: calc(50% - 43px);
+  width: 86px;
+  height: 86px;
+  border: 0;
+}
+
+.capsule.bamboo {
+  background: url(../assets/images/common/capsule/bamboo.PNG) no-repeat center transparent;
+  background-size: cover;
+}
+
+.capsule.bottle {
+  background: url(../assets/images/common/capsule/bottle.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.capsule.candybox {
+  background: url(../assets/images/common/capsule/candybox.PNG) no-repeat center transparent;
+  background-size: cover;
+}
+
+.capsule.egg {
+  background: url(../assets/images/common/capsule/egg.PNG) no-repeat center transparent;
+  background-size: cover;
+}
+
+.select-letter {
+  position: absolute;
+}
+
+.select-letter.position-1 {
+  top: 10px;
+  left : calc(50% - 43px);
+}
+
+.select-letter.position-2 {
+  top: 80px;
+  right : calc(16% - 43px);
+}
+
+.select-letter.position-3 {
+  bottom: 80px;
+  right : calc(16% - 43px);
+}
+
+.select-letter.position-4 {
+  bottom: 10px;
+  left : calc(50% - 43px);
+}
+
+.select-letter.position-5 {
+  bottom: 80px;
+  left : calc(16% - 43px);
+}
+
+.select-letter.position-6 {
+  top: 80px;
+  left : calc(16% - 43px);
+}
+
+.select-letter span {
+  display: inherit;
+  text-align: center;
+  margin-top: -4px;
+  color: white;
+  text-shadow: 1px 1px #315fd3, -1px -1px #315fd3, 1px -1px #315fd3, -1px 1px #315fd3;
+}
+
+button.letter {
+  width: 86px;
+  height: 86px;
+  border: 0;
+  background: url(../assets/images/common/letters/small/letter_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+
+button.letter:active,
+.letter-holder .capsule:active {
+  margin-top: 1px;
+  margin-left: 1px;
+  opacity: 0.9;
+}
+button.letter.note {
+  background: url(../assets/images/common/letters/small/note_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+button.letter.polaroid {
+  background: url(../assets/images/common/letters/small/polaroid_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+button.letter.sheepskin {
+  background: url(../assets/images/common/letters/small/sheepskin_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+
 </style>
