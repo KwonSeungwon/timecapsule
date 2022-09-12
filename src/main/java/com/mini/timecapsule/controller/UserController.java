@@ -2,8 +2,6 @@ package com.mini.timecapsule.controller;
 
 import com.mini.timecapsule.dto.UserDTO;
 import com.mini.timecapsule.service.UserService;
-import com.mini.timecapsule.utils.Payload;
-import com.mini.timecapsule.utils.PayloadImpl;
 import com.mini.timecapsule.utils.bind.GetRestMapping;
 import com.mini.timecapsule.utils.bind.PostRestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Map;
-
 @RestController
 @CrossOrigin(origins = "*")
 public class UserController {
@@ -25,40 +21,37 @@ public class UserController {
     private UserService userService;
 
     @PostRestMapping(value = "/api/timecapsule/user")
-    public ResponseEntity<ModelAndView> get(Payload payload, UserDTO userDTO) {
+    public ModelAndView get(UserDTO userDTO) {
 
-        userService.getUser(payload, userDTO);
+        userService.getUser(userDTO);
 
-        return ResponseEntity.ok(payload.toModelAndView());
-        //return "success";
+        return null;
     }
     @GetRestMapping(value = "/api/timecapsule/userCreate")
-    public void createUser(PayloadImpl payload, UserDTO userDTO) {
+    public void createUser(UserDTO userDTO) {
 
-//        System.out.println(userDTO);
-//        return userService.createUser(payload, userDTO);
-        userService.createUser(payload, userDTO);
+        userService.createUser(userDTO);
     }
 
     @GetMapping(value = "/api/timecapsule/users")
-    public ModelAndView getList(Payload payload, UserDTO userDTO) {
+    public ModelAndView getList(UserDTO userDTO) {
 
-        userService.getUserList(payload, userDTO);
+        userService.getUserList(userDTO);
 
-        return payload.toModelAndView();
+        return null;
     }
 
 
     @PutMapping(value = "/api/timecapsule/user")
-    public ModelAndView update(Payload payload, UserDTO userDTO) {
+    public ModelAndView update(UserDTO userDTO) {
 
-        return payload.toModelAndView();
+        return null;
     }
 
     @DeleteMapping(value = "/api/timecapsule/user")
-    public ModelAndView delete(Payload payload, UserDTO userDTO) {
+    public ModelAndView delete(UserDTO userDTO) {
 
-        return payload.toModelAndView();
+        return null;
     }
 
 }
