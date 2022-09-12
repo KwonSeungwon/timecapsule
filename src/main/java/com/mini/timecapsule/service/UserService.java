@@ -4,6 +4,7 @@ import com.mini.timecapsule.dao.CoordinatesRepository;
 import com.mini.timecapsule.dao.UserRepository;
 import com.mini.timecapsule.dto.UserDTO;
 import com.mini.timecapsule.model.Coordinates;
+import com.mini.timecapsule.model.QCoordinates;
 import com.mini.timecapsule.model.QUser;
 import com.mini.timecapsule.model.User;
 import com.querydsl.core.BooleanBuilder;
@@ -41,15 +42,32 @@ public class UserService {
 
 
     /**
-     * TODO : 로긴뿐만 아니라 세션에 관한 기능 구현필요..
-     * @param userDTO
+     * 새로계정 만들기를 눌렀을 때 최초로 호출되는 메소드 / 좌표를 선점
+     * TODO: 눌렀을 때 시점기준으로 좌표선점
      */
-    public void login(UserDTO userDTO) {
+    public Coordinates join() {
 
-        String coordinates = userDTO.getCoordinates();
-        Base64 base64 = new Base64();
-//        Optional<User> user = userRepository.findByCoordinates(base64.encode(coordinates.getBytes()));
-//        user.ifPresent(value -> passwordEncoder.matches(userDTO.getPassword(), value.getPassword())); // user가 입력한 패쓰와드와 비교
+        Coordinates coordinates = new Coordinates();
+        Random random = new Random();
+        String xCoordinates = null;
+        String yCoordinates = null;
+        BooleanBuilder predicate = new BooleanBuilder();
+        QCoordinates qCoordinates = QCoordinates.coordinates;
+        while(true) {
+            xCoordinates = String.valueOf(random.nextInt(999));
+            yCoordinates = String.valueOf(random.nextInt(999));
+            predicate.and(qCoordinates.xCoordinates.eq(xCoordinates));
+            predicate.and(qCoordinates.yCoordinates.eq(yCoordinates));
+            Optional<Coordinates> findCoordinates = coordinatesRepository.findOne(predicate);
+            if (!findCoordinates.isPresent()) {
+                break;
+            }
+            predicate = new BooleanBuilder();
+        }
+        coordinates.newCoordinates(xCoordinates, yCoordinates);
+        coordinates.setIsFixed(true);
+
+        return coordinates;
     }
 
     /**
@@ -144,27 +162,6 @@ public class UserService {
 
         return coordinates;
     }
-
-    /**
-     * TODO: 통계학과 zl존Natural킹왕짱세젤예초미녀 "조현수" 님이 x와 y의 값의 최대값이 999일때 나올 수 있는 경우의 수를 구해줄 것임..
-     */
-    public void createRandomCoordinates() {
-
-        Random random = new Random();
-        int xCoordinates = random.nextInt(999);
-        int yCoordinates = random.nextInt(999);
-
-    }
-
-    /**
-     * TODO : 미리 좌표를 할당해놔서
-     *
-     */
-    public void createAutoCoordinates() {
-
-    }
-
-
 
     /**
      * User 삭제기능 / 관리자에 의해 일부만 사용될 것으로 생각됨
