@@ -13,36 +13,40 @@
         </div>
         <div class="letter-holder">
           <div class="select-letter position-1">
-            <button class="letter"></button>
+            <button class="letter" @click="readLetter(0)"></button>
             <span>보낸사람1</span>
           </div>
           <div class="select-letter position-2">
-            <button class="letter note"></button>
+            <button class="letter note" @click="readLetter(0)"></button>
             <span>보낸사람2</span>
           </div>
           <div class="select-letter position-3">
-            <button class="letter polaroid"></button>
+            <button class="letter polaroid" @click="readLetter(0)"></button>
             <span>보낸사람4</span>
           </div>
           <div class="select-letter position-4">
-            <button class="letter sheepskin"></button>
+            <button class="letter sheepskin" @click="readLetter(0)"></button>
             <span>보낸사람5</span>
           </div>
           <div class="select-letter position-5">
-            <button class="letter"></button>
+            <button class="letter" @click="readLetter(0)"></button>
             <span>보낸사람3</span>
           </div>
           <div class="select-letter position-6">
-            <button class="letter polaroid"></button>
+            <button class="letter polaroid" @click="readLetter(0)"></button>
             <span>보낸사람6</span>
           </div>
           <button class="capsule bamboo"></button>
         </div>
         <Footer prev="홈으로" one-button :prev_back="false" v-on:footer_res="next"></Footer>
       </div>
-      <Letter v-if="openLetterId !== null"></Letter>
     </transition-group>
   </div>
+  <Letter v-if="openLetter"
+          :letter-type="selectLetter.type"
+          :contents="selectLetter.content"
+          v-on:popup_res="closeLetter">
+  </Letter>
 </template>
 
 <script>
@@ -56,14 +60,35 @@ export default {
     return {
       newCount : 0,
       totalCount : 0,
-      openLetterId : null,
       transition : 'slide-next', //slide-next, slide-prev
-      tutorialItem : [1,2,3],
       letters : [],
-      selectIdx : 0
+      selectIdx : 0,
+      openLetter : false,
+      selectLetter : {
+        id : null,
+        type : null,
+        content : null
+      },
+
+      //임시
+      tutorialItem : [1,2,3],
+      letterTypes : ['', 'note', 'polaroid', 'sheepskin']
     }
   },
   methods : {
+    readLetter(idx) {
+      //TODO : 편지리스트에서 인덱스값 받아서 출력, 편지 정보에 편지지정보가있음
+      this.selectLetter.id = idx;
+      this.selectLetter.type = this.letterTypes[Math.floor(Math.random() * this.letterTypes.length)];
+      this.selectLetter.content = '개발중...';
+      this.openLetter = true;
+
+    },
+    closeLetter() {
+      console.log(22);
+      this.openLetter = false;
+      //편지 읽음처리, disabled
+    },
     next (next) {
       if (!next) {
         //TODO : 로그아웃필요

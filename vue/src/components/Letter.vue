@@ -1,14 +1,11 @@
 <template>
-  <div class="popup">
+  <div class="popup" :class="letterType">
     <div class="body">
       <span>{{contents}}</span>
     </div>
     <div class="footer">
       <button class="cancel"
-              @click="cancel_f">{{cancel}}</button>
-      <button class="confirm"
-              v-if="!oneButton"
-              @click="confirm_f">{{confirm}}</button>
+              @click="cancel_f">닫기</button>
     </div>
   </div>
   <div class="dim"></div>
@@ -22,18 +19,10 @@ export default {
       type : String,
       default: "종료하시겠습니까?"
     },
-    cancel : {
+    letterType : {
       type : String,
-      default: "취소"
-    },
-    confirm : {
-      type : String,
-      default: "확인"
-    },
-    oneButton : {
-      type : Boolean,
-      default : false
-    },
+      default : null
+    }
   },
   data() {
     return {
@@ -41,11 +30,9 @@ export default {
     }
   },
   methods : {
-    confirm_f () {
-      this.$emit('popup_res', true);
-    },
     cancel_f () {
-      this.$emit('popup_res', false);
+      console.log(11);
+      this.$emit('popup_res');
     }
   }
 }
@@ -60,6 +47,7 @@ export default {
 }
 .popup {
   position: relative;
+  z-index: 10;
 }
 .dim {
   position: fixed;
