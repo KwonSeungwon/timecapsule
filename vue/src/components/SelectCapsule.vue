@@ -41,6 +41,7 @@
 <script>
 import Footer from '@/components/Footer';
 import Popup from "@/components/Popup";
+import axios from 'axios';
 
 export default {
   name: "selectCapsule",
@@ -61,7 +62,10 @@ export default {
     },
     complete (next) {
       if (next) {
-        this.popup.open = true;
+        axios.post('/api/timecapsule/user').then(res => {
+          console.log(res);
+          this.popup.open = true;
+        });
       }
     },
     popup_f (close) {

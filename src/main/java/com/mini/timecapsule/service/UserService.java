@@ -4,10 +4,9 @@ import com.mini.timecapsule.dao.CoordinatesRepository;
 import com.mini.timecapsule.dao.UserRepository;
 import com.mini.timecapsule.dto.UserDTO;
 import com.mini.timecapsule.model.Coordinates;
+import com.mini.timecapsule.model.QCoordinates;
 import com.mini.timecapsule.model.QUser;
 import com.mini.timecapsule.model.User;
-import com.mini.timecapsule.utils.Payload;
-import com.mini.timecapsule.utils.PayloadImpl;
 import com.querydsl.core.BooleanBuilder;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -19,17 +18,14 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.TimeZone;
 
 /**
- * 유저에 관한 모든기능들이 들어있는 서빗스
- * @author 카와이승원
+ * 유저에 관한 모든기능들이 들어있는 서비스
+ * @author Seungwon Kwon
  * @since 2022
- * TODO : Base64 암호화 API가 없어진다는데 뭐씀?
  */
 @Service
 @Log4j2
@@ -46,24 +42,39 @@ public class UserService {
 
 
     /**
-     * TODO : 로긴뿐만 아니라 세션에 관한 기능 구현필요..
-     * @apiNote 암호화 되있는게 너무 많아서 존나괴로움
-     * @param userDTO
+     * 새로계정 만들기를 눌렀을 때 최초로 호출되는 메소드 / 좌표를 선점
+     * TODO: 눌렀을 때 시점기준으로 좌표선점
      */
-    public void login(UserDTO userDTO) {
+    public Coordinates join() {
 
-        String coordinates = userDTO.getCoordinates();
-        Base64 base64 = new Base64();
-//        Optional<User> user = userRepository.findByCoordinates(base64.encode(coordinates.getBytes()));
-//        user.ifPresent(value -> passwordEncoder.matches(userDTO.getPassword(), value.getPassword())); // user가 입력한 패쓰와드와 비교
+        Coordinates coordinates = new Coordinates();
+        Random random = new Random();
+        String xCoordinates = null;
+        String yCoordinates = null;
+        BooleanBuilder predicate = new BooleanBuilder();
+        QCoordinates qCoordinates = QCoordinates.coordinates;
+        while(true) {
+            xCoordinates = String.valueOf(random.nextInt(999));
+            yCoordinates = String.valueOf(random.nextInt(999));
+            predicate.and(qCoordinates.xCoordinates.eq(xCoordinates));
+            predicate.and(qCoordinates.yCoordinates.eq(yCoordinates));
+            Optional<Coordinates> findCoordinates = coordinatesRepository.findOne(predicate);
+            if (!findCoordinates.isPresent()) {
+                break;
+            }
+            predicate = new BooleanBuilder();
+        }
+        coordinates.newCoordinates(xCoordinates, yCoordinates);
+        coordinates.setIsFixed(true);
+
+        return coordinates;
     }
 
     /**
      * 전체 User의 목록을 가져오는 메소드 / 관리자또는 통계화면에서 사용할 것으로 예상됨
-     * @param payload
      * @param userDTO
      */
-    public void getUserList(Payload payload, UserDTO userDTO) {
+    public UserDTO getUserList(UserDTO userDTO) {
 
         BooleanBuilder predicate = new BooleanBuilder();
         QUser qUser = QUser.user;
@@ -84,17 +95,16 @@ public class UserService {
 
         Iterable<User> users = userRepository.findAll(predicate);
 
-        payload.addData("users", users);
+        return null;
 
     }
 
     /**
      * TODO : user을 찾지 못했을 때 예외를 어떻게 처리할지?
      * 일반적인 유저들이 로그인할 때 사용될 메소드
-     * @param payload
      * @param userDTO
      */
-    public void getUser(Payload payload, UserDTO userDTO) {
+    public void getUser(UserDTO userDTO) {
 
         BooleanBuilder predicate = new BooleanBuilder();
         QUser qUser = QUser.user;
@@ -109,10 +119,9 @@ public class UserService {
 
         Optional<User> user = userRepository.findOne(predicate);
 
-        user.ifPresent(value -> payload.addData("user", value));
     }
 
-    public void createUser(PayloadImpl payload, UserDTO userDTO) {
+    public void createUser(UserDTO userDTO) {
 
 //        String password = passwordEncoder.encode(userDTO.getPassword());
 //        ZonedDateTime writeableAt = this.calculationWritingDays(userDTO.getOpenDayType());
@@ -124,7 +133,6 @@ public class UserService {
 
 //        payload.addData("coordinates", user.getCoordinates());
 
-        payload.addData("test", "tttadd");
     }
 
     /**
@@ -137,10 +145,6 @@ public class UserService {
         return LocalDate.parse(renderOpenDay.toString(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(TimeZone.getDefault().toZoneId()).minusMonths(1);
     }
 
-    /**
-     * 새로운좌표를 생성하는 메서드(임시로 Base64 암호화 / 암호화에 큰 의미는 없는듯?)
-     * @return
-     */
     private Coordinates encodeCoordinates(Coordinates coordinates) {
 
         Base64 base64 = new Base64();
@@ -160,32 +164,10 @@ public class UserService {
     }
 
     /**
-     * TODO: 통계학과 zl존Natural킹왕짱세젤예초미녀 "조현수" 님이 x와 y의 값의 최대값이 999일때 나올 수 있는 경우의 수를 구해줄 것임..
-     */
-    public void createRandomCoordinates() {
-
-        Random random = new Random();
-        int xCoordinates = random.nextInt(999);
-        int yCoordinates = random.nextInt(999);
-
-    }
-
-    /**
-     * TODO : 미리 좌표를 할당해놔서
-     *
-     */
-    public void createAutoCoordinates() {
-
-    }
-
-
-
-    /**
      * User 삭제기능 / 관리자에 의해 일부만 사용될 것으로 생각됨
-     * @param payload
      * @param userDTO
      */
-    public void deleteUser(Payload payload, UserDTO userDTO) {
+    public void deleteUser(UserDTO userDTO) {
 
 //        User user = userRepository.findOne()
 
