@@ -4,7 +4,7 @@
       <span>{{contents}}</span>
     </div>
     <div class="footer">
-      <button class="cancel"
+      <button class="btn cancel"
               @click="cancel_f">닫기</button>
     </div>
   </div>
@@ -46,8 +46,16 @@ export default {
   background: url(../assets/images/field.png) no-repeat center transparent;
 }
 .popup {
-  position: relative;
   z-index: 10;
+}
+
+.popup .body {
+  position: relative;
+  width: 207px;
+  height: 303px;
+  top: calc(50% - 250px);
+  left: calc(50% - 153.5px);
+  padding: 50px;
 }
 .dim {
   position: fixed;
@@ -59,4 +67,30 @@ export default {
   background-color: black;
   opacity: 0.6;
 }
+
+.popup.sheepskin .body {
+  background: url(../assets/images/common/letters/large/sheepskin_large.png) no-repeat center transparent;
+  background-size: cover;
+}
+.popup.letter .body {
+  background: url(../assets/images/common/letters/large/letter_large.png) no-repeat center transparent;
+  background-size: cover;
+}
+.popup.note .body {
+  background: url(../assets/images/common/letters/large/note_large.png) no-repeat center transparent;
+  background-size: cover;
+}
+.popup.polaroid .body {
+  background: url(../assets/images/common/letters/large/polaroid.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.btn {
+  width: 100px;
+  height: 45px;
+  border: 0;
+  background: url(../assets/images/field_abled.png) no-repeat center transparent;
+  background-size: cover;
+}
+
 </style>
