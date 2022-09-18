@@ -72,7 +72,7 @@ export default {
 
       //임시
       tutorialItem : [1,2,3],
-      letterTypes : ['', 'note', 'polaroid', 'sheepskin']
+      letterTypes : ['letter', 'note', 'polaroid', 'sheepskin']
     }
   },
   methods : {

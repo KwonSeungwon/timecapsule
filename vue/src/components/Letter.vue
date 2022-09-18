@@ -47,16 +47,9 @@ export default {
 }
 .popup {
   z-index: 10;
+  position: relative;
 }
 
-.popup .body {
-  position: relative;
-  width: 207px;
-  height: 303px;
-  top: calc(50% - 250px);
-  left: calc(50% - 153.5px);
-  padding: 50px;
-}
 .dim {
   position: fixed;
   top : 0;
@@ -66,6 +59,13 @@ export default {
   height: 100vh;
   background-color: black;
   opacity: 0.6;
+}
+
+.popup .body {
+  width: 207px;
+  height: 303px;
+  padding: 50px;
+  margin: 30% auto 30px;
 }
 
 .popup.sheepskin .body {
@@ -83,6 +83,10 @@ export default {
 .popup.polaroid .body {
   background: url(../assets/images/common/letters/large/polaroid.png) no-repeat center transparent;
   background-size: cover;
+}
+
+.popup .footer {
+  text-align: center;
 }
 
 .btn {
