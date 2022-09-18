@@ -1,7 +1,7 @@
 <template>
   <div class="field">
     <div class="title">
-      <p>내 좌표</p>
+      <p>타임캡슐 확인</p>
     </div>
     <div class="content">
       <div class="input-field">
@@ -60,15 +60,10 @@ export default {
 }
 
 .title {
-  height: 20%;
+
 }
-.title p {
-  text-align: center;
-  margin: 0;
-  padding: 10%;
-}
+
 .content {
-  height: 60%;
   display: flex;
 }
 

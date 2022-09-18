@@ -58,8 +58,8 @@ export default {
 
 <style scoped>
 .btn {
-  width: 100px;
-  height: 45px;
+  width: 104px;
+  height: 41px;
   border: 0;
   background: url(../assets/images/field_abled.png) no-repeat center transparent;
   background-size: cover;

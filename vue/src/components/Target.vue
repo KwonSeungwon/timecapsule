@@ -1,18 +1,20 @@
 <template>
   <div class="field">
-    <div>
-      <h1>캡슐 찾기</h1>
+    <div class="title">
+      <p>타임캡슐 확인</p>
     </div>
-    <div class="input-field">
-      <label>받는 사람</label>
-      <input v-model="coordinates">
-      <p></p>
+    <div class="content">
+      <div class="input-field">
+        <label>받는 사람</label>
+        <input v-model="coordinates">
+        <p></p>
+      </div>
+      <div class="input-field">
+        <label>보내는 사람</label>
+        <input v-model="sender">
+      </div>
+      <p class="error-content">{{error}}</p>
     </div>
-    <div class="input-field">
-      <label>보내는 사람</label>
-      <input v-model="sender">
-    </div>
-    <p class="error-content">{{error}}</p>
     <Footer prev="취소" v-on:footer_res="next"></Footer>
   </div>
 </template>
