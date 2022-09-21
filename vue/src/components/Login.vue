@@ -64,17 +64,17 @@ export default {
 }
 
 .content {
-  display: flex;
+  /*display: flex;*/
 }
 
 .content .input-field {
   margin: 10px auto;
-  width: 100%;
+  width: calc(100% - 20px);
   padding: 10px;
 }
 
 .input-field input {
-  width: 100%;
+  width: -webkit-fill-available;
 }
 
 
