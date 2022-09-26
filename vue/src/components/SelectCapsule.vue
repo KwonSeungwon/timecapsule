@@ -53,16 +53,20 @@ export default {
         content : `타임캡슐이 만들어 졌어요.\n${this.openDay}일까지 이 캡슐로 편지를 받아볼 수 있어요.`
       },
       capsuleId : null,
-      openDay : null
+      openDay : null,
+      parameters : {},
+      coordinates : '',
+      password : ''
     }
   },
   methods : {
     selectCapsule(capsuleId) {
       this.capsuleId = capsuleId;
+      this.parameters.capsuleId = capsuleId;
     },
     complete (next) {
       if (next) {
-        axios.post('/api/timecapsule/user').then(res => {
+        axios.post('/api/timecapsule/user', this.parameters).then(res => {
           console.log(res);
           this.popup.open = true;
         });
@@ -74,6 +78,10 @@ export default {
         this.$router.replace('/');
       }
     }
+  },
+  created() {
+    this.parameters.coordinates = this.$route.query.coordinates;
+    this.parameters.password = this.$route.query.password;
   }
 }
 </script>

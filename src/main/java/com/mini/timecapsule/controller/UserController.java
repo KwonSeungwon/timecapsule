@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,15 +27,15 @@ public class UserController {
         return userService.join();
     }
 
-    @PostRestMapping(value = "/api/timecapsule/user")
+    @GetRestMapping(value = "/api/timecapsule/user")
     public ModelAndView get(UserDTO userDTO) {
 
         userService.getUser(userDTO);
 
         return null;
     }
-    @GetRestMapping(value = "/api/timecapsule/userCreate")
-    public void createUser(UserDTO userDTO) {
+    @PostRestMapping(value = "/api/timecapsule/user")
+    public void createUser(@RequestBody UserDTO userDTO) {
 
         userService.createUser(userDTO);
     }

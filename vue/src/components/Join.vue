@@ -5,7 +5,7 @@
     </div>
     <div>
       <label>내 좌표</label>
-      <input :value="coordinates.xcoordinates + ',' + coordinates.ycoordinates" readonly ref="coordinates"><button @click="copy()">copy</button>
+      <input :value="coordinates" readonly ref="coordinates"><button @click="copy()">copy</button>
     </div>
     <div>
       <label>비밀번호</label>
@@ -37,16 +37,29 @@ export default {
   },
   mounted() {
     this.$nextTick(function () {
-      axios.get('/api/timecapsule/join').then(res => {
-        this.coordinates = res.data;
-      })
+      this.createCoordinates();
     });
   },
   methods : {
     footer_res (next) {
       if (next) {
-        this.$router.push('/join/capsule');
+        if (this.isEmpty(this.password)) {
+          alert('사용하실 비밀번호를 입력해주세요.');
+          return;
+        }
+        this.$router.push({name : 'selectCapsule',
+          query: {coordinates : this.coordinates, password : this.password}
+        });
       }
+    },
+    createCoordinates : function() {
+      axios.get('/api/timecapsule/join').then(res => {
+        if (res.statusText === 'OK') {
+          this.coordinates = res.data.xcoordinates + ',' + res.data.ycoordinates;
+        } else {
+          alert('오류가 발생했습니다.\n 잠시후 이용해주세요');
+        }
+      })
     },
     copy: function() {
       this.$refs.coordinates.select();
@@ -55,13 +68,7 @@ export default {
     },
     isEmpty: function(target) {
       if (target === undefined || target === null || isNaN(target) || target.trim().length === 0) {
-        console.log('in');
         return true;
-      }
-    },
-    join: function (){
-      if (this.isEmpty(this.password)) {
-        alert('사용하실 비밀번호를 입력해주세요.');
       }
     },
   }
