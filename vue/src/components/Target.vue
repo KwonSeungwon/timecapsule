@@ -6,12 +6,12 @@
     <div class="content">
       <div class="input-field">
         <label>받는 사람</label>
-        <input v-model="coordinates">
+        <input v-model="coordinates" placeholder="타임캡슐 좌표">
         <p></p>
       </div>
       <div class="input-field">
         <label>보내는 사람</label>
-        <input v-model="sender">
+        <input v-model="sender" placeholder="이름 또는 닉네임">
       </div>
       <p class="error-content">{{error}}</p>
     </div>

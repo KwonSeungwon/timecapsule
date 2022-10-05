@@ -137,29 +137,39 @@ export default {
   left: -500px;
 }
 
-.beach .field {
-  background: url(../assets/images/field_bc.png) no-repeat center transparent;
-  background-size: cover;
+/*.beach .field {*/
+/*  background: url(../assets/images/field_bc.png) no-repeat center transparent;*/
+/*  background-size: cover;*/
+/*}*/
+
+/*.mountain .field {*/
+/*  background: url(../assets/images/field_mt.png) no-repeat center transparent;*/
+/*  background-size: cover;*/
+/*}*/
+
+/*.desert .field {*/
+/*  background: url(../assets/images/field_dt.png) no-repeat center transparent;*/
+/*  background-size: cover;*/
+/*}*/
+
+/*.space .field {*/
+/*  background: url(../assets/images/field_bc.png) no-repeat center transparent;*/
+/*  background-size: cover;*/
+/*}*/
+
+.total-info {
+  padding: 0 20px;
 }
 
-.mountain .field {
-  background: url(../assets/images/field_mt.png) no-repeat center transparent;
-  background-size: cover;
+.total-info p {
+  margin: 0 0 10px;
 }
 
-.desert .field {
-  background: url(../assets/images/field_dt.png) no-repeat center transparent;
-  background-size: cover;
-}
-
-.space .field {
-  background: url(../assets/images/field_bc.png) no-repeat center transparent;
-  background-size: cover;
-}
 
 .letter-holder {
   position: relative;
   height: 400px;
+  margin-bottom: 50px;
 }
 
 .letter-holder .capsule {
@@ -229,8 +239,6 @@ export default {
   display: inherit;
   text-align: center;
   margin-top: -4px;
-  color: white;
-  text-shadow: 1px 1px #315fd3, -1px -1px #315fd3, 1px -1px #315fd3, -1px 1px #315fd3;
 }
 
 button.letter {

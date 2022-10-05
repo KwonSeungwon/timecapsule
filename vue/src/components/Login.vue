@@ -12,8 +12,8 @@
       <div class="input-field">
         <label for="pw">비밀번호</label>
         <input id="pw" placeholder="password" type="password" v-model="pw">
+        <p class="hint error-content">{{error}}</p>
       </div>
-      <p class="error-content">{{error}}</p>
     </div>
     <Footer prev="취소" v-on:footer_res="next"></Footer>
   </div>

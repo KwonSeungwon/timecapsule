@@ -7,24 +7,25 @@
 <style>
 button,
 p,
-label {
+label,
+span {
   color: white;
   font-size: 14px;
 }
 
-.beach button, .beach p, .beach label {
+.beach button, .beach p, .beach label, .beach span{
   text-shadow: 1px 1px #006484, -1px -1px #006484, 1px -1px #006484, -1px 1px #006484;
 }
 
-.mountain button, .mountain p, .mountain label {
+.mountain button, .mountain p, .mountain label, .mountain span {
   text-shadow: 1px 1px #315fd3, -1px -1px #315fd3, 1px -1px #315fd3, -1px 1px #315fd3;
 }
 
-.desert button, .desert p, .desert label {
+.desert button, .desert p, .desert label, .desert span {
   text-shadow: 1px 1px #5E3432, -1px -1px #5E3432, 1px -1px #5E3432, -1px 1px #5E3432;
 }
 
-.space button, .space p, .space label {
+.space button, .space p, .space label, .space span{
   text-shadow: 1px 1px #2D459F, -1px -1px #2D459F, 1px -1px #2D459F, -1px 1px #2D459F;
 }
 
@@ -59,7 +60,7 @@ label {
 .content .input-field {
   margin: 0 auto;
   width: calc(100% - 40px);
-  padding: 20px;
+  padding: 10px 20px;
 }
 
 .input-field>label {
