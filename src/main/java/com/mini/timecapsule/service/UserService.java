@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.TimeZone;
@@ -123,16 +124,15 @@ public class UserService {
 
     public void createUser(UserDTO userDTO) {
 
-//        String password = passwordEncoder.encode(userDTO.getPassword());
-//        ZonedDateTime writeableAt = this.calculationWritingDays(userDTO.getOpenDayType());
-//        List<Coordinates> coordinates = coordinatesRepository.findAll();
-//        User user = User.joinUser(coordinates.get(0), password, userDTO.getName(), userDTO.getCapsuleType(),
-//                userDTO.getOpenDayType(), writeableAt, null);
-//
-//        userRepository.save(user);
+        String[] coordinates = userDTO.getCoordinates().split(",");
+        String password = passwordEncoder.encode(userDTO.getPassword());
+        ZonedDateTime writeableAt = this.calculationWritingDays(userDTO.getOpenDayType());
+        QCoordinates qCoordinates = QCoordinates.coordinates;
+        Optional<Coordinates> coordinate = coordinatesRepository.findOne(new BooleanBuilder().and(qCoordinates.xCoordinates.eq(coordinates[0])).and(qCoordinates.yCoordinates.eq(coordinates[1])));
+        User user = User.joinUser(coordinate.get(), password, userDTO.getName(), userDTO.getCapsuleType(),
+                userDTO.getOpenDayType(), writeableAt, null);
 
-//        payload.addData("coordinates", user.getCoordinates());
-
+        userRepository.save(user);
     }
 
     /**
@@ -141,7 +141,7 @@ public class UserService {
      * @return
      */
     private ZonedDateTime calculationWritingDays(User.OpenDay openDay) {
-        LocalDate renderOpenDay = LocalDate.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy")) + openDay, DateTimeFormatter.ISO_LOCAL_DATE);
+        LocalDate renderOpenDay = LocalDate.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), DateTimeFormatter.ISO_LOCAL_DATE);
         return LocalDate.parse(renderOpenDay.toString(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(TimeZone.getDefault().toZoneId()).minusMonths(1);
     }
 
