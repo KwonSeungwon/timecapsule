@@ -56,12 +56,12 @@ export default {
 
 <style scoped>
 
-.title p {
-  margin: 0;
-  color : white;
-  font-size: 25px;
-  text-shadow: 3px 0 #315fd3, 0 2px #315fd3, 2px 0 #315fd3, 0 -2px #315fd3;
-}
+/*.title p {*/
+/*  margin: 0;*/
+/*  color : white;*/
+/*  font-size: 25px;*/
+/*  text-shadow: 3px 0 #315fd3, 0 2px #315fd3, 2px 0 #315fd3, 0 -2px #315fd3;*/
+/*}*/
 
 .field-holder {
   position: relative;

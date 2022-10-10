@@ -7,13 +7,13 @@
       <div class="input-field">
         <label for="id">내 좌표</label>
         <input id="id" placeholder="좌표명" v-model="id">
+        <p class="hint">좌표가 없으신가요? <router-link to="/join">새로 만들기 ></router-link></p>
       </div>
-      <p>좌표가 없으신가요? <router-link to="/join">새로 만들기 ></router-link></p>
       <div class="input-field">
         <label for="pw">비밀번호</label>
         <input id="pw" placeholder="password" type="password" v-model="pw">
+        <p class="hint error-content">{{error}}</p>
       </div>
-      <p class="error-content">{{error}}</p>
     </div>
     <Footer prev="취소" v-on:footer_res="next"></Footer>
   </div>
@@ -51,13 +51,7 @@ export default {
 </script>
 
 <style scoped>
-.field {
-  margin: 20% auto;
-  width: 88%;
-  height: 80%;
-  background: url(../assets/images/field.png) no-repeat center transparent;
-  /*background-size: cover;*/
-}
+
 
 .title {
 
@@ -67,15 +61,9 @@ export default {
   /*display: flex;*/
 }
 
-.content .input-field {
-  margin: 10px auto;
-  width: calc(100% - 20px);
-  padding: 10px;
-}
 
-.input-field input {
-  width: -webkit-fill-available;
-}
+
+
 
 
 </style>
