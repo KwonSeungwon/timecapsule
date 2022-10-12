@@ -153,6 +153,30 @@ span {
   background-size: cover;
 }
 
+button.letter,
+label.letter {
+  background: url(./assets/images/common/letters/small/letter_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+button.letter.note,
+label.letter.note {
+  background: url(./assets/images/common/letters/small/note_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+button.letter.polaroid,
+label.letter.polaroid {
+  background: url(./assets/images/common/letters/small/polaroid_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+button.letter.sheepskin,
+label.letter.sheepskin {
+  background: url(./assets/images/common/letters/small/sheepskin_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+
 @font-face {
   font-family: tcf;
   src: url(./assets/font/DungGeunMo.woff) format('woff');

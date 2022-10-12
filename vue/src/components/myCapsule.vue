@@ -241,33 +241,18 @@ export default {
   margin-top: -4px;
 }
 
-button.letter {
+.select-letter button.letter {
   width: 86px;
   height: 86px;
   border: 0;
-  background: url(../assets/images/common/letters/small/letter_small.png) no-repeat center transparent;
-  background-size: cover;
 }
 
-
-button.letter:active,
+.select-letter button.letter:active,
 .letter-holder .capsule:active {
   margin-top: 1px;
   margin-left: 1px;
   opacity: 0.9;
 }
-button.letter.note {
-  background: url(../assets/images/common/letters/small/note_small.png) no-repeat center transparent;
-  background-size: cover;
-}
 
-button.letter.polaroid {
-  background: url(../assets/images/common/letters/small/polaroid_small.png) no-repeat center transparent;
-  background-size: cover;
-}
-button.letter.sheepskin {
-  background: url(../assets/images/common/letters/small/sheepskin_small.png) no-repeat center transparent;
-  background-size: cover;
-}
 
 </style>

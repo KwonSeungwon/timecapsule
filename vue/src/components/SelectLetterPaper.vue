@@ -11,31 +11,31 @@
       <div class="letter-holder">
         <div class="letter-object" :class="{'on' : paperId === '1'}">
           <div class="selectField">
-            <label for="letter1" class="letter"></label>
             <input id="letter1" type="radio" v-model="paperId" value="1">
+            <label for="letter1" class="letter note"></label>
           </div>
           <p>잘 찢은 연습장</p>
         </div>
         <div class="letter-object" :class="{'on' : paperId === '2'}">
           <div class="selectField">
-            <label for="letter2" class="letter"></label>
             <input id="letter2" type="radio" v-model="paperId" value="2">
+            <label for="letter2" class="letter sheepskin"></label>
           </div>
           <p>고급스러운 양피지</p>
         </div>
         <div class="letter-object" :class="{'on' : paperId === '3'}">
           <div class="selectField">
-            <label for="letter3" class="letter"></label>
             <input id="letter3" type="radio" v-model="paperId" value="3">
+            <label for="letter3" class="letter"></label>
           </div>
           <p>평범한 편지지</p>
         </div>
         <div class="letter-object" :class="{'on' : paperId === '4'}">
           <div class="selectField">
-            <label for="letter4" class="letter"></label>
             <input id="letter4" type="radio" v-model="paperId" value="4">
+            <label for="letter4" class="letter polaroid"></label>
           </div>
-          <p>편지성</p>
+          <p>추억의 폴라로이드</p>
         </div>
       </div>
     </div>
@@ -185,8 +185,31 @@ export default {
   color: #FFE24A;
 }
 
+.selectField input[type=radio] {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.selectField label[for] {
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.selectField .letter {
+  width: 90px;
+  height: 90px;
+  display: inline-block;
+  margin: 18px 24px;
+}
+
 .letter-object .selectField {
   border: 0;
+  width: 138px;
+  height: 127px;
+}
+
+.letter-object.on .selectField {
   width: 138px;
   height: 127px;
 }
