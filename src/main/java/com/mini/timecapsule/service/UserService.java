@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.TimeZone;
@@ -47,7 +48,6 @@ public class UserService {
      */
     public Coordinates join() {
 
-        Coordinates coordinates = new Coordinates();
         Random random = new Random();
         String xCoordinates = null;
         String yCoordinates = null;
@@ -64,8 +64,10 @@ public class UserService {
             }
             predicate = new BooleanBuilder();
         }
+        Coordinates coordinates = new Coordinates().newCoordinates(xCoordinates, yCoordinates);
         coordinates.newCoordinates(xCoordinates, yCoordinates);
         coordinates.setIsFixed(true);
+        coordinatesRepository.save(coordinates);//임시코드
 
         return coordinates;
     }
@@ -123,16 +125,22 @@ public class UserService {
 
     public void createUser(UserDTO userDTO) {
 
-//        String password = passwordEncoder.encode(userDTO.getPassword());
-//        ZonedDateTime writeableAt = this.calculationWritingDays(userDTO.getOpenDayType());
-//        List<Coordinates> coordinates = coordinatesRepository.findAll();
-//        User user = User.joinUser(coordinates.get(0), password, userDTO.getName(), userDTO.getCapsuleType(),
+        String[] coordinates = userDTO.getCoordinates().split(",");
+        String password = passwordEncoder.encode(userDTO.getPassword());
+        ZonedDateTime writeableAt = this.calculationWritingDays(userDTO.getOpenDayType());
+        QCoordinates qCoordinates = QCoordinates.coordinates;
+//        Optional<Coordinates> coordinate = coordinatesRepository.findOne(new BooleanBuilder().and(qCoordinates.xCoordinates.eq(coordinates[0])).and(qCoordinates.yCoordinates.eq(coordinates[1])));
+//        User user = User.joinUser(coordinate.get(), password, userDTO.getName(), userDTO.getCapsuleType(),
 //                userDTO.getOpenDayType(), writeableAt, null);
-//
-//        userRepository.save(user);
-
-//        payload.addData("coordinates", user.getCoordinates());
-
+        //임시코드
+        Coordinates dummyCoordinates = new Coordinates().newCoordinates(coordinates[0], coordinates[1]);
+        coordinatesRepository.save(dummyCoordinates);
+        userDTO.setName("테스트캡슐");
+        userDTO.setCapsuleType(User.CapsuleType.EGG);
+        //임시코드끝
+        User user = User.joinUser(dummyCoordinates, password, userDTO.getName(), userDTO.getCapsuleType(),
+                userDTO.getOpenDayType(), writeableAt, null);
+        userRepository.save(user);
     }
 
     /**
@@ -141,7 +149,7 @@ public class UserService {
      * @return
      */
     private ZonedDateTime calculationWritingDays(User.OpenDay openDay) {
-        LocalDate renderOpenDay = LocalDate.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy")) + openDay, DateTimeFormatter.ISO_LOCAL_DATE);
+        LocalDate renderOpenDay = LocalDate.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), DateTimeFormatter.ISO_LOCAL_DATE);
         return LocalDate.parse(renderOpenDay.toString(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(TimeZone.getDefault().toZoneId()).minusMonths(1);
     }
 

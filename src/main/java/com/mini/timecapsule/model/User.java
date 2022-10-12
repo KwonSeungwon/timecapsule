@@ -59,7 +59,6 @@ public class User {
      * - 최소 4자리
      */
     @Column(nullable = false)
-    @Size(min = 4)
     private String password;
 
     /**
