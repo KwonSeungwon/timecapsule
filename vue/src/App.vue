@@ -71,7 +71,12 @@ span {
   line-height: 37px;
   margin-bottom: 10px;
 }
-
+.input-copy-btn {
+  position: absolute;
+  cursor: pointer;
+  padding: 12px;
+  left: 54.5%;
+}
 .beach .input-field>label {
   background: url(./assets/images/beach/input_title.png) no-repeat center transparent;
   background-size: cover;
@@ -98,6 +103,16 @@ span {
   height: 22px;
   padding: 10px;
   border: 0;
+  cursor: pointer;
+  background: url(./assets/images/beach/input.png) no-repeat center transparent;
+  /*background-size: cover;*/
+}
+.input-field>select {
+  width: 292px;
+  height: 54px;
+  padding: 10px;
+  border: 0;
+  cursor: pointer;
   background: url(./assets/images/beach/input.png) no-repeat center transparent;
   /*background-size: cover;*/
 }

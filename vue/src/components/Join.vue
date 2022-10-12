@@ -3,21 +3,24 @@
     <div class="title">
       <p>타임캡슐 생성</p>
     </div>
-    <div>
-      <label>내 좌표</label>
-      <input :value="coordinates" readonly ref="coordinates"><button @click="copy()">copy</button>
-    </div>
-    <div>
-      <label>비밀번호</label>
-      <input v-model="password">
-    </div>
-    <div>
-      <label>오픈일</label>
-      <select>
-        <option>01.01</option>
-        <option>02.28</option>
-        <option>12.31</option>
-      </select>
+    <div class="content">
+      <div class="input-field">
+        <label>내 좌표</label>
+        <a class="input-copy-btn" @click="copy()">copy</a>
+        <input :value="coordinates" readonly ref="coordinates">
+      </div>
+      <div class="input-field">
+        <label>비밀번호</label>
+        <input v-model="password">
+      </div>
+      <div class="input-field">
+        <label>오픈일</label>
+        <select>
+          <option>01.01</option>
+          <option>02.28</option>
+          <option>12.31</option>
+        </select>
+      </div>
     </div>
     <Footer prev="취소" v-on:footer_res="footer_res"></Footer>
   </div>

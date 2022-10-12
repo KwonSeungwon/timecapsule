@@ -48,7 +48,6 @@ public class UserService {
      */
     public Coordinates join() {
 
-        Coordinates coordinates = new Coordinates();
         Random random = new Random();
         String xCoordinates = null;
         String yCoordinates = null;
@@ -65,8 +64,10 @@ public class UserService {
             }
             predicate = new BooleanBuilder();
         }
+        Coordinates coordinates = new Coordinates().newCoordinates(xCoordinates, yCoordinates);
         coordinates.newCoordinates(xCoordinates, yCoordinates);
         coordinates.setIsFixed(true);
+        coordinatesRepository.save(coordinates);//임시코드
 
         return coordinates;
     }
