@@ -6,7 +6,7 @@
     <div class="content">
       <div class="capsule-info">
         <span>받은 사람이 설정한 캡슐</span>
-        <button @click="capsuleInfo"></button>
+        <button class="capsule" :class="capsuleId" @click="capsuleInfo"></button>
       </div>
       <div class="letter-holder">
         <div class="letter-object" :class="{'on' : paperId === '1'}">
@@ -62,6 +62,8 @@ export default {
         open : false,
         content : '캡슐정보'
       },
+      capsuleId : null,
+      capsules : ['bamboo', 'bottle', 'candybox', 'egg']
     }
   },
   methods : {
@@ -88,7 +90,13 @@ export default {
       //캡슐정보 바인딩
       //this.popup.content = '';
       this.popup.open = true;
+    },
+    setCapsule () {
+      this.capsuleId = this.capsules[Math.floor(Math.random() * this.capsules.length)];
     }
+  },
+  mounted() {
+    this.setCapsule();
   }
 }
 </script>
@@ -129,6 +137,35 @@ export default {
 
 .capsule-info span {
   line-height: 49px;
+}
+
+.capsule-info .capsule {
+  float: right;
+  border: 0;
+
+  width: 37px;
+  height: 37px;
+  margin-top: 6px;
+}
+
+.capsule.bamboo {
+  background: url(../assets/images/common/capsule/bamboo.PNG) no-repeat center transparent;
+  background-size: cover;
+}
+
+.capsule.bottle {
+  background: url(../assets/images/common/capsule/bottle.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.capsule.candybox {
+  background: url(../assets/images/common/capsule/candybox.PNG) no-repeat center transparent;
+  background-size: cover;
+}
+
+.capsule.egg {
+  background: url(../assets/images/common/capsule/egg.PNG) no-repeat center transparent;
+  background-size: cover;
 }
 
 .letter-holder {
