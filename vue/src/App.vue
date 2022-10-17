@@ -191,7 +191,6 @@ label.letter.sheepskin {
   background: url(./assets/images/common/letters/small/sheepskin_small.png) no-repeat center transparent;
   background-size: cover;
 }
-
 @font-face {
   font-family: tcf;
   src: url(./assets/font/DungGeunMo.woff) format('woff');
