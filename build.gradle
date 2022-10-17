@@ -49,6 +49,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-test'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
@@ -62,6 +64,9 @@ dependencies {
     }
     // springboot auto-reload
     implementation 'org.springframework.boot:spring-boot-devtools:2.6.2'
+    //apache utils
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
+    //spring security
 
 //    testImplementation 'org.springframework.batch:spring-batch-test'
 }
@@ -98,3 +103,130 @@ configurations {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+//테스트하다가 말았음, 사용할지 말지는 작업자가 결정. 2022-07-08
+//node {
+//    /**
+//     * 특정 Node.js 버전을 다운로드 및 설치 할 지 여부
+//     * true: 다운로드 및 설치
+//     * false: 전역으로 설치된 Node.js 사용함.
+//     */
+//    download = true
+//
+//    /**
+//     * download가 true일 경우에만 사용
+//     * version에 명시한 버전으로 Node.js 다운로드 및 설치
+//     * workDir에 설치됨
+//     */
+//    version = "14.17.6"
+//
+//    /**
+//     * 사용할 npm 버전을 지정하면 npmWorkDir에 설치됨
+//     * npm 버전을 지정하지 않으면 Node.js에 번들로 제공되는 npm 버전으로 사용됨
+//     */
+//    npmVersion = "6.14.15"
+//    /**
+//        download가 true일 경우에만 사용
+//        Node.js 배포를 가져오기 위한 기본 URL
+//    */
+//    distBaseUrl = "https://nodejs.org/dist"
+//
+//    /**
+//     * npmInstall 작업에 의해 실행되는 npm 명령
+//     * 기본적으로 설치되지만 ci로 변경할 수 있음
+//     */
+//    npmInstallCommand = "install"
+//
+//    /**
+//     * download가 true일 경우에만 사용
+//     * Node.js가 압축 해제된 디렉토리
+//     */
+//    workDir = file("${project.projectDir}/.gradle/nodejs")
+//
+//    /**
+//     * npm이 설치된 디렉토리 (특정 버전이 정의된 경우)
+//     */
+//    npmWorkDir = file("${project.projectDir}/.gradle/npm")
+//
+//    /**
+//     * vue 프로젝트 디렉토리 위치
+//     * package.json 파일과 node_modules 디렉토리가 있는 곳
+//     * "저는 프로젝트 Root 아래 vue 프로젝트를 생성하였으므로 아래와 같이 주소를 작성해주었습니다."
+//     */
+//    nodeProjectDir = file("${project.projectDir}/vue-project")
+//
+//    // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
+//    // according the proxy configuration defined for Gradle
+//    // Disable this option if you want to configure the proxy for npm or yarn on your own
+//    // (in the .npmrc file for instance)
+//    nodeProxySettings = ProxySettings.SMART
+//}
+//
+//configurations {
+//    compileOnly {
+//        extendsFrom annotationProcessor
+//    }
+//}
+//
+//repositories {
+//    mavenCentral()
+//    /**
+//     * vue-project를 build하기 위한 설정
+//     * - node gradle 추가
+//     */
+//    gradlePluginPortal()
+//}
+//
+//dependencies {
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    compileOnly 'org.projectlombok:lombok'
+//    annotationProcessor 'org.projectlombok:lombok'
+//    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//}
+//
+///**
+// * vue-project를 build하기 위한 설정
+// * - node gradle 추가
+// */
+//apply plugin: 'com.github.node-gradle.node'
+//
+///**
+// * vue-project를 build하기 위한 설정
+// * - vue-project의 기존 빌드 결과물을 제거하기 위한 task
+// */
+//task deleteVueBuildFiles(type: Delete) {
+//    delete "src/main/resources/static/static", "src/main/resources/static/index.html", "${project.projectDir}/vue-project/node_modules"
+//}
+//
+///**
+// * vue-project를 build하기 위한 설정
+// * - vue-project를 빌드하기 위한 npm build task
+// *
+// * dependsOn에 'deleteVueBuildFiles', 'npmInstall' task 정보를 지정하였으므로
+// * npmBuild task는 위 두 task에 의존한다는 것이고,
+// * npmBuild가 실행되기 전 위 두 task가 차례대로 먼저 실행됩니다.
+// * deleteVueBuildFiles task는 빌드 결과물을 제거하기 위하여 별도 만든 task이고,
+// * npmInstall task는 node plugin에서 제공하는 task입니다.
+// */
+//task npmBuild(type: NpmTask, dependsOn: ['deleteVueBuildFiles', 'npmInstall']) {
+//    args = ["run", "build"]
+//}
+//
+///**
+// * vue-project를 build하기 위한 설정
+// * node gradle에서 제공하는 npmInstall task를 어느 시점에 실행시켜 줄지 지정해주는 것입니다.
+// * "gradle build 시 수행되는 processResources task가 실행되기 전에 npmBuild task를 실행하라"
+// *
+// * 그리고 npmBuild task의 의존으로 deleteVueBuildFiles, npmInstall task가 있으므로,
+// * "npmBuild task가 실행하기 전에 deleteVueBuildFiles, npmInstall task를 순서대로 실행하라."
+// *
+// * 정리한 task 실행 순서는
+// * 1) deleteVueBuildFiles
+// * 2) npmInstall
+// * 3) npmBuild
+// * 4) processResources
+// * 입니다.
+// */
+//processResources.dependsOn 'npmBuild'
+

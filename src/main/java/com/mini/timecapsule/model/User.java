@@ -1,5 +1,7 @@
 package com.mini.timecapsule.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -40,9 +42,11 @@ public class User {
      * 좌표
      * - 'xxxyyy' 형식
      * - 좌표에 따른 배경 변화
+     * 좌표 테이블 만들기 + 좌표 세션유지
      */
-    @Column(nullable = false, length = 6)
-    private String coordinates;
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="id", nullable = false)
+    private Coordinates coordinates;
 
     /**
      * 캡슐명
@@ -55,7 +59,6 @@ public class User {
      * - 최소 4자리
      */
     @Column(nullable = false)
-    @Size(min = 4)
     private String password;
 
     /**
@@ -68,7 +71,7 @@ public class User {
      * 캡슐타입
      * 컵셉 정의되는대로 enum class화
      */
-    private String capsuleType;
+    private CapsuleType capsuleType;
 
     /**
      * 오픈 가능일
@@ -84,22 +87,26 @@ public class User {
     /**
      * 생성일
      */
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime createdAt;
 
     /**
      * 작성가능일
      * 오픈일로부터 1~2개월이내, 최소작성기간에대한 고민필요
      */
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime writeableAt;
 
     /**
      * 첫편지일수
      */
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime firstTargetAt;
 
     /**
      * 마지막 접속일
      */
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime lastAccessAt;
 
     /**
@@ -129,8 +136,15 @@ public class User {
         }
     }
 
-    public static User joinUser(String coordinates, String password, String name,
-                                String capsuleType, OpenDay openDayType,
+    public enum CapsuleType {
+        EGG, // 계란형
+        LETTERBOTTLE, //편지가 들어있는 병
+        BAMBOOTUBE, // 죽통(대나무통)
+        CANDYCASE // 사탕통
+    }
+
+    public static User joinUser(Coordinates coordinates, String password, String name,
+                                CapsuleType capsuleType, OpenDay openDayType,
                                 ZonedDateTime writeableAt, String dummy) {
         User user = new User();
         user.coordinates = coordinates;
