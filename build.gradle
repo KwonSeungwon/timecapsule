@@ -2,7 +2,6 @@
 buildscript {
     ext {
         QUERY_DSL_VERSION = "5.0.0" // QueryDSL 버전 명시
-        mooworkNodeVersion = "1.3.1"
     }
 }
 //
@@ -11,7 +10,6 @@ plugins {
     id 'org.springframework.boot' version '2.6.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10' // QueryDSL 플러그인 추가
-    id "com.moowork.node" version "${mooworkNodeVersion}" //
     id 'java'
     id 'war'
 }
@@ -95,15 +93,9 @@ configurations {
     querydsl.extendsFrom compileClasspath // queryDsl이 compileClassPath를 상속받도록 설정
 }
 
+
 tasks.named('test') {
     useJUnitPlatform()
-}
-task {runVueServer}(type:NpmTask){
-    workingDir=file("{vue}")
-    args = ["run", "serve"]
-}
-bootRun.doFirst {
-    runReactServer
 }
 
 
