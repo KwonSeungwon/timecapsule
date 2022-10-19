@@ -44,7 +44,11 @@ export default {
   methods : {
     prev_f () {
       if (this.prev_back) {
-        this.$router.go(-1);
+        if (window.history.length > 2) {
+          this.$router.go(-1);
+        } else {
+          this.$router.push('/');
+        }
       } else {
         this.$emit('footer_res', false);
       }
