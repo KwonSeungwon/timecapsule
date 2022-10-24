@@ -1,6 +1,6 @@
 package com.mini.timecapsule.controller;
 
-import com.mini.timecapsule.dto.UserDTO;
+import com.mini.timecapsule.dto.UserDto;
 import com.mini.timecapsule.model.Coordinates;
 import com.mini.timecapsule.service.UserService;
 import com.mini.timecapsule.utils.bind.GetRestMapping;
@@ -28,20 +28,20 @@ public class UserController {
     }
 
     @GetRestMapping(value = "/api/timecapsule/user")
-    public ModelAndView get(UserDTO userDTO) {
+    public ModelAndView get(UserDto userDTO) {
 
         userService.getUser(userDTO);
 
         return null;
     }
     @PostRestMapping(value = "/api/timecapsule/user")
-    public void createUser(@RequestBody UserDTO userDTO) {
+    public void createUser(@RequestBody UserDto userDTO) {
 
         userService.createUser(userDTO);
     }
 
     @GetMapping(value = "/api/timecapsule/users")
-    public ModelAndView getList(UserDTO userDTO) {
+    public ModelAndView getList(UserDto userDTO) {
 
         userService.getUserList(userDTO);
 
@@ -50,13 +50,13 @@ public class UserController {
 
 
     @PutMapping(value = "/api/timecapsule/user")
-    public ModelAndView update(UserDTO userDTO) {
+    public ModelAndView update(UserDto userDTO) {
 
         return null;
     }
 
     @DeleteMapping(value = "/api/timecapsule/user")
-    public ModelAndView delete(UserDTO userDTO) {
+    public ModelAndView delete(UserDto userDTO) {
 
         return null;
     }

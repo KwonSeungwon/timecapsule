@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 
 @Setter
-public class UserDTO {
+public class UserDto {
 
     private String coordinates;
 

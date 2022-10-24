@@ -2,7 +2,7 @@ package com.mini.timecapsule.service;
 
 import com.mini.timecapsule.dao.CoordinatesRepository;
 import com.mini.timecapsule.dao.UserRepository;
-import com.mini.timecapsule.dto.UserDTO;
+import com.mini.timecapsule.dto.UserDto;
 import com.mini.timecapsule.model.Coordinates;
 import com.mini.timecapsule.model.QCoordinates;
 import com.mini.timecapsule.model.QUser;
@@ -18,7 +18,6 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.TimeZone;
@@ -76,7 +75,7 @@ public class UserService {
      * 전체 User의 목록을 가져오는 메소드 / 관리자또는 통계화면에서 사용할 것으로 예상됨
      * @param userDTO
      */
-    public UserDTO getUserList(UserDTO userDTO) {
+    public UserDto getUserList(UserDto userDTO) {
 
         BooleanBuilder predicate = new BooleanBuilder();
         QUser qUser = QUser.user;
@@ -106,7 +105,7 @@ public class UserService {
      * 일반적인 유저들이 로그인할 때 사용될 메소드
      * @param userDTO
      */
-    public void getUser(UserDTO userDTO) {
+    public void getUser(UserDto userDTO) {
 
         BooleanBuilder predicate = new BooleanBuilder();
         QUser qUser = QUser.user;
@@ -123,7 +122,7 @@ public class UserService {
 
     }
 
-    public void createUser(UserDTO userDTO) {
+    public void createUser(UserDto userDTO) {
 
         String[] coordinates = userDTO.getCoordinates().split(",");
         String password = passwordEncoder.encode(userDTO.getPassword());
@@ -175,7 +174,7 @@ public class UserService {
      * User 삭제기능 / 관리자에 의해 일부만 사용될 것으로 생각됨
      * @param userDTO
      */
-    public void deleteUser(UserDTO userDTO) {
+    public void deleteUser(UserDto userDTO) {
 
 //        User user = userRepository.findOne()
 
