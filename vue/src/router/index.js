@@ -68,6 +68,11 @@ const routes = [
     name: 'writeLetter',
     component: WriteLetter
   },
+  {
+    path : "/:catchAll(.*)",
+    name : "title",
+    component : Title
+  },
 ]
 
 const router = createRouter({
