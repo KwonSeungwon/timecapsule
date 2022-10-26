@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class HomeController {
+
     @GetMapping("/")
     public String hello(){
         return "home";

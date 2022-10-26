@@ -38,6 +38,9 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private CoordinatesService coordinatesService;
+
+    @Autowired
     private CoordinatesRepository coordinatesRepository;
 
 
@@ -46,29 +49,7 @@ public class UserService {
      * TODO: 눌렀을 때 시점기준으로 좌표선점
      */
     public Coordinates join() {
-
-        Random random = new Random();
-        String xCoordinates = null;
-        String yCoordinates = null;
-        BooleanBuilder predicate = new BooleanBuilder();
-        QCoordinates qCoordinates = QCoordinates.coordinates;
-        while(true) {
-            xCoordinates = String.valueOf(random.nextInt(999));
-            yCoordinates = String.valueOf(random.nextInt(999));
-            predicate.and(qCoordinates.xCoordinates.eq(xCoordinates));
-            predicate.and(qCoordinates.yCoordinates.eq(yCoordinates));
-            Optional<Coordinates> findCoordinates = coordinatesRepository.findOne(predicate);
-            if (!findCoordinates.isPresent()) {
-                break;
-            }
-            predicate = new BooleanBuilder();
-        }
-        Coordinates coordinates = new Coordinates().newCoordinates(xCoordinates, yCoordinates);
-        coordinates.newCoordinates(xCoordinates, yCoordinates);
-        coordinates.setIsFixed(true);
-        coordinatesRepository.save(coordinates);//임시코드
-
-        return coordinates;
+        return coordinatesService.findUnFixedCoordinates();
     }
 
     /**

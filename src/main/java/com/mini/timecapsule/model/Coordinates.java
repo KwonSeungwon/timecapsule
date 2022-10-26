@@ -40,9 +40,9 @@ public class Coordinates {
 
     private String yCoordinates;
 
-    private ZonedDateTime createdAt;
-
     private ZonedDateTime fixedAt;
+
+    private ZonedDateTime linkAt;
 
     @Transient
     private Boolean isFixed;
@@ -54,16 +54,15 @@ public class Coordinates {
 
 
     //신규생성(일괄적으로 생성할 예정)
-    public Coordinates newCoordinates(String xCoordinates, String yCoordinates) {
+    public static Coordinates newCoordinates(String xCoordinates, String yCoordinates) {
 
         Coordinates coordinates = new Coordinates();
-
-        this.xCoordinates = xCoordinates;
-        this.yCoordinates = yCoordinates;
-        this.fixedAt = null;
-        this.createdAt = ZonedDateTime.now();
-        this.isFixed = false;
-        this.user = null;
+        coordinates.xCoordinates = xCoordinates;
+        coordinates.yCoordinates = yCoordinates;
+        coordinates.fixedAt = null;
+        coordinates.isFixed = false;
+        coordinates.linkAt = null;
+        coordinates.user = null;
 
         return coordinates;
     }
@@ -71,12 +70,12 @@ public class Coordinates {
     //첫 진입시 좌표선점
     public void preemptionCoordinates() {
         this.isFixed = true;
+        this.fixedAt = ZonedDateTime.now();
     }
 
     // 정상적으로 신규게정을 만들었을 때
     public void fixCoordinatesAndUser(User user) {
         this.user = user;
-        this.fixedAt = ZonedDateTime.now();
-
+        this.linkAt = ZonedDateTime.now();
     }
 }
