@@ -44,7 +44,6 @@ public class Coordinates {
 
     private ZonedDateTime linkAt;
 
-    @Transient
     private Boolean isFixed;
 
     @OneToOne(fetch = FetchType.LAZY)
