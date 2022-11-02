@@ -3,7 +3,6 @@ package com.mini.timecapsule.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
@@ -40,7 +39,7 @@ public class LetterPaper {
      * 편지지타입
      * - 이미지 나오는대로 enum class 화
      */
-    private String letterTemplateType;
+    private LetterPaperType letterPaperType;
 
     /**
      * 편지상태
@@ -75,12 +74,19 @@ public class LetterPaper {
         REMOVE
     }
 
-    public static LetterPaper newEntity(String name, User user, String letterTemplateType,
+    public enum LetterPaperType {
+        LETTER,
+        NOTE,
+        POLAROID,
+        SHEEPSKIN
+    }
+
+    public static LetterPaper newEntity(String name, User user, LetterPaperType letterPaperType,
                                         String content, String requestorInfo) {
         LetterPaper letterPaper = new LetterPaper();
         letterPaper.name = name;
         letterPaper.user = user;
-        letterPaper.letterTemplateType = letterTemplateType;
+        letterPaper.letterPaperType = letterPaperType;
         letterPaper.status = LetterStatus.UNOPENED;
         letterPaper.content = content;
         letterPaper.createdAt = ZonedDateTime.now();

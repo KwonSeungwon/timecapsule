@@ -2,6 +2,7 @@ package com.mini.timecapsule.controller;
 
 import com.mini.timecapsule.dto.UserDto;
 import com.mini.timecapsule.model.Coordinates;
+import com.mini.timecapsule.model.User;
 import com.mini.timecapsule.service.UserService;
 import com.mini.timecapsule.utils.bind.GetRestMapping;
 import com.mini.timecapsule.utils.bind.PostRestMapping;
@@ -30,9 +31,11 @@ public class UserController {
     @GetRestMapping(value = "/api/timecapsule/user")
     public ModelAndView get(UserDto userDTO) {
 
-        userService.getUser(userDTO);
+        ModelAndView mv = new ModelAndView();
+        User user = userService.getUser(userDTO);
+        mv.addObject("user", user);
 
-        return null;
+        return mv;
     }
     @PostRestMapping(value = "/api/timecapsule/user")
     public void createUser(@RequestBody UserDto userDTO) {

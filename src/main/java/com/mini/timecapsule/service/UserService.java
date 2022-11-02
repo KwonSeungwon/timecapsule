@@ -86,7 +86,7 @@ public class UserService {
      * 일반적인 유저들이 로그인할 때 사용될 메소드
      * @param userDTO
      */
-    public void getUser(UserDto userDTO) {
+    public User getUser(UserDto userDTO) {
 
         BooleanBuilder predicate = new BooleanBuilder();
         QUser qUser = QUser.user;
@@ -100,7 +100,7 @@ public class UserService {
         }
 
         Optional<User> user = userRepository.findOne(predicate);
-
+        return user.get();
     }
 
     public void createUser(UserDto userDTO) {
