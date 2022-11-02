@@ -2,9 +2,11 @@ package com.mini.timecapsule.service;
 
 import com.mini.timecapsule.dao.CoordinatesRepository;
 import com.mini.timecapsule.model.Coordinates;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import java.util.List;
  * 좌표를 관리하는 서비스
  */
 @Service
+@RequiredArgsConstructor
 @Log4j2
 public class CoordinatesService {
 
@@ -52,7 +55,7 @@ public class CoordinatesService {
 
         //점유된상태로 넘김
         Coordinates coordinate = unFixedCoordinates.get(randomIndex);
-        coordinate.preemptionCoordinates();
+        coordinate.preemption();
         coordinatesRepository.save(coordinate);
 
         return coordinate;
@@ -64,7 +67,13 @@ public class CoordinatesService {
      * 스케쥴러로 생성
      */
     public void initUnLinkCoordinate() {
-
+        LocalDateTime limitTime = LocalDateTime.now().minusMinutes(30L);
+        List<Coordinates> targets =
+                coordinatesRepository.findByFixedAtLitterAndLinkAtIsNull(limitTime);
+        for (Coordinates coordinate : targets) {
+            coordinate.free();
+        }
+        coordinatesRepository.saveAll(targets);
     }
 
 }

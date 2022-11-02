@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 /**
@@ -40,9 +42,9 @@ public class Coordinates {
 
     private String yCoordinates;
 
-    private ZonedDateTime fixedAt;
+    private LocalDateTime fixedAt;
 
-    private ZonedDateTime linkAt;
+    private LocalDateTime linkAt;
 
     private Boolean isFixed;
 
@@ -67,14 +69,20 @@ public class Coordinates {
     }
 
     //첫 진입시 좌표선점
-    public void preemptionCoordinates() {
+    public void preemption() {
         this.isFixed = true;
-        this.fixedAt = ZonedDateTime.now();
+        this.fixedAt = LocalDateTime.now();
+    }
+
+    //선점 해제
+    public void free() {
+        this.isFixed = false;
+        this.fixedAt = null;
     }
 
     // 정상적으로 신규게정을 만들었을 때
     public void fixCoordinatesAndUser(User user) {
         this.user = user;
-        this.linkAt = ZonedDateTime.now();
+        this.linkAt = LocalDateTime.now();
     }
 }
