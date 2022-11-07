@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CoordinatesRepository extends JpaRepository<Coordinates, Long>, QuerydslPredicateExecutor<Coordinates> {
 
-    List<Coordinates> findByIsFixedAndUserIsNull(Boolean isFixed);
+    List<Coordinates> findByIsFixed(Boolean isFixed);
 
-    List<Coordinates> findByFixedAtLitterAndLinkAtIsNull(LocalDateTime limitTime);
+//    List<Coordinates> findByFixedAtLitterAndLinkAtIsNull(LocalDateTime limitTime);
 }
