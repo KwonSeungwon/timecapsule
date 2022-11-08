@@ -9,7 +9,7 @@
       <p>편지는 오픈되기 한 달 전까지 보낼 수 있어요.</p>
     </div>
     <Footer
-        next="전송"
+        next="전송" @click="send()"
         :disable_next="letter === null || letter.length < 10"
         v-on:footer_res="next"></Footer>
   </div>
@@ -41,6 +41,9 @@ export default {
     }
   },
   methods : {
+    send(){
+      alert("a")
+    },
     next (next) {
       if (next) {
         //axios 전송후 결과

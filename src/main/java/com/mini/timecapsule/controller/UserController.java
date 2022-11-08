@@ -1,5 +1,8 @@
 package com.mini.timecapsule.controller;
 
+import com.mini.timecapsule.dto.BaseDTO;
+import com.mini.timecapsule.dto.BaseResponse;
+import com.mini.timecapsule.dto.SendLetterDTO;
 import com.mini.timecapsule.dto.UserDTO;
 import com.mini.timecapsule.model.Coordinates;
 import com.mini.timecapsule.service.UserService;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -59,6 +64,12 @@ public class UserController {
     public ModelAndView delete(UserDTO userDTO) {
 
         return null;
+    }
+    @GetMapping(value = "/api/timecapsule/letter/send")
+    public BaseResponse send(@RequestBody SendLetterDTO dto){
+        BaseResponse baseResponse = new BaseResponse();
+
+        return baseResponse;
     }
 
 }

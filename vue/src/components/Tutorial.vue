@@ -1,6 +1,6 @@
 <template>
   <div class="field-holder">
-    <swiper class="swiper" :slides-per-view="3" :space-between="50" @swiper="onSwiper" @slideChange="onSlideChange">
+    <swiper class="swiper" :slides-per-view="3" :space-between="50" @swiper="onSwiper" @slideChange="onSlideChange" >
       <!--첫번째 슬라이드-->
       <swiper-slide role="tab">
         <div class="field">
@@ -9,12 +9,14 @@
             <p style="padding: 4px; font-size: 15px;">타임캡슐 만들기 (MY)</p>
           </div>
           <div class="content" style="font-weight: normal;">
-            <p style="color: #522a2a; text-shadow: none; margin-top: 30px;">1.     좌표를 새로 생성하고<br>
-              비밀번호를 입력해주세요</p>
+            <p style="color: #522a2a; text-shadow: none; margin-top: 30px;">1.     좌표를 새로 생성하고</p>
+             <div style="float: left"> <img src="../assets/images/passwordBox.png"></div><div><p style="color: #522a2a; text-shadow: none; ">를 입력해주세요</p></div>
             <p style="color: #522a2a; text-shadow: none; margin-top: 30px;">2.     캡슐을 열어 편지지를 읽을 날짜를 <br>입력해주세요.</p>
             <p style="color: #522a2a; text-shadow: none; margin-top: 30px;">3.     원하는 타임캡슐을 선택해 주세요.</p>
           </div>
+
           <span class="paginationFirst">
+
           </span>
           <Footer style="margin-top:10px;" prev="닫기" one-button></Footer>
         </div>
@@ -27,13 +29,14 @@
             <p style="padding: 4px; font-size: 15px;">편지보내기 (Send)</p>
           </div>
           <div class="content" style="font-weight: normal;">
-            <p style="color: #522a2a; text-shadow: none; margin-top: 30px;">1.     받는사람의 타임캡슐 주소(url)와<br>
+            <p style="color: #522a2a; text-shadow: none;">1.     <img src="../assets/images/receiver.png">의 타임캡슐 주소(url)와<br>
               보내는 사람을 입력해주세요</p>
             <p style="color: #522a2a; text-shadow: none; margin-top: 30px;">2.     원하는 편지지를 선택해 주세요</p>
             <p style="color: #522a2a; text-shadow: none; margin-top: 30px;">3.     선택한 편지지에 내용을 써주세요</p>
             <p style="color: #522a2a; text-shadow: none; margin-top: 30px;">4.     완료를 클릭해 작성한 편지를 전송해주세요</p>
           </div>
           <span class="paginationMiddle">
+
           </span>
           <Footer style="margin-top:10px;" prev="닫기" one-button></Footer>
         </div>
@@ -56,10 +59,12 @@
           <Footer style="margin-top:10px;" prev="닫기" one-button></Footer>
         </div>
       </swiper-slide>
-      <swiper-slide role="slider">Slide 4</swiper-slide>
-      <swiper-slide role="slider">Slide 5</swiper-slide>
-      <swiper-slide role="slider">Slide 6</swiper-slide>
-      <swiper-slide role="slider">Slide 7</swiper-slide>
+      <swiper-slide role="slider"></swiper-slide>
+      <swiper-slide role="slider"></swiper-slide>
+      <swiper-slide role="slider"></swiper-slide>
+      <swiper-slide role="slider"></swiper-slide>
+      <swiper-slide role="slider"></swiper-slide>
+
       ...
     </swiper>
     <transition-group :name="transition">
@@ -71,10 +76,10 @@
 <script>
 import Footer from '@/components/Footer';
 
-// Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from 'swiper/vue';
 // Import Swiper styles
 import 'swiper/css';
+import 'swiper/css/effect-fade';
 
 export default {
   name: "cTutorial",
@@ -89,9 +94,9 @@ export default {
       tutorialItem : [1,2,3],
       selectIdx : 0,
       slidesPerView: 'auto',
-      spaceBetween: 20, // swiper-slide 사이의 간격 지정
+      spaceBetween: 10, // swiper-slide 사이의 간격 지정
       slidesOffsetBefore: 0, // slidesOffsetBefore는 첫번째 슬라이드의 시작점에 대한 변경할 때 사용
-      slidesOffsetAfter: 0, // slidesOffsetAfter는 마지막 슬라이드 시작점 + 마지막 슬라이드 너비에 해당하는 위치의 변경이 필요할 때 사용
+      slidesOffsetAfter: 7, // slidesOffsetAfter는 마지막 슬라이드 시작점 + 마지막 슬라이드 너비에 해당하는 위치의 변경이 필요할 때 사용
       freeMode: true, // freeMode를 사용시 스크롤하는 느낌으로 구현 가능
       centerInsufficientSlides: true, // 컨텐츠의 수량에 따라 중앙정렬 여부를 결정함
     }
@@ -114,6 +119,7 @@ export default {
     }
   },
   setup() {
+
     const onSwiper = (swiper) => {
       console.log(swiper);
     };
