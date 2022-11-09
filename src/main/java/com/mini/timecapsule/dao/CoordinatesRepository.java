@@ -11,5 +11,5 @@ public interface CoordinatesRepository extends JpaRepository<Coordinates, Long>,
 
     List<Coordinates> findByIsFixed(Boolean isFixed);
 
-//    List<Coordinates> findByFixedAtLitterAndLinkAtIsNull(LocalDateTime limitTime);
+    List<Coordinates> findByIsFixedTrueAndFixedAtAndLinkAtIsNull(LocalDateTime limitTime);
 }

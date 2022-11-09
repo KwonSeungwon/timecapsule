@@ -2,8 +2,6 @@ package com.mini.timecapsule.service;
 
 import com.mini.timecapsule.dao.CoordinatesRepository;
 import com.mini.timecapsule.model.Coordinates;
-import com.mini.timecapsule.model.QCoordinates;
-import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,12 +70,12 @@ public class CoordinatesService {
      * 스케쥴러로 생성
      */
     public void initUnLinkCoordinate() {
-//        LocalDateTime limitTime = LocalDateTime.now().minusMinutes(30L);
-//        List<Coordinates> targets = coordinatesRepository.findByFixedAtLitterAndLinkAtIsNull(limitTime);
-//        for (Coordinates coordinate : targets) {
-//            coordinate.free();
-//        }
-//        coordinatesRepository.saveAll(targets);
+        LocalDateTime limitTime = LocalDateTime.now().minusMinutes(30L);
+        List<Coordinates> targets = coordinatesRepository.findByIsFixedTrueAndFixedAtAndLinkAtIsNull(limitTime);
+        for (Coordinates coordinate : targets) {
+            coordinate.free();
+        }
+        coordinatesRepository.saveAll(targets);
     }
 
 }
