@@ -1,7 +1,10 @@
 package com.mini.timecapsule.service;
 
 import com.mini.timecapsule.dao.CoordinatesRepository;
+import com.mini.timecapsule.dto.SendCapsuleDto;
 import com.mini.timecapsule.model.Coordinates;
+import com.mini.timecapsule.model.QCoordinates;
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +79,24 @@ public class CoordinatesService {
             coordinate.free();
         }
         coordinatesRepository.saveAll(targets);
+    }
+
+    /**
+     좌표확인 함수
+     */
+    public Boolean validCoordinates(SendCapsuleDto sendCapsuleDto) {
+
+        QCoordinates qcoordinates = QCoordinates.coordinates;
+        BooleanBuilder predicate = new BooleanBuilder();
+
+        if (sendCapsuleDto.getCoordinates() != null) {
+            //임시코드
+            String[] coordinates = sendCapsuleDto.getCoordinates().split(",");
+            predicate.and(qcoordinates.xCoordinates.eq(coordinates[0]));
+            predicate.and(qcoordinates.yCoordinates.eq(coordinates[1]));
+        }
+
+        return coordinatesRepository.findOne(predicate).isPresent();
     }
 
 }

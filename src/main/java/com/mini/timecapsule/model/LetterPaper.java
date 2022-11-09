@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 
@@ -66,7 +67,12 @@ public class LetterPaper {
     /**
      * 열어본 날짜
      */
-    private ZonedDateTime openedAt;
+    private LocalDateTime openedAt;
+
+    /**
+     * 변경일
+     */
+    private LocalDateTime updatedAt;
 
     public enum LetterStatus {
         UNOPENED,
@@ -79,6 +85,17 @@ public class LetterPaper {
         NOTE,
         POLAROID,
         SHEEPSKIN
+    }
+
+    public void read() {
+        this.status = LetterStatus.OPENED;
+        this.openedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void remove() {
+        this.status = LetterStatus.REMOVE;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public static LetterPaper newEntity(String name, User user, LetterPaperType letterPaperType,
