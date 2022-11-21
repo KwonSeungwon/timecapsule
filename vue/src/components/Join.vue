@@ -13,7 +13,7 @@
       </div>
       <div class="input-field">
         <label>비밀번호</label>
-        <input v-model="password">
+        <input type="password" v-model="password">
         <p class="hint error-content">{{hint.password}}</p>
       </div>
       <div class="input-field">
