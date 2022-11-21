@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -58,6 +59,21 @@ public class LetterService {
         }
 
         return opLetter.get();
+    }
+
+    /**
+     * 편지 리스트를 가져오는 함수
+     * @param letterDto
+     */
+    public List<LetterPaper> list(LetterDto letterDto) {
+
+        User user = null;
+
+        //세션통해 유저아이디 받아오기
+
+        List<LetterPaper> letters = letterPaperRepository.findByUser(user);
+
+        return letters;
     }
 
     public void readLetter(LetterDto letterDto) {
