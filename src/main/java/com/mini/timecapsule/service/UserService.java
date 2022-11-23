@@ -3,8 +3,8 @@ package com.mini.timecapsule.service;
 import com.mini.timecapsule.dao.CoordinatesRepository;
 import com.mini.timecapsule.dao.UserRepository;
 import com.mini.timecapsule.dto.UserDto;
-import com.mini.timecapsule.exception.CustomeException;
-import com.mini.timecapsule.exception.ExceptionStructur;
+import com.mini.timecapsule.exception.CustomException;
+import com.mini.timecapsule.exception.ExceptionStructure;
 import com.mini.timecapsule.model.Coordinates;
 import com.mini.timecapsule.model.QCoordinates;
 import com.mini.timecapsule.model.QUser;
@@ -101,7 +101,7 @@ public class UserService {
         Optional<User> user = userRepository.findOne(predicate);
 
         if(!user.isPresent()) {
-            throw new CustomeException(ExceptionStructur.NOT_FOUND_USER);
+            throw new CustomException(ExceptionStructure.NOT_FOUND_USER);
         }
 
         return user.get();
@@ -115,7 +115,7 @@ public class UserService {
         QCoordinates qCoordinates = QCoordinates.coordinates;
         Optional<Coordinates> coordinate = coordinatesRepository.findOne(new BooleanBuilder().and(qCoordinates.xCoordinates.eq(coordinates[0])).and(qCoordinates.yCoordinates.eq(coordinates[1])));
         if (!coordinate.isPresent()) {
-            throw new CustomeException(ExceptionStructur.NOT_FOUND_COORDINATE);
+            throw new CustomException(ExceptionStructure.NOT_FOUND_COORDINATE);
         }
         User user = User.joinUser(coordinate.get(), password, userDTO.getName(), userDTO.getCapsuleType(),
                 userDTO.getOpenDayType(), writeableAt, null);

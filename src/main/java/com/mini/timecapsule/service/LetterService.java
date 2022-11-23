@@ -1,10 +1,14 @@
 package com.mini.timecapsule.service;
 
+import com.mini.timecapsule.dao.ContentFilterRepository;
 import com.mini.timecapsule.dao.CoordinatesRepository;
 import com.mini.timecapsule.dao.LetterPaperRepository;
 import com.mini.timecapsule.dao.UserRepository;
 import com.mini.timecapsule.dto.LetterDto;
 import com.mini.timecapsule.dto.SendCapsuleDto;
+import com.mini.timecapsule.exception.CustomException;
+import com.mini.timecapsule.exception.ExceptionStructure;
+import com.mini.timecapsule.model.ContentFilter;
 import com.mini.timecapsule.model.LetterPaper;
 import com.mini.timecapsule.model.QCoordinates;
 import com.mini.timecapsule.model.User;
@@ -26,6 +30,7 @@ public class LetterService {
 
     private final UserRepository userRepository;
     private final LetterPaperRepository letterPaperRepository;
+    private final ContentFilterRepository contentFilterRepository;
 
     public void sendLetter(SendCapsuleDto sendCapsuleDto) {
 
@@ -33,9 +38,15 @@ public class LetterService {
 
         if (!opUser.isPresent()) {
             //에러처리
+            throw new CustomException(ExceptionStructure.NOT_FOUND_USER);
         }
 
         //편지지 내용 검사 sendCapsuleDto.getContent()
+        int filteringCount = letterFilteringContent(sendCapsuleDto.getContent());
+        if (filteringCount > 0) {
+
+        }
+
 
         //블락 유저 체크 sendCapsuleDto.getRequestorInfo()
 
@@ -45,6 +56,17 @@ public class LetterService {
 
         letterPaperRepository.save(letter);
 
+    }
+
+    private int letterFilteringContent(String content) {
+        List<String> keywords = contentFilterRepository.findFilterKeywordByUsed(ContentFilter.Used.ACTIVE);
+        int count = 0;
+
+        for (String keyword : keywords) {
+            if(content.contains(keyword)) count++;
+        }
+
+        return count;
     }
 
     private LetterPaper getLetter(Long id) {
