@@ -43,7 +43,7 @@ public class UserController {
 
         return mv;
     }
-    @PostRestMapping(value = "/user")
+    @PostRestMapping(value = "/api/timecapsule/user")
     public void createUser(@RequestBody UserDto userDTO) {
 
         userService.createUser(userDTO);
