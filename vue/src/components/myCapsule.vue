@@ -16,7 +16,7 @@
             <template v-for="(letter, i) in letters" :key="i">
               <!-- 0 1 2 3 4 5   6 7 8 9 10 11   12 13 14 15 16 17-->
               <div v-if="(page - 1) * 6 <= i && i < page * 6"  class="select-letter" :class="'position-' + (i % 6 + 1)">
-                <button class="letter" :class="letter.type" @click="readLetter(i)"></button>
+                <button class="letter" :class="[letter.type, {'open' : letter.status === 'OPENED'}]" @click="readLetter(i)"></button>
                 <span>{{letter.name}}</span>
               </div>
             </template>
@@ -56,7 +56,8 @@ export default {
       selectLetter : {
         id : null,
         type : null,
-        content : null
+        content : null,
+        status : null
       },
 
       //임시
@@ -80,6 +81,7 @@ export default {
           id : i,
           type : this.letterTypes[Math.floor(Math.random() * this.letterTypes.length)],
           name : this.returnRandomContent(first) + this.returnRandomContent(last),
+          status: 'UNOPENED',
           content : this.returnRandomContent(contents)
         });
       }
@@ -97,9 +99,14 @@ export default {
         content : null
       };
     },
+    openLetter_f () {
+      this.selectLetter.status = 'OPENED';
+      //axios.post('/api/v1/letter/this.selectLetter.id')
+    },
     readLetter(idx) {
       //TODO : 편지리스트에서 인덱스값 받아서 출력, 편지 정보에 편지지정보가있음
       this.selectLetter = this.letters[idx];
+      this.openLetter_f();
       this.openLetter = true;
     },
     closeLetter() {
