@@ -3,8 +3,10 @@ package com.mini.timecapsule.dto;
 import com.mini.timecapsule.model.LetterPaper;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class SendCapsuleDto {
+public class SendCapsuleDto implements Serializable {
 
     private String coordinates;
 

@@ -10,8 +10,9 @@
     </div>
     <Footer
         next="전송"
+        @click ="test()"
         :disable_next="letter === null || letter.length < 10"
-        v-on:footer_res="next"></Footer>
+        v-on:footer_res="next('next')"></Footer>
   </div>
   <Popup v-if="popup.open"
          :one-button="beSend"
@@ -24,6 +25,7 @@
 <script>
 import Footer from '@/components/Footer';
 import Popup from "@/components/Popup";
+import axios from 'axios';
 
 export default {
   name: "writeLetter",
@@ -41,10 +43,25 @@ export default {
     }
   },
   methods : {
-    next (next) {
+    test :function() {
+      axios.post('/api/v1/letter',{
+        coordinates : "data",
+        sender:"test",
+        password:"123",
+        letterPaperType: "LETTER",
+        content: this.letter
+      }).then(function (response){
+        console.log(response);
+      }).catch(function (error){
+        console.log(error);
+      })
+    },
+    next :function (next) {
       if (next) {
         //axios 전송후 결과
-
+        axios.get('/api/valid/Coordinates').then(res => {
+          console.log(res);
+        })
         //실패
         if (!this.beSend) {
           this.popup.btnCancel = '취소';

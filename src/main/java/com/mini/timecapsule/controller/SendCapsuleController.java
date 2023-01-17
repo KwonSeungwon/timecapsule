@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin(origins = "*")
@@ -28,7 +30,7 @@ public class SendCapsuleController {
     }
 
     @PostRestMapping("/api/v1/letter")
-    public void send(@RequestBody SendCapsuleDto sendCapsuleDto) {
+    public void send(@RequestBody @Valid SendCapsuleDto sendCapsuleDto) {
         letterService.sendLetter(sendCapsuleDto);
     }
 
