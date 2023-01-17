@@ -31,12 +31,12 @@ public class TokenProvider {
         this.key = key;
     }
 
-    public String createToken(String userPk, List<String> roles, String id) {
+    public String createToken(String id, String name) {
         Date now = new Date();
         Date validityInterval = new Date(now.getTime() + this.validity);
         String token = Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)   // 헤더 타입 지정
-                .setIssuer("HealthConnect")                     // 발급자 정보
+                .setIssuer("timeCapsule")                     // 발급자 정보
                 .setIssuedAt(now)                               // 발급시간
                 .setExpiration(validityInterval)                // 만료시간
                 .signWith(key, keyAlg)                          // 키정보 및 해싱 알고리즘 정보

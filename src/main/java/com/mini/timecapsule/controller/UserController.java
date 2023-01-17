@@ -2,6 +2,7 @@ package com.mini.timecapsule.controller;
 
 import com.mini.timecapsule.dto.SendCapsuleDto;
 import com.mini.timecapsule.dto.UserDto;
+import com.mini.timecapsule.jwt.TokenProvider;
 import com.mini.timecapsule.model.Coordinates;
 import com.mini.timecapsule.model.User;
 import com.mini.timecapsule.service.CoordinatesService;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/timecapsule/*")
@@ -21,11 +24,24 @@ public class UserController {
 
     private final UserService userService;
     private final CoordinatesService coordinatesService;
+    /**
+     * JWT 토큰 관리
+     */
+    private final TokenProvider tokenProvider;
+
 
     @GetRestMapping("/coordinates/valid")
     public Boolean validCoordinates(SendCapsuleDto sendCapsuleDto) {
 
         return coordinatesService.validCoordinates(sendCapsuleDto);
+    }
+    @PostMapping()
+    public void checkLogin(@Valid @RequestBody UserDto dto){
+
+        /*1.db에서 먼저 user정보 꺼내옴*/
+
+        String token = tokenProvider.createToken(dto.getCoordinates(), dto.getName());
+
     }
 
     @GetRestMapping(value = "/join")
