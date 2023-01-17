@@ -13,7 +13,7 @@
       </div>
       <div class="input-field">
         <label>비밀번호</label>
-        <input v-model="password">
+        <input type="password" v-model="password">
         <p class="hint error-content">{{hint.password}}</p>
       </div>
       <div class="input-field">
@@ -66,9 +66,14 @@ export default {
       }
     },
     createCoordinates : function() {
+      if (this.isEmpty(localStorage.getItem("COORDINATES"))) { //이미 좌표가 있는경우 호출하지않음
+        this.coordinates = localStorage.getItem("COORDINATES").replaceAll('"', '');
+        return;
+      }
       axios.get('/api/timecapsule/join').then(res => {
         if (res.statusText === 'OK') {
           this.coordinates = res.data.xcoordinates + ',' + res.data.ycoordinates;
+          localStorage.setItem("COORDINATES", JSON.stringify(this.coordinates));
         } else {
           this.toast('오류가 발생하였습니다. 잠시후에 다시 요청해주세요.');
         }

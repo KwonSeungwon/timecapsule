@@ -1,9 +1,9 @@
 <template>
   <div class="field-holder">
     <transition-group :name="transition">
-  <div class="field" v-for="(item, idx) in tutorialItem" :key="idx"
-       :class="{'prev' : selectIdx > idx, 'next' : selectIdx < idx, 'none' : selectIdx - idx > 1 || selectIdx - idx < -1}"
-       @click="moveField(selectIdx - 1 === idx ? 'prev' : selectIdx + 1 === idx ? 'next' : false)">
+  <div class="field" v-for="page in pages" :key="page"
+       :class="{'prev' : selectIdx > page, 'next' : selectIdx < page, 'none' : selectIdx - page > 1 || selectIdx - page < -1}"
+       @click="moveField(selectIdx - 1 === page ? 'prev' : selectIdx + 1 === page ? 'next' : false)">
         <div class="title">
           <p>내 타임캡슐</p>
         </div>
@@ -12,30 +12,18 @@
           <p>전체 {{totalCount}}</p>
         </div>
         <div class="letter-holder">
-          <div class="select-letter position-1">
-            <button class="letter" @click="readLetter(0)"></button>
-            <span>보낸사람1</span>
-          </div>
-          <div class="select-letter position-2">
-            <button class="letter note" @click="readLetter(0)"></button>
-            <span>보낸사람2</span>
-          </div>
-          <div class="select-letter position-3">
-            <button class="letter polaroid" @click="readLetter(0)"></button>
-            <span>보낸사람4</span>
-          </div>
-          <div class="select-letter position-4">
-            <button class="letter sheepskin" @click="readLetter(0)"></button>
-            <span>보낸사람5</span>
-          </div>
-          <div class="select-letter position-5">
-            <button class="letter" @click="readLetter(0)"></button>
-            <span>보낸사람3</span>
-          </div>
-          <div class="select-letter position-6">
-            <button class="letter polaroid" @click="readLetter(0)"></button>
-            <span>보낸사람6</span>
-          </div>
+          <template v-if="letters.length">
+            <template v-for="(letter, i) in letters" :key="i">
+              <!-- 0 1 2 3 4 5   6 7 8 9 10 11   12 13 14 15 16 17-->
+              <div v-if="(page - 1) * 6 <= i && i < page * 6"  class="select-letter" :class="'position-' + (i % 6 + 1)">
+                <button class="letter" :class="[letter.type, {'open' : letter.status === 'OPENED'}]" @click="readLetter(i)"></button>
+                <span>{{letter.name}}</span>
+              </div>
+            </template>
+          </template>
+          <template v-else>
+            <!-- 편지 없음 표시 -->
+          </template>
           <button class="capsule bamboo"></button>
         </div>
         <Footer prev="홈으로" one-button :prev_back="false" v-on:footer_res="next"></Footer>
@@ -61,31 +49,68 @@ export default {
       newCount : 0,
       totalCount : 0,
       transition : 'slide-next', //slide-next, slide-prev
+      pages : 0,
       letters : [],
-      selectIdx : 0,
+      selectIdx : 1,
       openLetter : false,
       selectLetter : {
         id : null,
         type : null,
-        content : null
+        content : null,
+        status : null
       },
 
       //임시
-      tutorialItem : [1,2,3],
       letterTypes : ['letter', 'note', 'polaroid', 'sheepskin']
     }
   },
   methods : {
+    initTestData(ea) {
+      let first = ['김', '박', '이', '최', '황', '권', '조'];
+      let last = ['철수', '영희', '길동', '동건', '빈', '성수', '현수', '승원'];
+      let contents = [
+          '안녕 반가워 다음에 또만나',
+          '너를 때려 주고 싶어',
+          '빌린돈 값아',
+          '메세지 보내지 말아줄래',
+          '이 편지는 영국에서 최초로 시작되어 일년에 한바퀴를 돌면서 받는 사람에게 행운을 주었고 지금은 당신에게로 옮겨진 이 편지는 4일 안에 당신 곁을 떠나야 합니다. 이 편지를 포함해서 7통을 행운이 필요한 사람에게 보내 주셔야 합니다. 복사를 해도 좋습니다. 혹 미신이라 하실지 모르지만 사실입니다.'
+      ];
+
+      for (let i=0, max=ea; i<max;i++) {
+        this.letters.push({
+          id : i,
+          type : this.letterTypes[Math.floor(Math.random() * this.letterTypes.length)],
+          name : this.returnRandomContent(first) + this.returnRandomContent(last),
+          status: 'UNOPENED',
+          content : this.returnRandomContent(contents)
+        });
+      }
+
+      this.pages = Math.ceil(ea / 6 );
+      console.log(this.letters);
+    },
+    returnRandomContent (list) {
+      return list[Math.floor(Math.random() * list.length)];
+    },
+    initLetter () {
+      this.selectLetter = {
+        id : null,
+        type : null,
+        content : null
+      };
+    },
+    openLetter_f () {
+      this.selectLetter.status = 'OPENED';
+      //axios.post('/api/v1/letter/this.selectLetter.id')
+    },
     readLetter(idx) {
       //TODO : 편지리스트에서 인덱스값 받아서 출력, 편지 정보에 편지지정보가있음
-      this.selectLetter.id = idx;
-      this.selectLetter.type = this.letterTypes[Math.floor(Math.random() * this.letterTypes.length)];
-      this.selectLetter.content = '개발중...';
+      this.selectLetter = this.letters[idx];
+      this.openLetter_f();
       this.openLetter = true;
-
     },
     closeLetter() {
-      console.log(22);
+      this.initLetter();
       this.openLetter = false;
       //편지 읽음처리, disabled
     },
@@ -101,9 +126,12 @@ export default {
       } else if (type === 'prev') {
         if (this.selectIdx) this.transition = 'slide-prev'; this.selectIdx--;
       } else if (type === 'next') {
-        if (this.tutorialItem.length > this.selectIdx + 1)  this.transition = 'slide-next'; this.selectIdx++;
+        if (this.pages > this.selectIdx + 1)  this.transition = 'slide-next'; this.selectIdx++;
       }
     },
+  },
+  created() {
+    this.initTestData(14);
   }
 }
 </script>

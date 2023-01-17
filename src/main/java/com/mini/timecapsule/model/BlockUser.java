@@ -34,12 +34,20 @@ public class BlockUser {
 
     private ZonedDateTime createdAt;
 
+    private ZonedDateTime updatedAt;
+
     public static BlockUser newBlockUser(String ip, String ipType, String memo) {
         BlockUser blockUser = new BlockUser();
         blockUser.id = ip;
         blockUser.ipType = ipType;
         blockUser.memo = memo;
         blockUser.createdAt = ZonedDateTime.now();
+        blockUser.updatedAt = ZonedDateTime.now();
         return blockUser;
+    }
+
+    public void update(String memo) {
+        this.memo = memo;
+        this.updatedAt = ZonedDateTime.now();
     }
 }

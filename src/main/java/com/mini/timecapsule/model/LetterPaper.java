@@ -38,8 +38,8 @@ public class LetterPaper {
 
     /**
      * 편지지타입
-     * - 이미지 나오는대로 enum class 화
      */
+    @Enumerated(EnumType.STRING)
     private LetterPaperType letterPaperType;
 
     /**

@@ -178,9 +178,22 @@ label.letter {
   background-size: cover;
 }
 
+button.letter.open,
+label.letter.open {
+  opacity: 0.4;
+  background: url(./assets/images/common/letters/small/letter_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+
 button.letter.note,
 label.letter.note {
   background: url(./assets/images/common/letters/small/note_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+button.letter.note.open,
+label.letter.note.open {
+  background: url(./assets/images/common/letters/small/note_small_disabled.png) no-repeat center transparent;
   background-size: cover;
 }
 
@@ -193,6 +206,12 @@ label.letter.polaroid {
 button.letter.sheepskin,
 label.letter.sheepskin {
   background: url(./assets/images/common/letters/small/sheepskin_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+button.letter.sheepskin.open,
+label.letter.sheepskin.open {
+  background: url(./assets/images/common/letters/small/sheepskin_small_disabled.png) no-repeat center transparent;
   background-size: cover;
 }
 
