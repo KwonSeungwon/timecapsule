@@ -62,10 +62,10 @@ export default {
 }
 
 .popup .body {
-  width: 207px;
-  height: 303px;
-  padding: 50px;
-  margin: 30% auto 30px;
+  width: 225px;
+  height: 322px;
+  padding: 40px;
+  margin: 40% auto 30px;
 }
 
 .popup.sheepskin .body {
@@ -83,6 +83,28 @@ export default {
 .popup.polaroid .body {
   background: url(../assets/images/common/letters/large/polaroid.png) no-repeat center transparent;
   background-size: cover;
+}
+
+.popup .body span {
+  display: inline-block;
+}
+
+.popup.note .body span {
+  margin-top: -16px;
+  line-height: 35.5px;
+}
+
+.popup.letter .body span {
+  line-height: 41px;
+  margin-top: 12px;
+}
+.popup.polaroid .body span {
+  line-height: 25px;
+}
+
+.popup.sheepskin .body span {
+  margin-top: 10px;
+  line-height: 25px;
 }
 
 .popup .footer {
