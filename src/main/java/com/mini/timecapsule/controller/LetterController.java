@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin(origins = "*")
@@ -27,7 +29,7 @@ public class LetterController {
     }
 
     @PostRestMapping("/api/v1/letter")
-    public void send(@RequestBody SendCapsuleDto sendCapsuleDto) {
+    public void send(@RequestBody @Valid SendCapsuleDto sendCapsuleDto) {
         letterService.sendLetter(sendCapsuleDto);
 
     }
