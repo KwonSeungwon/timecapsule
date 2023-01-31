@@ -42,16 +42,29 @@ public class Template {
 
     private TemplateStatus templateStatus;
 
-    public static Template newTemplate(TemplateType type, String name, String explain, String urlAddress, ZonedDateTime createdAt, TemplateStatus templateStatus) {
+    public static Template newTemplate(TemplateType type, String name, String explain, String urlAddress, TemplateStatus templateStatus) {
         Template template = new Template();
         template.type = type;
         template.name = name;
         template.explain = explain;
         template.urlAddress = urlAddress;
-        template.createdAt = createdAt;
+        template.createdAt = ZonedDateTime.now();
         template.templateStatus = templateStatus;
 
         return template;
+    }
+
+    public void updateTemplateInfo(String explain, String urlAddress) {
+        if (explain != null && explain.length() > 0) {
+            this.explain = explain;
+        }
+        if (urlAddress != null && urlAddress.length() > 0) {
+            this.urlAddress = urlAddress;
+        }
+    }
+
+    public void changeStatus(TemplateStatus status) {
+        this.templateStatus = status;
     }
 
     public enum TemplateType {

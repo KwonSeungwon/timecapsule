@@ -12,6 +12,10 @@ public class TemplateDto {
 
     private String name;
 
+    private String explain;
+
+    private String url;
+
     private Template.TemplateType templateType;
 
     private Template.TemplateStatus templateStatus;
