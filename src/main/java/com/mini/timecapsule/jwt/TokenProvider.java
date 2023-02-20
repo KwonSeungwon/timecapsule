@@ -3,6 +3,7 @@ package com.mini.timecapsule.jwt;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 
 import java.security.Key;
 import java.util.Date;
@@ -31,10 +32,11 @@ public class TokenProvider {
         this.key = key;
     }
 
-    public String createToken(String id, String name) {
+    public String createToken(Authentication authentication) {
+
         Date now = new Date();
         Date validityInterval = new Date(now.getTime() + this.validity);
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)   // 헤더 타입 지정
                 .setIssuer("timeCapsule")                     // 발급자 정보
                 .setIssuedAt(now)                               // 발급시간
@@ -42,9 +44,8 @@ public class TokenProvider {
                 .signWith(key, keyAlg)                          // 키정보 및 해싱 알고리즘 정보
                 .claim("id", id)                             // 아이디
                 .compact();
-
-        return token;
     }
+
     /**
      * 토큰 유효성 확인
      *
