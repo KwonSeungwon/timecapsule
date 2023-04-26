@@ -13,6 +13,7 @@ plugins {
     id 'war'
     //node js plugin
     id "com.moowork.node" version "${mooworkNodeVersion}"
+    id "org.asciidoctor.jvm.convert" version "3.3.2" //spring doc 관련
 }
 
 group = 'com.mini'
@@ -70,6 +71,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-devtools:2.6.2'
     //apache utils
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
+    // spring doc
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+
     //spring security
 //    testImplementation 'org.springframework.batch:spring-batch-test'
 }

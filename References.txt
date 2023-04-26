@@ -4,3 +4,7 @@ h2 database주소 -> locahost:포트/h2-console
 2. h2 데이터베이스 연결이 되지않을 때
 c:\Users\사용자명 폴더에 파일이없어서 연결이 안되는 것이니
 해당위치에 test.mv.db파일을 만들어주세요
+
+3. spring doc (swagger)
+locahost:portNumber/swagger-ui.html로 들어가면 api들을 확인할 수 있다.
+

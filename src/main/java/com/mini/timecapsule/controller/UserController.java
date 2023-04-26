@@ -2,7 +2,7 @@ package com.mini.timecapsule.controller;
 
 import com.mini.timecapsule.dto.SendCapsuleDto;
 import com.mini.timecapsule.dto.UserDto;
-import com.mini.timecapsule.jwt.TokenProvider;
+//import com.mini.timecapsule.jwt.TokenProvider;
 import com.mini.timecapsule.model.Coordinates;
 import com.mini.timecapsule.model.User;
 import com.mini.timecapsule.service.CoordinatesService;
@@ -27,7 +27,7 @@ public class UserController {
     /**
      * JWT 토큰 관리
      */
-    private final TokenProvider tokenProvider;
+//    private final TokenProvider tokenProvider;
 
 
     @GetRestMapping("/coordinates/valid")
@@ -40,7 +40,7 @@ public class UserController {
 
         /*1.db에서 먼저 user정보 꺼내옴*/
 
-        String token = tokenProvider.createToken(dto.getCoordinates(), dto.getName());
+//        String token = tokenProvider.createToken(dto.getCoordinates(), dto.getName());
 
     }
 
@@ -59,7 +59,7 @@ public class UserController {
 
         return mv;
     }
-    @PostRestMapping(value = "/api/timecapsule/user")
+    @PostRestMapping(value = "/user")
     public void createUser(@RequestBody UserDto userDTO) {
 
         userService.createUser(userDTO);
