@@ -7,18 +7,19 @@ import com.mini.timecapsule.exception.ExceptionStructure;
 import com.mini.timecapsule.model.QTemplate;
 import com.mini.timecapsule.model.Template;
 import com.querydsl.core.BooleanBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class TemplateService {
 
-    @Autowired
-    private TemplateRepository templateRepository;
+    private final TemplateRepository templateRepository;
 
-    public Iterable<Template> list(TemplateDto templateDto) {
+    public final Iterable<Template> list(TemplateDto templateDto) {
 
         QTemplate qTemplate = QTemplate.template;
         BooleanBuilder predicate = new BooleanBuilder();

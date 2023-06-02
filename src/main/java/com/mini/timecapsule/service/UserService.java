@@ -10,6 +10,7 @@ import com.mini.timecapsule.model.QCoordinates;
 import com.mini.timecapsule.model.QUser;
 import com.mini.timecapsule.model.User;
 import com.querydsl.core.BooleanBuilder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,19 +31,16 @@ import java.util.TimeZone;
  */
 @Service
 @Log4j2
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private CoordinatesService coordinatesService;
+    private final CoordinatesService coordinatesService;
 
-    @Autowired
-    private CoordinatesRepository coordinatesRepository;
+    private final CoordinatesRepository coordinatesRepository;
 
 
     /**

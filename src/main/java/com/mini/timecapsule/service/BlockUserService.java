@@ -5,15 +5,16 @@ import com.mini.timecapsule.dto.BlockUserDto;
 import com.mini.timecapsule.model.BlockUser;
 import com.mini.timecapsule.model.QBlockUser;
 import com.querydsl.core.BooleanBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 public class BlockUserService {
 
-    @Autowired
-    private BlockUserRepository blockUserRepository;
+    private final BlockUserRepository blockUserRepository;
 
     public Iterable<BlockUser> list(BlockUserDto blockUserDto) {
 

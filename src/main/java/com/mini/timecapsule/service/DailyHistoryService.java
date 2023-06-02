@@ -8,6 +8,7 @@ import com.mini.timecapsule.model.QDailyHistory;
 import com.mini.timecapsule.model.QLetterPaper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +22,12 @@ import java.util.TimeZone;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class DailyHistoryService {
 
-    @Autowired
-    private DailyHistoryRepository dailyHistoryRepository;
+    private final DailyHistoryRepository dailyHistoryRepository;
 
-    @Autowired
-    private LetterPaperRepository letterPaperRepository;
+    private final LetterPaperRepository letterPaperRepository;
 
     public List<DailyHistory> findAll() {
 

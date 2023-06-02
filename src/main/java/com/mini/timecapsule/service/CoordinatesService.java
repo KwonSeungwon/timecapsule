@@ -22,8 +22,7 @@ import java.util.List;
 @Log4j2
 public class CoordinatesService {
 
-    @Autowired
-    private CoordinatesRepository coordinatesRepository;
+    private final CoordinatesRepository coordinatesRepository;
 
     /**
      * 좌표 생성 함수
