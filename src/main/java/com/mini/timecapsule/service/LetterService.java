@@ -1,7 +1,6 @@
 package com.mini.timecapsule.service;
 
 import com.mini.timecapsule.dao.ContentFilterRepository;
-import com.mini.timecapsule.dao.CoordinatesRepository;
 import com.mini.timecapsule.dao.LetterPaperRepository;
 import com.mini.timecapsule.dao.UserRepository;
 import com.mini.timecapsule.dto.LetterDto;
@@ -10,19 +9,16 @@ import com.mini.timecapsule.exception.CustomException;
 import com.mini.timecapsule.exception.ExceptionStructure;
 import com.mini.timecapsule.model.ContentFilter;
 import com.mini.timecapsule.model.LetterPaper;
-import com.mini.timecapsule.model.QCoordinates;
 import com.mini.timecapsule.model.User;
-import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * 편지관련 제어 공통서비스로 변경
+ * 편지관련 제어 공통서비스
  */
 @Service
 @RequiredArgsConstructor
@@ -32,30 +28,35 @@ public class LetterService {
     private final LetterPaperRepository letterPaperRepository;
     private final ContentFilterRepository contentFilterRepository;
 
+    @Transactional
     public void sendLetter(SendCapsuleDto sendCapsuleDto) {
 
         Optional<User> opUser = userRepository.findById(sendCapsuleDto.getUserId());
 
         if (!opUser.isPresent()) {
-            //에러처리
             throw new CustomException(ExceptionStructure.NOT_FOUND_USER);
         }
 
-        //편지지 내용 검사 sendCapsuleDto.getContent()
+        // 비속어 필터링 검사
         int filteringCount = letterFilteringContent(sendCapsuleDto.getContent());
         if (filteringCount > 0) {
-
+            throw new CustomException(ExceptionStructure.INVALID_CONTENT);
         }
 
-
-        //블락 유저 체크 sendCapsuleDto.getRequestorInfo()
-
-        LetterPaper letter = LetterPaper.newEntity(sendCapsuleDto.getSender(),
-                opUser.get(), sendCapsuleDto.getLetterPaperType(), sendCapsuleDto.getContent(),
-                sendCapsuleDto.getRequestorInfo());
+        LetterPaper letter = LetterPaper.newEntity(
+                sendCapsuleDto.getSender(),
+                sendCapsuleDto.getTitle(),
+                opUser.get(),
+                sendCapsuleDto.getLetterPaperType(),
+                sendCapsuleDto.getCapsuleType(),
+                sendCapsuleDto.getContent(),
+                sendCapsuleDto.getImageUrl(),
+                sendCapsuleDto.getRequestorInfo(),
+                sendCapsuleDto.getOpenAt(),
+                sendCapsuleDto.getIsPublic()
+        );
 
         letterPaperRepository.save(letter);
-
     }
 
     private int letterFilteringContent(String content) {
@@ -63,7 +64,7 @@ public class LetterService {
         int count = 0;
 
         for (String keyword : keywords) {
-            if(content.contains(keyword)) count++;
+            if (content.contains(keyword)) count++;
         }
 
         return count;
@@ -71,13 +72,13 @@ public class LetterService {
 
     private LetterPaper getLetter(Long id) {
         if (id == null) {
-            //에러처리
+            throw new IllegalArgumentException("ID cannot be null");
         }
 
         Optional<LetterPaper> opLetter = letterPaperRepository.findById(id);
 
         if (!opLetter.isPresent()) {
-            //에러처리
+            throw new CustomException("LETTER NOT FOUND");
         }
 
         return opLetter.get();
@@ -85,38 +86,34 @@ public class LetterService {
 
     /**
      * 편지 리스트를 가져오는 함수
-     * @param letterDto
      */
     public List<LetterPaper> list(LetterDto letterDto) {
-
-        User user = null;
-
-        //세션통해 유저아이디 받아오기
-
-        List<LetterPaper> letters = letterPaperRepository.findByUser(user);
-
-        return letters;
+        // TODO: 세션을 통해 유저 정보를 가져오는 로직 구현 필요
+        User user = null; 
+        return letterPaperRepository.findByUser(user);
     }
 
+    /**
+     * 공개된 타임캡슐 탐색 (상용화 추가 기능)
+     */
+    public List<LetterPaper> findPublicCapsules() {
+        return letterPaperRepository.findAllByIsPublicTrue();
+    }
+
+    @Transactional
     public void readLetter(LetterDto letterDto) {
-
         LetterPaper letter = getLetter(letterDto.getId());
-
+        
+        // 개봉 가능 시점 체크는 LetterPaper.read() 엔티티 내부에서 수행
         letter.read();
+        letterPaperRepository.save(letter);
     }
 
+    @Transactional
     public void removeLetter(LetterDto letterDto) {
-
         LetterPaper letter = getLetter(letterDto.getId());
-
-        /*
-        본인 세션정보에서 자기편지인지 체크
-        if (letter.getUser().equals(세션정보)) {
-            //에러처리
-        }
-         */
-
         letter.remove();
+        letterPaperRepository.save(letter);
     }
 
 }

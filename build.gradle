@@ -1,108 +1,71 @@
-//Qdomain 자동생성 빌드스크립트
-buildscript {
-    ext {
-        QUERY_DSL_VERSION = "5.0.0" // QueryDSL 버전 명시
-        mooworkNodeVersion = "1.3.1" // nodejs plugin version
-    }
-}
 plugins {
-    id 'org.springframework.boot' version '2.6.6'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10' // QueryDSL 플러그인 추가
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
     id 'java'
     id 'war'
-    //node js plugin
-    id "com.moowork.node" version "${mooworkNodeVersion}"
 }
 
 group = 'com.mini'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = '17'
 
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
 }
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-batch'
-    //Junit
-    implementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    implementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
-    implementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    //JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    // DB관련 H2(휘발성 DB로 종료되면 데이터는 사라짐) DB
-    implementation group: 'com.h2database', name: 'h2', version: '2.1.210'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    // QueryDsl사용을 위한 querydsl 의존성추가
-    implementation "com.querydsl:querydsl-jpa:${QUERY_DSL_VERSION}" // QueryDSL-JPA 의존성 추가
-    implementation "com.querydsl:querydsl-apt:${QUERY_DSL_VERSION}" // QueryDSL-APT 의존성 추가
-    // mailing dependency
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-    //오류로 인한 쿼츠 디펜던시 주석처리
-    //implementation 'org.springframework.boot:spring-boot-starter-quartz'
-
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.security:spring-security-test'
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // QueryDSL Jakarta 대응
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    // DB
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // Utils
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
-    //뭔지 모르는데 junit 뭐시기겠지
-    testImplementation("org.junit.vintage:junit-vintage-engine") {
-        exclude group: "org.hamcrest", module: "hamcrest-core"
-    }
-    // springboot auto-reload
-    implementation 'org.springframework.boot:spring-boot-devtools:2.6.2'
-    //apache utils
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
-    //spring security
-//    testImplementation 'org.springframework.batch:spring-batch-test'
-}
-//Qdomain 자동생성 관련
-def querydslDir = "$buildDir/generated/querydsl" // QType이 저장될 경로
-
-querydsl { // QueryDSL 설정
-    library = "com.querydsl:querydsl-apt:${QUERY_DSL_VERSION}" // QueryDSL-APT 의존성 등록
-    jpa = true // JPA 사용 등록
-    querydslSourcesDir = querydslDir // QType 출력 경로 지정
-}
-
-sourceSets {
-    main.java.srcDir querydslDir
-    // 빌드할 때 queryDslDir 경로를 추가
-}
-
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
-    // annotationProcessorPath를 configuration.querydsl로 지정
-}
-
-configurations {
-    querydsl.extendsFrom compileClasspath // queryDsl이 compileClassPath를 상속받도록 설정
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
-task runVueServer(type: NpmTask) {
-    workingDir = file("vue");
-    args = ["run", "serve"]
+
+// QueryDSL QClass 생성 경로 설정 (Spring Boot 3 방식)
+def querydslSrcDir = 'src/main/generated'
+
+clean {
+    delete file(querydslSrcDir)
 }
-bootRun.doFirst {
-    runVueServer
+
+tasks.withType(JavaCompile) {
+    options.generatedSourceOutputDirectory = file(querydslSrcDir)
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,6 +26,11 @@ public class LetterController {
     @GetRestMapping("/api/v1/letter")
     public ResponseEntity<List<LetterPaper>> list(@RequestBody LetterDto letterDto) {
         return ResponseEntity.ok(letterService.list(letterDto));
+    }
+
+    @GetRestMapping("/api/v1/letter/public")
+    public ResponseEntity<List<LetterPaper>> listPublic() {
+        return ResponseEntity.ok(letterService.findPublicCapsules());
     }
 
     @PostRestMapping("/api/v1/letter")
