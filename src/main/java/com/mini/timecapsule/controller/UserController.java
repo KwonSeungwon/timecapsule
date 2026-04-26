@@ -1,75 +1,78 @@
 package com.mini.timecapsule.controller;
 
-import com.mini.timecapsule.dto.BaseDTO;
-import com.mini.timecapsule.dto.BaseResponse;
-import com.mini.timecapsule.dto.SendLetterDTO;
-import com.mini.timecapsule.dto.UserDTO;
+import com.mini.timecapsule.dto.*;
+import com.mini.timecapsule.jwt.TokenProvider;
 import com.mini.timecapsule.model.Coordinates;
+import com.mini.timecapsule.model.User;
+import com.mini.timecapsule.service.CoordinatesService;
 import com.mini.timecapsule.service.UserService;
 import com.mini.timecapsule.utils.bind.GetRestMapping;
 import com.mini.timecapsule.utils.bind.PostRestMapping;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
-
+@RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/timecapsule/*")
 @CrossOrigin(origins = "*")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final CoordinatesService coordinatesService;
+    private final TokenProvider tokenProvider;
 
-    @GetRestMapping(value = "/api/timecapsule/join")
+
+    @GetRestMapping("/coordinates/valid")
+    public Boolean validCoordinates(SendCapsuleDto sendCapsuleDto) {
+        return coordinatesService.validCoordinates(sendCapsuleDto);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> checkLogin(@Valid @RequestBody UserDto dto){
+        String token = tokenProvider.createToken(dto.getCoordinates(), dto.getName());
+        return ResponseEntity.ok(token);
+    }
+
+    @GetRestMapping(value = "/join")
     public Coordinates join() {
-
         return userService.join();
     }
 
-    @GetRestMapping(value = "/api/timecapsule/user")
-    public ModelAndView get(UserDTO userDTO) {
-
-        userService.getUser(userDTO);
-
-        return null;
+    @GetRestMapping(value = "/user")
+    public ModelAndView get(UserDto userDTO) {
+        ModelAndView mv = new ModelAndView();
+        User user = userService.getUser(userDTO);
+        mv.addObject("user", user);
+        return mv;
     }
-    @PostRestMapping(value = "/api/timecapsule/user")
-    public void createUser(@RequestBody UserDTO userDTO) {
 
+    @PostRestMapping(value = "/user")
+    public void createUser(@RequestBody UserDto userDTO) {
         userService.createUser(userDTO);
     }
 
-    @GetMapping(value = "/api/timecapsule/users")
-    public ModelAndView getList(UserDTO userDTO) {
-
+    @GetMapping(value = "/users")
+    public ModelAndView getList(UserDto userDTO) {
         userService.getUserList(userDTO);
-
         return null;
     }
 
-
-    @PutMapping(value = "/api/timecapsule/user")
-    public ModelAndView update(UserDTO userDTO) {
-
+    @PutMapping(value = "/user")
+    public ModelAndView update(UserDto userDTO) {
         return null;
     }
 
-    @DeleteMapping(value = "/api/timecapsule/user")
-    public ModelAndView delete(UserDTO userDTO) {
-
+    @DeleteMapping(value = "/user")
+    public ModelAndView delete(UserDto userDTO) {
         return null;
     }
-    @GetMapping(value = "/api/timecapsule/letter/send")
+
+    @GetMapping(value = "/letter/send")
     public BaseResponse send(@RequestBody SendLetterDTO dto){
-        BaseResponse baseResponse = new BaseResponse();
-
-        return baseResponse;
+        return new BaseResponse();
     }
 
 }

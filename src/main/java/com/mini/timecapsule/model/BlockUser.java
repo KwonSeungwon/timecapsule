@@ -4,10 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
 
 /**
@@ -34,12 +34,20 @@ public class BlockUser {
 
     private ZonedDateTime createdAt;
 
+    private ZonedDateTime updatedAt;
+
     public static BlockUser newBlockUser(String ip, String ipType, String memo) {
         BlockUser blockUser = new BlockUser();
         blockUser.id = ip;
         blockUser.ipType = ipType;
         blockUser.memo = memo;
         blockUser.createdAt = ZonedDateTime.now();
+        blockUser.updatedAt = ZonedDateTime.now();
         return blockUser;
+    }
+
+    public void update(String memo) {
+        this.memo = memo;
+        this.updatedAt = ZonedDateTime.now();
     }
 }

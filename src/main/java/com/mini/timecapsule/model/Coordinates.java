@@ -4,17 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.time.ZonedDateTime;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 /**
  * time capsule 좌표테이블
@@ -40,43 +38,47 @@ public class Coordinates {
 
     private String yCoordinates;
 
-    private ZonedDateTime createdAt;
+    private LocalDateTime fixedAt;
 
-    private ZonedDateTime fixedAt;
+    private LocalDateTime linkAt;
 
-    @Transient
     private Boolean isFixed;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id")
+    @JoinColumn(name="user_id")
     @JsonIgnore
     private User user;
 
 
     //신규생성(일괄적으로 생성할 예정)
-    public Coordinates newCoordinates(String xCoordinates, String yCoordinates) {
+    public static Coordinates newCoordinates(String xCoordinates, String yCoordinates) {
 
         Coordinates coordinates = new Coordinates();
-
-        this.xCoordinates = xCoordinates;
-        this.yCoordinates = yCoordinates;
-        this.fixedAt = null;
-        this.createdAt = ZonedDateTime.now();
-        this.isFixed = false;
-        this.user = null;
+        coordinates.xCoordinates = xCoordinates;
+        coordinates.yCoordinates = yCoordinates;
+        coordinates.fixedAt = null;
+        coordinates.isFixed = false;
+        coordinates.linkAt = null;
+        coordinates.user = null;
 
         return coordinates;
     }
 
     //첫 진입시 좌표선점
-    public void preemptionCoordinates() {
+    public void preemption() {
         this.isFixed = true;
+        this.fixedAt = LocalDateTime.now();
+    }
+
+    //선점 해제
+    public void free() {
+        this.isFixed = false;
+        this.fixedAt = null;
     }
 
     // 정상적으로 신규게정을 만들었을 때
     public void fixCoordinatesAndUser(User user) {
         this.user = user;
-        this.fixedAt = ZonedDateTime.now();
-
+        this.linkAt = LocalDateTime.now();
     }
 }

@@ -71,11 +71,14 @@ span {
   line-height: 37px;
   margin-bottom: 10px;
 }
+.input-field.inBtn {
+  position: relative;
+}
 .input-copy-btn {
   position: absolute;
   cursor: pointer;
   padding: 12px;
-  left: 54.5%;
+  right: 27px;
 }
 .beach .input-field>label {
   background: url(./assets/images/beach/input_title.png) no-repeat center transparent;
@@ -120,6 +123,7 @@ span {
 .input-field>p.hint {
   font-size: 13px;
   text-shadow: none;
+  height: 13px;
 }
 
 .beach .input-field>p.hint,
@@ -174,9 +178,22 @@ label.letter {
   background-size: cover;
 }
 
+button.letter.open,
+label.letter.open {
+  opacity: 0.4;
+  background: url(./assets/images/common/letters/small/letter_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+
 button.letter.note,
 label.letter.note {
   background: url(./assets/images/common/letters/small/note_small.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+button.letter.note.open,
+label.letter.note.open {
+  background: url(./assets/images/common/letters/small/note_small_disabled.png) no-repeat center transparent;
   background-size: cover;
 }
 
@@ -191,6 +208,54 @@ label.letter.sheepskin {
   background: url(./assets/images/common/letters/small/sheepskin_small.png) no-repeat center transparent;
   background-size: cover;
 }
+
+button.letter.sheepskin.open,
+label.letter.sheepskin.open {
+  background: url(./assets/images/common/letters/small/sheepskin_small_disabled.png) no-repeat center transparent;
+  background-size: cover;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  top: 50px;
+  width: 294px;
+  padding: 15px;
+  margin-left: -162px;
+  visibility: hidden;
+  color: #fff;
+  text-align: center;
+  z-index: 10;
+  opacity: 0.6;
+  background: url(./assets/images/common/toast.png) no-repeat center transparent;
+  background-size: cover;
+}
+.toast.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {top: 0; opacity: 0;}
+  to {top: 50px; opacity: 0.6;}
+}
+
+@keyframes fadein {
+  from {top: 0; opacity: 0;}
+  to {top: 50px; opacity: 0.6;}
+}
+
+@-webkit-keyframes fadeout {
+  from {top: 50px; opacity: 0.6;}
+  to {top: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {top: 50px; opacity: 0.6;}
+  to {top: 0; opacity: 0;}
+}
+
 @font-face {
   font-family: tcf;
   src: url(./assets/font/DungGeunMo.woff) format('woff');

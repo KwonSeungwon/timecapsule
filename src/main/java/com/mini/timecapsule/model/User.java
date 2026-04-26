@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +36,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 좌표

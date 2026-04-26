@@ -4,26 +4,27 @@
       <p>내용 작성</p>
     </div>
     <div class="selectField">
-      <textarea v-model="letter"></textarea>
-      <p>해당 캡슐은 {{openDay}}일에 오픈돼요.</p>
-      <p>편지는 오픈되기 한 달 전까지 보낼 수 있어요.</p>
+      <textarea v-model="letter" placeholder="최소 10자 이상 작성해주세요."></textarea>
+      <p v-if="openDay">해당 캡슐은 {{openDay}}일에 오픈돼요.</p>
+      <p>편지는 오픈되기 전까지 안전하게 보관됩니다. ;)</p>
     </div>
     <Footer
-        next="전송" @click="send()"
+        next="전송"
         :disable_next="letter === null || letter.length < 10"
-        v-on:footer_res="next"></Footer>
+        v-on:footer_res="submitLetter"></Footer>
   </div>
   <Popup v-if="popup.open"
          :one-button="beSend"
          :cancel="popup.btnCancel"
          confirm="재시도"
          :contents="popup.content"
-         v-on:popup_res="popup_f"></Popup>
+         v-on:popup_res="handlePopupResponse"></Popup>
 </template>
 
 <script>
 import Footer from '@/components/Footer';
 import Popup from "@/components/Popup";
+import axios from 'axios';
 
 export default {
   name: "writeLetter",
@@ -34,44 +35,36 @@ export default {
       openDay : null,
       popup : {
         open : false,
-        content : `캡슐에 편지를 넣고 있어요.\n편지 내용은 ${this.openDay}일 전까지 비밀로 해드릴게요 ;)`,
+        content : '',
         btnCancel : '확인'
       },
       beSend : false
     }
   },
   methods : {
-    send(){
-      alert("a")
+    submitLetter() {
+      const self = this;
+      axios.post('/api/v1/letter', {
+        coordinates : this.$route.query.coordinates || "data",
+        sender: "Anonymous",
+        password: "123",
+        letterPaperType: "LETTER",
+        content: this.letter,
+        userId: this.$route.query.userId || 1
+      }).then(function (response){
+        self.beSend = true;
+        self.popup.content = '캡슐에 편지를 성공적으로 넣었어요!';
+        self.popup.open = true;
+      }).catch(function (error){
+        self.beSend = false;
+        self.popup.content = '편지 전송에 실패했습니다. 다시 시도해주세요.';
+        self.popup.open = true;
+      });
     },
-    next (next) {
-      if (next) {
-        //axios 전송후 결과
-
-        //실패
-        if (!this.beSend) {
-          this.popup.btnCancel = '취소';
-          this.popup.content = '캡슐에 문제가 있어 편지가 잘 보내지지 않았어요.\n다시 시도해주세요!';
-        } else {
-          this.popup.btnCancel = '확인';
-          this.popup.content = `캡슐에 편지를 넣고 있어요.\n편지 내용은 ${this.openDay}일 전까지 비밀로 해드릴게요 ;)`;
-        }
-        this.popup.open = true;
-      }
-    },
-    popup_f(close) {
+    handlePopupResponse(close) {
+      this.popup.open = false;
       if (this.beSend) {
-        if (!close) {
-          this.popup.open = false;
-          this.$router.replace('/');
-        }
-      } else {
-        if (!close) {
-          this.popup.open = false;
-        } else {
-          //재전송
-          this.next(true);
-        }
+        this.$router.replace('/');
       }
     }
   }
@@ -84,5 +77,14 @@ export default {
   width: 90%;
   height: 80%;
   background: url(../assets/images/field.png) no-repeat center transparent;
+}
+textarea {
+  width: 100%;
+  height: 150px;
+  background: transparent;
+  border: 0;
+  resize: none;
+  font-family: inherit;
+  padding: 10px;
 }
 </style>

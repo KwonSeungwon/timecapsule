@@ -1,6 +1,15 @@
+/* 픽셀 아트 최적화 렌더링 */
+* {
+    font-family: 'tcf', sans-serif;
+    image-rendering: pixelated;
+    image-rendering: -moz-pixelated;
+    image-rendering: crisp-edges;
+}
+
 .container {
     display: flex;
 }
+
 .main {
     margin: auto;
     width: 375px;
@@ -16,6 +25,7 @@
 .main .title {
     padding-top: 100px;
 }
+
 .main .title span {
     margin: 0 auto;
     width: 250px;
@@ -25,12 +35,10 @@
     background-size: cover;
 }
 
-
 .main .title .capsule {
     background: url(../images/pills.png) no-repeat center transparent;
     background-size: cover;
 }
-
 
 .main .title,
 .main .menu {
@@ -50,7 +58,9 @@
 .holder button {
     border: 0;
     height: 25px;
+    cursor: pointer;
 }
+
 .menu .tutorial {
     width: 230px;
     background: url(../images/btn_tutorial.png) no-repeat center transparent;
@@ -60,6 +70,7 @@
     width: 180px;
     background: url(../images/btn-my.png) no-repeat center transparent;
 }
+
 .menu .send {
     width: 180px;
     background: url(../images/btn-send.png) no-repeat center transparent;
@@ -70,40 +81,28 @@
     background: url(../images/btn_start.svg) no-repeat center transparent;
 }
 
-.menu label[for='my'],
-.menu label[for='send'],
-.menu label[for='tutorial'] {
-    position: absolute;
-    display: none;
-    left: 0;
-    width: 25px;
-    height: 25px;
-    margin: 0;
-    background: url(../images/arrow.png) no-repeat;
+/* 픽셀 스타일 공통 UI */
+.pixel-border {
+    border: 4px solid #000;
+    box-shadow: 
+        -4px 0 0 0 #000,
+        4px 0 0 0 #000,
+        0 -4px 0 0 #000,
+        0 4px 0 0 #000;
+    background: #fff;
 }
-.menu button#my:hover + label,
-.menu button#send:hover + label,
-.menu button#tutorial:hover + label {
-    display: inline-block;
+
+.pixel-text-shadow {
+    text-shadow: 2px 2px 0px #000;
+    color: #fff;
 }
+
 @font-face {
     font-family: tcf;
     src: url(../font/DungGeunMo.woff) format('woff');
 }
-body {
-    font-family: tcf, sans-serif;
-    /*-webkit-text-size-adjust: none;*/
-    /*-moz-text-size-adjust: none;*/
-    /*-ms-text-size-adjust: none;*/
-}
-/* cdn방식 */
-/*@font-face {*/
-/*    font-family: 'DungGeunMo';*/
-/*    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');*/
-/*    font-weight: normal;*/
-/*    font-style: normal;*/
-/*}*/
 
-/** {*/
-/*    font-family: 'DungGeunMo', sans-serif;*/
-/*}*/
+body {
+    background-color: #000;
+    margin: 0;
+}

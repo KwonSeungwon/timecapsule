@@ -3,7 +3,7 @@ package com.mini.timecapsule.model;
 import lombok.Getter;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 
 /**

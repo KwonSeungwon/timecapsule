@@ -2,7 +2,9 @@ package com.mini.timecapsule.service;
 
 import com.mini.timecapsule.dao.CoordinatesRepository;
 import com.mini.timecapsule.dao.UserRepository;
-import com.mini.timecapsule.dto.UserDTO;
+import com.mini.timecapsule.dto.UserDto;
+import com.mini.timecapsule.exception.CustomException;
+import com.mini.timecapsule.exception.ExceptionStructure;
 import com.mini.timecapsule.model.Coordinates;
 import com.mini.timecapsule.model.QCoordinates;
 import com.mini.timecapsule.model.QUser;
@@ -18,9 +20,7 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.TimeZone;
 
 /**
@@ -39,6 +39,9 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private CoordinatesService coordinatesService;
+
+    @Autowired
     private CoordinatesRepository coordinatesRepository;
 
 
@@ -47,36 +50,14 @@ public class UserService {
      * TODO: 눌렀을 때 시점기준으로 좌표선점
      */
     public Coordinates join() {
-
-        Random random = new Random();
-        String xCoordinates = null;
-        String yCoordinates = null;
-        BooleanBuilder predicate = new BooleanBuilder();
-        QCoordinates qCoordinates = QCoordinates.coordinates;
-        while(true) {
-            xCoordinates = String.valueOf(random.nextInt(999));
-            yCoordinates = String.valueOf(random.nextInt(999));
-            predicate.and(qCoordinates.xCoordinates.eq(xCoordinates));
-            predicate.and(qCoordinates.yCoordinates.eq(yCoordinates));
-            Optional<Coordinates> findCoordinates = coordinatesRepository.findOne(predicate);
-            if (!findCoordinates.isPresent()) {
-                break;
-            }
-            predicate = new BooleanBuilder();
-        }
-        Coordinates coordinates = new Coordinates().newCoordinates(xCoordinates, yCoordinates);
-        coordinates.newCoordinates(xCoordinates, yCoordinates);
-        coordinates.setIsFixed(true);
-        coordinatesRepository.save(coordinates);//임시코드
-
-        return coordinates;
+        return coordinatesService.findUnFixedCoordinates();
     }
 
     /**
      * 전체 User의 목록을 가져오는 메소드 / 관리자또는 통계화면에서 사용할 것으로 예상됨
      * @param userDTO
      */
-    public UserDTO getUserList(UserDTO userDTO) {
+    public Iterable<User> getUserList(UserDto userDTO) {
 
         BooleanBuilder predicate = new BooleanBuilder();
         QUser qUser = QUser.user;
@@ -95,9 +76,7 @@ public class UserService {
             predicate.and(qUser.createdAt.between(startDate, endDate));
         }
 
-        Iterable<User> users = userRepository.findAll(predicate);
-
-        return null;
+        return userRepository.findAll(predicate);
 
     }
 
@@ -106,7 +85,7 @@ public class UserService {
      * 일반적인 유저들이 로그인할 때 사용될 메소드
      * @param userDTO
      */
-    public void getUser(UserDTO userDTO) {
+    public User getUser(UserDto userDTO) {
 
         BooleanBuilder predicate = new BooleanBuilder();
         QUser qUser = QUser.user;
@@ -121,24 +100,24 @@ public class UserService {
 
         Optional<User> user = userRepository.findOne(predicate);
 
+        if(!user.isPresent()) {
+            throw new CustomException(ExceptionStructure.NOT_FOUND_USER);
+        }
+
+        return user.get();
     }
 
-    public void createUser(UserDTO userDTO) {
+    public void createUser(UserDto userDTO) {
 
         String[] coordinates = userDTO.getCoordinates().split(",");
         String password = passwordEncoder.encode(userDTO.getPassword());
         ZonedDateTime writeableAt = this.calculationWritingDays(userDTO.getOpenDayType());
         QCoordinates qCoordinates = QCoordinates.coordinates;
-//        Optional<Coordinates> coordinate = coordinatesRepository.findOne(new BooleanBuilder().and(qCoordinates.xCoordinates.eq(coordinates[0])).and(qCoordinates.yCoordinates.eq(coordinates[1])));
-//        User user = User.joinUser(coordinate.get(), password, userDTO.getName(), userDTO.getCapsuleType(),
-//                userDTO.getOpenDayType(), writeableAt, null);
-        //임시코드
-        Coordinates dummyCoordinates = new Coordinates().newCoordinates(coordinates[0], coordinates[1]);
-        coordinatesRepository.save(dummyCoordinates);
-        userDTO.setName("테스트캡슐");
-        userDTO.setCapsuleType(User.CapsuleType.EGG);
-        //임시코드끝
-        User user = User.joinUser(dummyCoordinates, password, userDTO.getName(), userDTO.getCapsuleType(),
+        Optional<Coordinates> coordinate = coordinatesRepository.findOne(new BooleanBuilder().and(qCoordinates.xCoordinates.eq(coordinates[0])).and(qCoordinates.yCoordinates.eq(coordinates[1])));
+        if (!coordinate.isPresent()) {
+            throw new CustomException(ExceptionStructure.NOT_FOUND_COORDINATE);
+        }
+        User user = User.joinUser(coordinate.get(), password, userDTO.getName(), userDTO.getCapsuleType(),
                 userDTO.getOpenDayType(), writeableAt, null);
         userRepository.save(user);
     }
@@ -175,7 +154,7 @@ public class UserService {
      * User 삭제기능 / 관리자에 의해 일부만 사용될 것으로 생각됨
      * @param userDTO
      */
-    public void deleteUser(UserDTO userDTO) {
+    public void deleteUser(UserDto userDTO) {
 
 //        User user = userRepository.findOne()
 
