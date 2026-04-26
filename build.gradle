@@ -59,6 +59,30 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+// Vue 빌드 연동 설정
+def vueDir = "$projectDir/vue"
+
+task buildVue(type: Exec) {
+    workingDir vueDir
+    inputs.dir vueDir
+    group = 'build'
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine "npm.cmd", "run", "build"
+    } else {
+        commandLine "npm", "run", "build"
+    }
+}
+
+task copyVueBuildFiles(type: Copy) {
+    dependsOn buildVue
+    from "$vueDir/dist"
+    into "$projectDir/src/main/resources/static"
+}
+
+processResources {
+    dependsOn copyVueBuildFiles
+}
+
 // QueryDSL QClass 생성 경로 설정 (Spring Boot 3 방식)
 def querydslSrcDir = 'src/main/generated'
 
