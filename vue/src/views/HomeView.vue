@@ -36,9 +36,12 @@ export default {
 }
 .main {
   margin: auto;
-  width: 375px;
+  width: 100%;
+  max-width: 375px;
   height: 100vh;
   max-height: 812px;
+  position: relative;
+  overflow: hidden;
 }
 /*더 우아한 방법이있나 고민*/
 .dim {
@@ -47,6 +50,11 @@ export default {
   height: 100vh;
   background-color: white;
   z-index: 5;
+}
+@media (max-width: 375px) {
+  .dim {
+    display: none;
+  }
 }
 .dim.right {
   right: 0;

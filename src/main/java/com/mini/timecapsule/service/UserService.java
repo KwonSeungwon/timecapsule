@@ -115,7 +115,7 @@ public class UserService {
         if (!coordinate.isPresent()) {
             throw new CustomException(ExceptionStructure.NOT_FOUND_COORDINATE);
         }
-        User user = User.joinUser(coordinate.get(), password, userDTO.getName(), userDTO.getCapsuleType(),
+        User user = User.joinUser(coordinate.get(), password, userDTO.getName(), userDTO.getEmail(), userDTO.getCapsuleType(),
                 userDTO.getOpenDayType(), writeableAt, null);
         userRepository.save(user);
     }

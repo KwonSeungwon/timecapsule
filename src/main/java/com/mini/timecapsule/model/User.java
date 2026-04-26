@@ -55,6 +55,12 @@ public class User {
     private String name;
 
     /**
+     * 이메일
+     */
+    @Column(nullable = false)
+    private String email;
+
+    /**
      * 비밀번호
      * - 최소 4자리
      */
@@ -143,13 +149,14 @@ public class User {
         CANDYCASE // 사탕통
     }
 
-    public static User joinUser(Coordinates coordinates, String password, String name,
+    public static User joinUser(Coordinates coordinates, String password, String name, String email,
                                 CapsuleType capsuleType, OpenDay openDayType,
                                 ZonedDateTime writeableAt, String dummy) {
         User user = new User();
         user.coordinates = coordinates;
         user.password = password;
         user.name = name;
+        user.email = email;
         user.capsuleType = capsuleType;
         user.openDayType = openDayType;
         user.writeableAt = writeableAt;
