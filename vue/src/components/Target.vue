@@ -41,16 +41,18 @@ export default {
   methods : {
     validCoordinates: function() {
       if (!this.isEmpty(this.coordinates)) {
-          axios.get('/api/valid/Coordinates').then(res => {
-            if (res.statusText === 'OK') {
+          axios.get('/api/timecapsule/coordinates/valid?coordinates=' + this.coordinates).then(res => {
+            if (res.status === 200) {
               if (res.data === true) {
-                this.error = '보낼수 있는 좌표입니다.';
+                this.error = ''; // Valid
               } else {
                 this.error = '존재하지않는 좌표입니다.';
               }
             } else {
               this.toast('오류가 발생하였습니다. 잠시후에 다시 요청해주세요.');
             }
+          }).catch(() => {
+            this.error = '좌표 확인 중 오류가 발생했습니다.';
           });
       }
     },
@@ -72,7 +74,13 @@ export default {
           this.senderError = '이름이나 닉네임을 적어주세요.';
           return;
         }
-        this.$router.push('/target/letter');
+        this.$router.push({
+          name: 'selectLetterPaper',
+          query: {
+            coordinates: this.coordinates,
+            sender: this.sender
+          }
+        });
       }
     }
   }

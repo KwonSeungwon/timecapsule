@@ -23,7 +23,7 @@ public class LetterController {
 
     private final LetterService letterService;
 
-    @GetRestMapping("/api/v1/letter")
+    @PostRestMapping("/api/v1/letter/list")
     public ResponseEntity<List<LetterPaper>> list(@RequestBody LetterDto letterDto) {
         return ResponseEntity.ok(letterService.list(letterDto));
     }

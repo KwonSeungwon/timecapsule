@@ -4,9 +4,9 @@
       <p>내용 작성</p>
     </div>
     <div class="selectField">
-      <textarea v-model="letter"></textarea>
-      <p>해당 캡슐은 {{openDay}}일에 오픈돼요.</p>
-      <p>편지는 오픈되기 한 달 전까지 보낼 수 있어요.</p>
+      <textarea v-model="letter" style="width: 100%; box-sizing: border-box;"></textarea>
+      <p>해당 캡슐은 오픈될 때까지 비밀이에요.</p>
+      <p>마음을 담아 작성해주세요.</p>
     </div>
     <Footer
         next="전송"
@@ -39,38 +39,42 @@ export default {
         content : `캡슐에 편지를 넣고 있어요.\n편지 내용은 ${this.openDay}일 전까지 비밀로 해드릴게요 ;)`,
         btnCancel : '확인'
       },
-      beSend : false
+      beSend : false,
+      coordinates: null,
+      sender: null,
+      letterPaperType: null,
     }
+  },
+  created() {
+    this.coordinates = this.$route.query.coordinates;
+    this.sender = this.$route.query.sender;
+    this.letterPaperType = this.$route.query.letterPaperType || 'LETTER';
+    // openDay is normally fetched or passed. we will set it randomly for now or from backend if possible.
+    this.openDay = '오픈';
   },
   methods : {
     test :function() {
-      axios.post('/api/v1/letter',{
-        coordinates : "data",
-        sender:"test",
-        password:"123",
-        letterPaperType: "LETTER",
-        content: this.letter
-      }).then(function (response){
-        console.log(response);
-      }).catch(function (error){
-        console.log(error);
-      })
+      // Not used anymore as we submit on next
     },
     next :function (next) {
       if (next) {
-        //axios 전송후 결과
-        axios.get('/api/valid/Coordinates').then(res => {
-          console.log(res);
-        })
-        //실패
-        if (!this.beSend) {
+        axios.post('/api/v1/letter', {
+          coordinates: this.coordinates,
+          sender: this.sender,
+          letterPaperType: this.letterPaperType,
+          content: this.letter,
+          requestorInfo: '웹'
+        }).then(() => {
+          this.beSend = true;
+          this.popup.btnCancel = '확인';
+          this.popup.content = `캡슐에 편지를 넣고 있어요.\n편지 내용은 오픈될 때까지 비밀로 해드릴게요 ;)`;
+          this.popup.open = true;
+        }).catch(() => {
+          this.beSend = false;
           this.popup.btnCancel = '취소';
           this.popup.content = '캡슐에 문제가 있어 편지가 잘 보내지지 않았어요.\n다시 시도해주세요!';
-        } else {
-          this.popup.btnCancel = '확인';
-          this.popup.content = `캡슐에 편지를 넣고 있어요.\n편지 내용은 ${this.openDay}일 전까지 비밀로 해드릴게요 ;)`;
-        }
-        this.popup.open = true;
+          this.popup.open = true;
+        });
       }
     },
     popup_f(close) {

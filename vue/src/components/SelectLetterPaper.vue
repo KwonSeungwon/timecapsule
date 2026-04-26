@@ -77,7 +77,19 @@ export default {
     next (next) {
       if (next) {
         if (this.paperId) {
-          this.$router.push('/target/letter/write');
+          const paperMap = {
+            '1': 'NOTE',
+            '2': 'SHEEPSKIN',
+            '3': 'LETTER',
+            '4': 'POLAROID'
+          };
+          this.$router.push({
+            name: 'writeLetter',
+            query: {
+              ...this.$route.query,
+              letterPaperType: paperMap[this.paperId]
+            }
+          });
         }
       }
     },

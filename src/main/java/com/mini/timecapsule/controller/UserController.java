@@ -13,12 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.http.ResponseEntity;
 
 import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/timecapsule/*")
+@RequestMapping("/api/timecapsule")
 @CrossOrigin(origins = "*")
 public class UserController {
 
@@ -35,13 +36,15 @@ public class UserController {
 
         return coordinatesService.validCoordinates(sendCapsuleDto);
     }
-    @PostMapping()
-    public void checkLogin(@Valid @RequestBody UserDto dto){
-
-        /*1.db에서 먼저 user정보 꺼내옴*/
-
-//        String token = tokenProvider.createToken(dto.getCoordinates(), dto.getName());
-
+    @PostMapping("/login")
+    public ResponseEntity<?> checkLogin(@Valid @RequestBody UserDto dto){
+        try {
+            User user = userService.getUser(dto);
+            // In a real app we'd return a JWT token, for this side project we can return the user info
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Login failed");
+        }
     }
 
     @GetRestMapping(value = "/join")

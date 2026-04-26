@@ -36,13 +36,28 @@ export default {
       if (next) {
         //로그인 로직
         if (!this.id) {
-          this.error = '아이디가 입력되지 않았습니다.';
+          this.error = '좌표가 입력되지 않았습니다.';
         } else if (!this.pw) {
-          //TODO : 비번 양식체크 들어가야함
           this.error = '비밀번호가 입력되지 않았습니다.';
         } else {
           //로그인 api
-          this.$router.push('/mypage');
+          const payload = {
+            coordinates: this.id,
+            password: this.pw
+          };
+
+          import('axios').then(axios => {
+            axios.default.post('/api/timecapsule/login', payload).then(res => {
+              if (res.status === 200) {
+                // save info for mypage
+                localStorage.setItem("USER_INFO", JSON.stringify(res.data));
+                this.$router.push('/mypage');
+              }
+            }).catch(error => {
+              this.error = '좌표 또는 비밀번호가 틀렸습니다.';
+              console.error(error);
+            });
+          });
         }
       }
     }

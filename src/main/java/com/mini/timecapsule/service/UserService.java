@@ -89,16 +89,21 @@ public class UserService {
         QUser qUser = QUser.user;
 
         if (userDTO.getId() != null) {
-            predicate.and(qUser.id.eq(qUser.id));
+            predicate.and(qUser.id.eq(userDTO.getId()));
         }
 
-        if (userDTO.getPassword() != null) {
-            predicate.and(qUser.password.eq(qUser.password));
+        if (userDTO.getCoordinates() != null) {
+            predicate.and(qUser.coordinates.xCoordinates.concat(",").concat(qUser.coordinates.yCoordinates).eq(userDTO.getCoordinates()));
         }
 
         Optional<User> user = userRepository.findOne(predicate);
 
         if(!user.isPresent()) {
+            throw new CustomException(ExceptionStructure.NOT_FOUND_USER);
+        }
+
+        if (userDTO.getPassword() != null && !passwordEncoder.matches(userDTO.getPassword(), user.get().getPassword())) {
+            // Compare plain text password from DTO with hashed password in DB
             throw new CustomException(ExceptionStructure.NOT_FOUND_USER);
         }
 
