@@ -14,4 +14,6 @@ public class LetterDto {
 
     private String requestorInfo;
 
+    private Long userId;
+
 }

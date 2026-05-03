@@ -102,22 +102,24 @@ span {
 }
 
 .input-field>input {
-  width: 273px;
+  width: calc(100% - 20px);
+  max-width: 273px;
   height: 22px;
   padding: 10px;
   border: 0;
   cursor: pointer;
   background: url(./assets/images/beach/input.png) no-repeat center transparent;
-  /*background-size: cover;*/
+  background-size: contain;
 }
 .input-field>select {
-  width: 292px;
-  height: 54px;
+  width: 100%;
+  max-width: 292px;
+  height: 42px;
   padding: 10px;
   border: 0;
   cursor: pointer;
   background: url(./assets/images/beach/input.png) no-repeat center transparent;
-  /*background-size: cover;*/
+  background-size: contain;
 }
 
 .input-field>p.hint {

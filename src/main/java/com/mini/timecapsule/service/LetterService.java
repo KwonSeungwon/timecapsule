@@ -34,7 +34,17 @@ public class LetterService {
 
     public void sendLetter(SendCapsuleDto sendCapsuleDto) {
 
-        Optional<User> opUser = userRepository.findById(sendCapsuleDto.getUserId());
+        Optional<User> opUser;
+        if (sendCapsuleDto.getUserId() != null) {
+            opUser = userRepository.findById(sendCapsuleDto.getUserId());
+        } else if (sendCapsuleDto.getCoordinates() != null) {
+            com.mini.timecapsule.model.QUser qUser = com.mini.timecapsule.model.QUser.user;
+            BooleanBuilder predicate = new BooleanBuilder();
+            predicate.and(qUser.coordinates.xCoordinates.concat(",").concat(qUser.coordinates.yCoordinates).eq(sendCapsuleDto.getCoordinates()));
+            opUser = userRepository.findOne(predicate);
+        } else {
+            throw new CustomException(ExceptionStructure.NOT_FOUND_USER);
+        }
 
         if (!opUser.isPresent()) {
             //에러처리
@@ -89,11 +99,16 @@ public class LetterService {
      */
     public List<LetterPaper> list(LetterDto letterDto) {
 
-        User user = null;
+        if (letterDto.getUserId() == null) {
+            throw new CustomException(ExceptionStructure.NOT_FOUND_USER);
+        }
 
-        //세션통해 유저아이디 받아오기
+        Optional<User> opUser = userRepository.findById(letterDto.getUserId());
+        if(!opUser.isPresent()){
+            throw new CustomException(ExceptionStructure.NOT_FOUND_USER);
+        }
 
-        List<LetterPaper> letters = letterPaperRepository.findByUser(user);
+        List<LetterPaper> letters = letterPaperRepository.findByUser(opUser.get());
 
         return letters;
     }

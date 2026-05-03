@@ -68,7 +68,15 @@ export default {
   methods : {
     selectCapsule(capsuleId) {
       this.capsuleId = capsuleId;
-      this.parameters.capsuleId = capsuleId;
+
+      const capsuleMap = {
+        1: 'LETTERBOTTLE',
+        2: 'BAMBOOTUBE',
+        3: 'EGG',
+        4: 'CANDYCASE'
+      };
+
+      this.parameters.capsuleType = capsuleMap[capsuleId];
     },
     complete (next) {
       if (next) {
@@ -88,6 +96,16 @@ export default {
   created() {
     this.parameters.coordinates = this.$route.query.coordinates;
     this.parameters.password = this.$route.query.password;
+    this.parameters.name = this.$route.query.name;
+    this.parameters.email = this.$route.query.email;
+    this.parameters.openDayType = this.$route.query.openDayType;
+
+    const openDayMap = {
+      'NEW_YEAR': '01.01',
+      'SPRING_BREAK': '02.28',
+      'END_YEAR': '12.31'
+    };
+    this.openDay = openDayMap[this.parameters.openDayType] || '';
   }
 }
 </script>

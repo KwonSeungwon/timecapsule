@@ -129,9 +129,43 @@ export default {
         if (this.pages > this.selectIdx + 1)  this.transition = 'slide-next'; this.selectIdx++;
       }
     },
+    fetchLetters(userId) {
+      import('axios').then(axios => {
+        // The backend expects LetterDto in the request body for listing
+        axios.default.post('/api/v1/letter/list', { userId: userId }).then(res => {
+          if(res.status === 200 && res.data) {
+            this.letters = res.data;
+            this.totalCount = this.letters.length;
+            this.newCount = this.letters.filter(l => l.status === 'UNOPENED').length;
+            this.pages = Math.ceil(this.totalCount / 6) || 1;
+            // Map types from backend to frontend classes
+            this.letters = this.letters.map(l => {
+              return {
+                id: l.id,
+                type: l.letterPaperType.toLowerCase(),
+                name: l.name,
+                status: l.status,
+                content: l.content
+              };
+            });
+          }
+        }).catch(err => console.error(err));
+      });
+    },
   },
   created() {
-    this.initTestData(14);
+    const userInfoStr = localStorage.getItem("USER_INFO");
+    if (userInfoStr) {
+      try {
+        const userInfo = JSON.parse(userInfoStr);
+        this.fetchLetters(userInfo.id);
+        // set capsule properly based on userInfo
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      this.initTestData(14); // Fallback to test data if not logged in properly
+    }
   }
 }
 </script>
