@@ -3,6 +3,7 @@ package com.mini.timecapsule.service;
 import com.mini.timecapsule.dao.ContentFilterRepository;
 import com.mini.timecapsule.dao.LetterPaperRepository;
 import com.mini.timecapsule.dao.UserRepository;
+import com.mini.timecapsule.dto.CapsuleCreateRequest;
 import com.mini.timecapsule.dto.LetterDto;
 import com.mini.timecapsule.dto.SendCapsuleDto;
 import com.mini.timecapsule.exception.CustomException;
@@ -10,12 +11,15 @@ import com.mini.timecapsule.exception.ExceptionStructure;
 import com.mini.timecapsule.model.ContentFilter;
 import com.mini.timecapsule.model.LetterPaper;
 import com.mini.timecapsule.model.User;
+import com.mini.timecapsule.utils.LocationMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * 편지관련 제어 공통서비스
@@ -27,7 +31,54 @@ public class LetterService {
     private final UserRepository userRepository;
     private final LetterPaperRepository letterPaperRepository;
     private final ContentFilterRepository contentFilterRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
+    @Transactional
+    public void sendLetter(CapsuleCreateRequest request) {
+        // 비속어 필터링 검사
+        int filteringCount = letterFilteringContent(request.getContent());
+        if (filteringCount > 0) {
+            throw new CustomException(ExceptionStructure.INVALID_CONTENT);
+        }
+
+        // 1. 랜덤 좌표 생성 (0-999)
+        Random random = new Random();
+        int x = random.nextInt(1000);
+        int y = random.nextInt(1000);
+
+        // 2. 바이옴 정보 매핑
+        String biome = LocationMapper.getBiome(x, y);
+        String locationName = LocationMapper.getBiomeName(biome);
+
+        // 3. 비밀번호 암호화
+        String encryptedPassword = passwordEncoder.encode(request.getPassword());
+
+        // 4. 엔티티 생성 및 저장
+        LetterPaper letter = LetterPaper.newEntity(
+                request.getSenderName(),
+                request.getTitle(),
+                request.getReceiverEmail(),
+                encryptedPassword,
+                x,
+                y,
+                biome,
+                locationName,
+                request.getLetterPaperType(),
+                request.getCapsuleType(),
+                request.getContent(),
+                request.getImageUrl(),
+                request.getRequestorInfo(),
+                request.getOpenAt(),
+                request.getIsPublic()
+        );
+
+        letterPaperRepository.save(letter);
+    }
+
+    /**
+     * @deprecated Use {@link #sendLetter(CapsuleCreateRequest)} instead.
+     */
+    @Deprecated
     @Transactional
     public void sendLetter(SendCapsuleDto sendCapsuleDto) {
 
@@ -43,20 +94,22 @@ public class LetterService {
             throw new CustomException(ExceptionStructure.INVALID_CONTENT);
         }
 
-        LetterPaper letter = LetterPaper.newEntity(
-                sendCapsuleDto.getSender(),
-                sendCapsuleDto.getTitle(),
-                opUser.get(),
-                sendCapsuleDto.getLetterPaperType(),
-                sendCapsuleDto.getCapsuleType(),
-                sendCapsuleDto.getContent(),
-                sendCapsuleDto.getImageUrl(),
-                sendCapsuleDto.getRequestorInfo(),
-                sendCapsuleDto.getOpenAt(),
-                sendCapsuleDto.getIsPublic()
-        );
+        // For backward compatibility, we can adapt SendCapsuleDto to CapsuleCreateRequest
+        CapsuleCreateRequest request = CapsuleCreateRequest.builder()
+                .senderName(sendCapsuleDto.getSender())
+                .title(sendCapsuleDto.getTitle())
+                .receiverEmail(opUser.get().getEmail()) // Use user's email as receiver for member flow
+                .password(sendCapsuleDto.getPassword())
+                .content(sendCapsuleDto.getContent())
+                .openAt(sendCapsuleDto.getOpenAt())
+                .isPublic(sendCapsuleDto.getIsPublic())
+                .letterPaperType(sendCapsuleDto.getLetterPaperType())
+                .capsuleType(sendCapsuleDto.getCapsuleType())
+                .imageUrl(sendCapsuleDto.getImageUrl())
+                .requestorInfo(sendCapsuleDto.getRequestorInfo())
+                .build();
 
-        letterPaperRepository.save(letter);
+        sendLetter(request);
     }
 
     private int letterFilteringContent(String content) {
@@ -89,8 +142,9 @@ public class LetterService {
      */
     public List<LetterPaper> list(LetterDto letterDto) {
         // TODO: 세션을 통해 유저 정보를 가져오는 로직 구현 필요
-        User user = null; 
-        return letterPaperRepository.findByUser(user);
+        // User user = null; 
+        // return letterPaperRepository.findByUser(user);
+        return null;
     }
 
     /**
