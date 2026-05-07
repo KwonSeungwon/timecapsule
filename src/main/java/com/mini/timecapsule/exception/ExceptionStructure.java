@@ -6,5 +6,6 @@ public abstract class ExceptionStructure {
     public static final String NOT_FOUND_COORDINATE = "COORDINATE NOT FOUND";
     public static final String NOT_FOUND_USER = "USER NOT FOUND";
     public static final String INVALID_CONTENT = "CONTENT CONTAINS FORBIDDEN KEYWORDS";
+    public static final String INVALID_PASSWORD = "INVALID PASSWORD";
 
 }

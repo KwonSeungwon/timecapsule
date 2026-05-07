@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -121,6 +122,37 @@ public class LetterService {
         }
 
         return count;
+    }
+
+    /**
+     * 이메일로 편지 리스트를 가져오는 함수
+     */
+    @Transactional(readOnly = true)
+    public List<LetterPaper> listByEmail(String email) {
+        List<LetterPaper> letters = letterPaperRepository.findByReceiverEmail(email);
+        // 리스트에서는 내용을 숨김 처리
+        letters.forEach(letter -> letter.setContent(null));
+        return letters;
+    }
+
+    /**
+     * 편지 상세 조회 (비밀번호 확인 포함)
+     */
+    @Transactional(readOnly = true)
+    public LetterPaper getDetail(Long id, String password) {
+        LetterPaper letter = getLetter(id);
+
+        if (!passwordEncoder.matches(password, letter.getPassword())) {
+            throw new CustomException(ExceptionStructure.INVALID_PASSWORD);
+        }
+
+        // 개봉 예정일 확인 및 내용 숨김 처리
+        if (letter.getOpenAt() != null && ZonedDateTime.now().isBefore(letter.getOpenAt())) {
+            letter.setContent(null);
+            letter.setImageUrl(null);
+        }
+
+        return letter;
     }
 
     private LetterPaper getLetter(Long id) {

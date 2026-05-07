@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface LetterPaperRepository extends JpaRepository<LetterPaper, Long>, QuerydslPredicateExecutor<LetterPaper> {
 
-    List<LetterPaper> findByUser(User user);
-
     List<LetterPaper> findAllByIsPublicTrue();
+
+    List<LetterPaper> findByReceiverEmail(String receiverEmail);
 
     List<LetterPaper> findAllByOpenAtBeforeAndIsNotifiedFalseAndStatus(ZonedDateTime now, LetterPaper.LetterStatus status);
 
