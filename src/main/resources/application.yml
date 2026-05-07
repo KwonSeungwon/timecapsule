@@ -10,6 +10,9 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  mail:
+    host: localhost
+    port: 25
 
 ---
 spring:
@@ -17,11 +20,13 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: false
+  mail:
+    host: localhost
+    port: 25

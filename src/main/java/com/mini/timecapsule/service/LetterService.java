@@ -13,7 +13,7 @@ import com.mini.timecapsule.model.LetterPaper;
 import com.mini.timecapsule.model.User;
 import com.mini.timecapsule.utils.LocationMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +32,7 @@ public class LetterService {
     private final UserRepository userRepository;
     private final LetterPaperRepository letterPaperRepository;
     private final ContentFilterRepository contentFilterRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public void sendLetter(CapsuleCreateRequest request) {
