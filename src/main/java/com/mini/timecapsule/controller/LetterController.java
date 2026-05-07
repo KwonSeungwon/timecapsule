@@ -1,53 +1,54 @@
 package com.mini.timecapsule.controller;
 
-import com.mini.timecapsule.dto.LetterDto;
-import com.mini.timecapsule.dto.SendCapsuleDto;
+import com.mini.timecapsule.dto.CapsuleCreateRequest;
+import com.mini.timecapsule.dto.CapsuleOpenRequest;
 import com.mini.timecapsule.model.LetterPaper;
 import com.mini.timecapsule.service.LetterService;
-import com.mini.timecapsule.utils.bind.DeleteRestMapping;
-import com.mini.timecapsule.utils.bind.GetRestMapping;
-import com.mini.timecapsule.utils.bind.PostRestMapping;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import jakarta.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/v1/capsule")
 @CrossOrigin(origins = "*")
 public class LetterController {
 
     private final LetterService letterService;
 
-    @GetRestMapping("/api/v1/letter")
-    public ResponseEntity<List<LetterPaper>> list(@RequestBody LetterDto letterDto) {
-        return ResponseEntity.ok(letterService.list(letterDto));
+    /**
+     * 타임캡슐 생성 (보내기)
+     */
+    @PostMapping
+    public ResponseEntity<Void> create(@RequestBody @Valid CapsuleCreateRequest request) {
+        letterService.sendLetter(request);
+        return ResponseEntity.ok().build();
     }
 
-    @GetRestMapping("/api/v1/letter/public")
+    /**
+     * 이메일로 타임캡슐 목록 조회
+     */
+    @GetMapping("/list")
+    public ResponseEntity<List<LetterPaper>> listByEmail(@RequestParam String email) {
+        return ResponseEntity.ok(letterService.listByEmail(email));
+    }
+
+    /**
+     * 타임캡슐 개봉 (상세 조회)
+     */
+    @PostMapping("/{id}/open")
+    public ResponseEntity<LetterPaper> open(@PathVariable Long id, @RequestBody CapsuleOpenRequest request) {
+        return ResponseEntity.ok(letterService.getDetail(id, request.getPassword()));
+    }
+
+    /**
+     * 공개된 타임캡슐 탐색
+     */
+    @GetMapping("/public")
     public ResponseEntity<List<LetterPaper>> listPublic() {
         return ResponseEntity.ok(letterService.findPublicCapsules());
     }
-
-    @PostRestMapping("/api/v1/letter")
-    public void send(@RequestBody @Valid SendCapsuleDto sendCapsuleDto) {
-        letterService.sendLetter(sendCapsuleDto);
-
-    }
-
-    @PostRestMapping("/api/v1/letter/{id}")
-    public void read(@PathVariable("id") Long id, @RequestBody LetterDto letterDto) {
-        letterService.readLetter(letterDto);
-    }
-
-    @DeleteRestMapping("/api/v1/letter/{id}")
-    public void remove(@PathVariable("id") Long id, @RequestBody LetterDto letterDto) {
-        letterService.removeLetter(letterDto);
-    }
-
-
 }
