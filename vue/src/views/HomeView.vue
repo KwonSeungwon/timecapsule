@@ -1,15 +1,16 @@
 <template>
-  <div class="container">
-    <div class="dim"></div>
-    <div class="main" :class="theme">
-      <router-view/>
+  <div class="app-wrapper">
+    <div class="main-container" :class="theme">
+      <router-view v-slot="{ Component }">
+        <transition name="page-fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </div>
-    <div class="dim right"></div>
   </div>
 </template>
 
 <script>
-//import axios from 'axios';
 export default {
   name: 'HomeView',
   data () {
@@ -20,8 +21,6 @@ export default {
   },
   methods : {
     setTheme () {
-      //TODO :  login 상태 or 주소입력시 선택한 theme 표시
-      //TODO : 우주는 좌표 배급때만 나오게 수정예정, 임시표시
       this.theme = this.themes[Math.floor(Math.random() * this.themes.length)];
     },
   },
@@ -30,47 +29,46 @@ export default {
   }
 }
 </script>
+
 <style scoped>
-.container {
+.app-wrapper {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #1a1a1a; /* 어두운 배경으로 픽셀 아트 강조 */
 }
-.main {
-  margin: auto;
-  width: 375px;
+
+.main-container {
+  width: 100%;
+  max-width: 480px; /* 조금 더 넓은 모바일 사이즈 */
   height: 100vh;
-  max-height: 812px;
-}
-/*더 우아한 방법이있나 고민*/
-.dim {
-  position: fixed;
-  width: calc(50% - 187.5px);
-  height: 100vh;
-  background-color: white;
-  z-index: 5;
-}
-.dim.right {
-  right: 0;
-}
-
-.main.beach {
-  background: url(../assets/images/beach/beach.png) no-repeat center;
+  max-height: 900px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 50px rgba(0,0,0,0.5);
   background-size: cover;
+  background-position: center;
 }
 
-.main.mountain {
-  background: url(../assets/images/mountain/mountain.png) no-repeat center;
-  background-size: cover;
+.main-container.beach { background-image: url(../assets/images/beach/beach.png); }
+.main-container.mountain { background-image: url(../assets/images/mountain/mountain.png); }
+.main-container.desert { background-image: url(../assets/images/desert/desert.png); }
+.main-container.space { background-image: url(../assets/images/bg_sc.png); }
+
+/* 페이지 전환 애니메이션 */
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 0.3s, transform 0.3s;
 }
 
-.main.desert {
-  background: url(../assets/images/desert/desert.png) no-repeat center;
-  background-size: cover;
-}
-.main.space {
-  background: url(../assets/images/bg_sc.png) no-repeat center;
-  background-size: cover;
+.page-fade-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
 }
 
-
-
+.page-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
 </style>

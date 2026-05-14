@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timecapsule-deployment
+  namespace: timecapsule
+  labels:
+    app: timecapsule
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timecapsule
+  template:
+    metadata:
+      labels:
+        app: timecapsule
+    spec:
+      containers:
+      - name: timecapsule
+        image: timecapsule:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3000
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: prod
+        - name: DB_URL
+          value: "jdbc:h2:mem:timecapsule;DB_CLOSE_DELAY=-1"
+        - name: DB_USERNAME
+          value: "sa"
+        - name: DB_PASSWORD
+          value: ""
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: timecapsule-jwt-secret
+              key: JWT_SECRET
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: timecapsule-service
+  namespace: timecapsule
+spec:
+  type: ClusterIP
+  selector:
+    app: timecapsule
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: timecapsule-ingress
+  namespace: timecapsule
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: timecapsule.chatflow.ai.kr
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: timecapsule-service
+            port:
+              number: 80

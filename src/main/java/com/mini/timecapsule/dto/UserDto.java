@@ -16,6 +16,8 @@ public class UserDto implements Serializable {
 
     private String password;
 
+    private String email;
+
     private User.OpenDay openDayType;
 
     private User.CapsuleType capsuleType;

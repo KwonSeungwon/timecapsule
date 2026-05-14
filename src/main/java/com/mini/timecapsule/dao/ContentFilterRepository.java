@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface ContentFilterRepository extends JpaRepository<ContentFilter, Long>, QuerydslPredicateExecutor<ContentFilter> {
 
-    List<String> findFilterKeywordByUsed(ContentFilter.Used used);
+    @org.springframework.data.jpa.repository.Query("SELECT c.filterKeyword FROM ContentFilter c WHERE c.used = :used")
+    List<String> findFilterKeywordByUsed(@org.springframework.data.repository.query.Param("used") ContentFilter.Used used);
 }

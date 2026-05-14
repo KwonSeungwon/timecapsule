@@ -1,14 +1,13 @@
 <template>
-  <div class="footer">
-    <button class="btn cancel"
-            @click="prev_f">
-      {{prev}}
+  <div class="footer-actions">
+    <button class="pixel-btn" @click="prev_f">
+      {{ prev }}
     </button>
-    <button class="btn confirm"
+    <button class="pixel-btn primary"
             v-if="!oneButton"
             @click="next_f"
             :disabled="disable_next">
-      {{next}}
+      {{ next }}
     </button>
   </div>
 </template>
@@ -17,29 +16,11 @@
 export default {
   name: 'cFooter',
   props : {
-    prev: {
-      type: String,
-      default: "이전"
-    },
-    next: {
-      type: String,
-      default: "다음"
-    },
-    prev_back: {
-      type : Boolean,
-      default : true
-    },
-    oneButton : {
-      type : Boolean,
-      default : false
-    },
-    disable_next : {
-      type : Boolean,
-      default : false
-    }
-  },
-  data() {
-
+    prev: { type: String, default: "이전" },
+    next: { type: String, default: "다음" },
+    prev_back: { type : Boolean, default : true },
+    oneButton : { type : Boolean, default : false },
+    disable_next : { type : Boolean, default : false }
   },
   methods : {
     prev_f () {
@@ -61,29 +42,16 @@ export default {
 </script>
 
 <style scoped>
-.btn {
-  width: 105px;
-  height: 41px;
-  border: 0;
-  background: url(../assets/images/field_abled.png) no-repeat center transparent;
-  background-size: cover;
+.footer-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 20px;
 }
 
-.beach .btn {
-  background: url(../assets/images/beach/cta_btn.png) no-repeat center transparent;
-  background-size: cover;
+.pixel-btn {
+  flex: 1;
+  min-width: 100px;
 }
-
-.desert .btn {
-  background: url(../assets/images/desert/cta_btn.png) no-repeat center transparent;
-  background-size: cover;
-}
-
-.mountain .btn {
-  background: url(../assets/images/mountain/cta_btn.png) no-repeat center transparent;
-  background-size: cover;
-}
-
-
-
 </style>

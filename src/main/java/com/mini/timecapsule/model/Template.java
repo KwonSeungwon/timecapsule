@@ -25,7 +25,7 @@ import java.time.ZonedDateTime;
 public class Template {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "template_type")

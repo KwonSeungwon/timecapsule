@@ -29,7 +29,7 @@ import java.time.ZonedDateTime;
 public class ContentFilter {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "filter_keyword")

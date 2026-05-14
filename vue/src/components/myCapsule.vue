@@ -1,140 +1,339 @@
 <template>
-  <div class="field-holder">
-    <transition-group :name="transition">
-  <div class="field" v-for="page in pages" :key="page"
-       :class="{'prev' : selectIdx > page, 'next' : selectIdx < page, 'none' : selectIdx - page > 1 || selectIdx - page < -1}"
-       @click="moveField(selectIdx - 1 === page ? 'prev' : selectIdx + 1 === page ? 'next' : false)">
-        <div class="title">
-          <p>내 타임캡슐</p>
-        </div>
-        <div class="total-info">
-          <p>안읽음 {{newCount}}</p>
-          <p>전체 {{totalCount}}</p>
-        </div>
-        <div class="letter-holder">
+  <div class="game-field">
+    <div class="field-title">
+      <h2 class="pixel-text">🎒 내 보관함</h2>
+    </div>
+
+    <div class="total-info">
+      <p class="count-badge">전체 {{totalCount}}개</p>
+      <p class="email-text">👤 {{ email }}</p>
+    </div>
+
+    <div class="capsule-grid-container">
+      <transition :name="transitionName" mode="out-in">
+        <div class="capsule-grid" :key="selectIdx">
           <template v-if="letters.length">
-            <template v-for="(letter, i) in letters" :key="i">
-              <!-- 0 1 2 3 4 5   6 7 8 9 10 11   12 13 14 15 16 17-->
-              <div v-if="(page - 1) * 6 <= i && i < page * 6"  class="select-letter" :class="'position-' + (i % 6 + 1)">
-                <button class="letter" :class="[letter.type, {'open' : letter.status === 'OPENED'}]" @click="readLetter(i)"></button>
-                <span>{{letter.name}}</span>
+            <div v-for="(letter, i) in currentPageLetters" :key="letter.id" class="capsule-item">
+              <div class="capsule-wrapper" :class="{'is-opened': letter.isOpened}" @click="promptPassword(letter)">
+                <div class="capsule-icon" :class="letter.letterPaperType.toLowerCase()"></div>
+                <span class="sender-name">{{letter.senderName}}</span>
+                <div class="d-day" v-if="!isPast(letter.openAt)">D-{{ getDDay(letter.openAt) }}</div>
               </div>
-            </template>
+            </div>
           </template>
           <template v-else>
-            <!-- 편지 없음 표시 -->
+            <div class="no-data">
+              <div class="empty-icon">🌬️</div>
+              <p>아직 묻힌 캡슐이 없어요.</p>
+            </div>
           </template>
-          <button class="capsule bamboo"></button>
         </div>
-        <Footer prev="홈으로" one-button :prev_back="false" v-on:footer_res="next"></Footer>
-      </div>
-    </transition-group>
+      </transition>
+    </div>
+
+    <div class="pagination" v-if="pages > 1">
+      <button class="pixel-btn arrow-btn" :disabled="selectIdx === 1" @click="movePage('prev')">◀</button>
+      <span class="page-indicator">{{ selectIdx }} / {{ pages }}</span>
+      <button class="pixel-btn arrow-btn" :disabled="selectIdx === pages" @click="movePage('next')">▶</button>
+    </div>
+
+    <div class="footer-actions">
+      <button class="pixel-btn primary full-width" @click="goHome">🏠 홈으로</button>
+    </div>
+
+    <!-- 비밀번호 입력 팝업 -->
+    <Popup v-if="passwordPopup.open"
+           confirm="열기"
+           cancel="취소"
+           v-on:popup_res="handlePasswordResponse">
+      <template #contents>
+        <div class="password-prompt">
+          <p class="prompt-title">"{{ selectLetter.senderName }}"님의 캡슐</p>
+          <div class="input-with-icon">
+            <input type="password" v-model="passwordPopup.input" class="pixel-input" placeholder="비밀번호 입력" @keyup.enter="handlePasswordResponse(true)">
+          </div>
+          <p class="unlock-date" v-if="!isPast(selectLetter.openAt)">
+            📅 개봉일: {{ formatDate(selectLetter.openAt) }}
+          </p>
+        </div>
+      </template>
+    </Popup>
+
+    <!-- 편지 상세 내용 -->
+    <Letter v-if="openLetter"
+            :letter-type="selectLetter.letterPaperType"
+            :contents="selectLetter.content"
+            v-on:popup_res="closeLetter">
+    </Letter>
   </div>
-  <Letter v-if="openLetter"
-          :letter-type="selectLetter.type"
-          :contents="selectLetter.content"
-          v-on:popup_res="closeLetter">
-  </Letter>
 </template>
 
 <script>
-import Footer from '@/components/Footer';
 import Letter from "@/components/Letter";
+import Popup from "@/components/Popup";
+import axios from 'axios';
 
 export default {
   name: "MyCapsule",
-  components : {Footer, Letter},
+  components : {Letter, Popup},
   data () {
     return {
-      newCount : 0,
+      email: this.$route.query.email || '',
       totalCount : 0,
-      transition : 'slide-next', //slide-next, slide-prev
-      pages : 0,
+      transitionName : 'slide-fade',
+      pages : 1,
       letters : [],
       selectIdx : 1,
       openLetter : false,
-      selectLetter : {
-        id : null,
-        type : null,
-        content : null,
-        status : null
-      },
-
-      //임시
-      letterTypes : ['letter', 'note', 'polaroid', 'sheepskin']
+      selectLetter : {},
+      passwordPopup: {
+        open: false,
+        input: '',
+        selectedLetter: null
+      }
+    }
+  },
+  computed: {
+    currentPageLetters() {
+      const start = (this.selectIdx - 1) * 6;
+      return this.letters.slice(start, start + 6);
     }
   },
   methods : {
-    initTestData(ea) {
-      let first = ['김', '박', '이', '최', '황', '권', '조'];
-      let last = ['철수', '영희', '길동', '동건', '빈', '성수', '현수', '승원'];
-      let contents = [
-          '안녕 반가워 다음에 또만나. 안녕 반가워 다음에 또만나. 안녕 반가워 다음에 또만나. 안녕 반가워 다음에 또만나. 안녕 반가워 다음에 또만나.',
-          '너를 때려 주고 싶어 흠씬 때려주고 싶어. 너를 때려 주고 싶어 흠씬 때려주고 싶어. 너를 때려 주고 싶어 흠씬 때려주고 싶어',
-          '빌린돈 값아 너때문에 내가 돈이 없어서 지금 너무 많이 힘들단다 제발 돈좀 갚아라.',
-          '메세지 보내지 말아줄래 너같은 아이는 진짜별로야 앞으로 아는척 제발 하지 말아줘.',
-          '이 편지는 영국에서 최초로 시작되어 일년에 한바퀴를 돌면서 받는 사람에게 행운을 주었고 지금은 당신에게로 옮겨진 이 편지는 4일 안에 당신 곁을 떠나야 합니다. 이 편지를 포함해서 7통을 행운이 필요한 사람에게 보내 주셔야 합니다. 복사를 해도 좋습니다. 혹 미신이라 하실지 모르지만 사실입니다.'
-      ];
-
-      for (let i=0, max=ea; i<max;i++) {
-        this.letters.push({
-          id : i,
-          type : this.letterTypes[Math.floor(Math.random() * this.letterTypes.length)],
-          name : this.returnRandomContent(first) + this.returnRandomContent(last),
-          status: 'UNOPENED',
-          content : this.returnRandomContent(contents)
-        });
+    fetchLetters() {
+      if (!this.email) return;
+      const self = this;
+      axios.get('/api/v1/capsule/list', { params: { email: this.email } })
+      .then(response => {
+        self.letters = response.data;
+        self.totalCount = self.letters.length;
+        self.pages = Math.ceil(self.totalCount / 6) || 1;
+      })
+      .catch(error => {
+        console.error('Failed to fetch letters:', error);
+      });
+    },
+    promptPassword(letter) {
+      this.selectLetter = letter;
+      this.passwordPopup.input = '';
+      this.passwordPopup.open = true;
+    },
+    handlePasswordResponse(isConfirm) {
+      if (isConfirm) {
+        this.readLetter();
+      } else {
+        this.passwordPopup.open = false;
       }
-
-      this.pages = Math.ceil(ea / 6 );
-      console.log(this.letters);
     },
-    returnRandomContent (list) {
-      return list[Math.floor(Math.random() * list.length)];
-    },
-    initLetter () {
-      this.selectLetter = {
-        id : null,
-        type : null,
-        content : null
-      };
-    },
-    openLetter_f () {
-      this.selectLetter.status = 'OPENED';
-      //axios.post('/api/v1/letter/this.selectLetter.id')
-    },
-    readLetter(idx) {
-      //TODO : 편지리스트에서 인덱스값 받아서 출력, 편지 정보에 편지지정보가있음
-      this.selectLetter = this.letters[idx];
-      this.openLetter_f();
-      this.openLetter = true;
+    readLetter() {
+      const self = this;
+      const id = this.selectLetter.id;
+      axios.post(`/api/v1/capsule/${id}/open`, { password: this.passwordPopup.input })
+      .then(response => {
+        self.selectLetter = response.data;
+        if (!self.selectLetter.content) {
+            alert('아직 개봉할 수 없는 날짜입니다.');
+            return;
+        }
+        self.openLetter = true;
+        self.passwordPopup.open = false;
+      })
+      .catch(error => {
+        alert('비밀번호가 틀렸거나 오류가 발생했습니다.');
+        console.error(error);
+      });
     },
     closeLetter() {
-      this.initLetter();
       this.openLetter = false;
-      //편지 읽음처리, disabled
+      this.fetchLetters();
     },
-    next (next) {
-      if (!next) {
-        //TODO : 로그아웃필요
-        this.$router.replace('/');
+    goHome() {
+      this.$router.replace('/');
+    },
+    movePage(direction) {
+      if (direction === 'prev' && this.selectIdx > 1) {
+        this.transitionName = 'slide-prev';
+        this.selectIdx--;
+      } else if (direction === 'next' && this.selectIdx < this.pages) {
+        this.transitionName = 'slide-next';
+        this.selectIdx++;
       }
     },
-    moveField (type) {
-      if (!type) {
-        return;
-      } else if (type === 'prev') {
-        if (this.selectIdx) this.transition = 'slide-prev'; this.selectIdx--;
-      } else if (type === 'next') {
-        if (this.pages > this.selectIdx + 1)  this.transition = 'slide-next'; this.selectIdx++;
-      }
+    formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString();
     },
+    isPast(dateStr) {
+      return new Date(dateStr) <= new Date();
+    },
+    getDDay(dateStr) {
+      const diff = new Date(dateStr) - new Date();
+      return Math.ceil(diff / (1000 * 60 * 60 * 24));
+    }
   },
   created() {
-    this.initTestData(14);
+    this.fetchLetters();
   }
 }
 </script>
+
+<style scoped>
+.field-title {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.total-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 8px;
+}
+
+.count-badge {
+  background: #000;
+  color: #fff;
+  padding: 4px 12px;
+  font-size: 12px;
+  border-radius: 0;
+}
+
+.email-text {
+  font-size: 14px;
+  color: #444;
+}
+
+.capsule-grid-container {
+  flex: 1;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.capsule-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 20px;
+  flex: 1;
+}
+
+.capsule-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.capsule-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+  padding: 10px;
+  border: 2px solid transparent;
+}
+
+.capsule-wrapper:hover {
+  transform: scale(1.1);
+  background: rgba(255,255,255,0.5);
+  border-color: #000;
+}
+
+.capsule-icon {
+  width: 64px;
+  height: 64px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 8px;
+}
+
+.capsule-icon.letter { background-image: url(../assets/images/letter_a.png); }
+.capsule-icon.note { background-image: url(../assets/images/letter_b.png); }
+.capsule-icon.polaroid { background-image: url(../assets/images/letter_c.png); }
+
+.is-opened .capsule-icon {
+  opacity: 0.6;
+  filter: grayscale(1);
+}
+
+.sender-name {
+  font-size: 13px;
+  color: #000;
+  font-weight: bold;
+  text-align: center;
+}
+
+.d-day {
+  font-size: 10px;
+  background: #e74c3c;
+  color: #fff;
+  padding: 1px 4px;
+  margin-top: 4px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.arrow-btn {
+  padding: 5px 15px;
+  box-shadow: 2px 2px 0px #000;
+}
+
+.no-data {
+  grid-column: span 2;
+  grid-row: span 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #888;
+}
+
+.empty-icon { font-size: 48px; margin-bottom: 10px; }
+
+.footer-actions {
+  margin-top: auto;
+}
+
+.full-width { width: 100%; }
+
+/* Transitions */
+.slide-next-enter-active, .slide-next-leave-active,
+.slide-prev-enter-active, .slide-prev-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-next-enter-from { transform: translateX(30px); opacity: 0; }
+.slide-next-leave-to { transform: translateX(-30px); opacity: 0; }
+
+.slide-prev-enter-from { transform: translateX(-30px); opacity: 0; }
+.slide-prev-leave-to { transform: translateX(30px); opacity: 0; }
+
+/* Popup Styles */
+.password-prompt {
+  padding: 10px;
+  text-align: center;
+}
+
+.prompt-title {
+  font-size: 16px;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.unlock-date {
+  font-size: 12px;
+  color: #e74c3c;
+  margin-top: 10px;
+}
+</style>
 
 <style scoped>
 .field-holder {
@@ -210,24 +409,22 @@ export default {
 }
 
 .capsule.bamboo {
-  background: url(../assets/images/common/capsule/bamboo.PNG) no-repeat center transparent;
+  background: url(../assets/images/common/capsule/bamboo.png) no-repeat center transparent;
   background-size: cover;
 }
-
 .capsule.bottle {
   background: url(../assets/images/common/capsule/bottle.png) no-repeat center transparent;
   background-size: cover;
 }
-
 .capsule.candybox {
-  background: url(../assets/images/common/capsule/candybox.PNG) no-repeat center transparent;
+  background: url(../assets/images/common/capsule/candybox.png) no-repeat center transparent;
+  background-size: cover;
+}
+.capsule.egg {
+  background: url(../assets/images/common/capsule/egg.png) no-repeat center transparent;
   background-size: cover;
 }
 
-.capsule.egg {
-  background: url(../assets/images/common/capsule/egg.PNG) no-repeat center transparent;
-  background-size: cover;
-}
 
 .select-letter {
   position: absolute;

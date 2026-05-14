@@ -1,20 +1,109 @@
+:root {
+    --pixel-black: #000000;
+    --pixel-white: #ffffff;
+    --pixel-gray: #aaaaaa;
+    --pixel-shadow: #555555;
+    --pixel-border-width: 4px;
+}
+
 /* 픽셀 아트 최적화 렌더링 */
 * {
     font-family: 'tcf', sans-serif;
     image-rendering: pixelated;
     image-rendering: -moz-pixelated;
     image-rendering: crisp-edges;
+    box-sizing: border-box;
 }
 
-.container {
+.pixel-border {
+    border: var(--pixel-border-width) solid var(--pixel-black);
+    position: relative;
+    background: var(--pixel-white);
+}
+
+.pixel-border::after {
+    content: '';
+    position: absolute;
+    top: calc(-1 * var(--pixel-border-width));
+    left: calc(-1 * var(--pixel-border-width));
+    right: calc(-1 * var(--pixel-border-width));
+    bottom: calc(-1 * var(--pixel-border-width));
+    pointer-events: none;
+}
+
+/* 픽셀 스타일 입력창 */
+.pixel-input {
+    background: #fff;
+    border: var(--pixel-border-width) solid var(--pixel-black);
+    padding: 10px 15px;
+    font-size: 16px;
+    outline: none;
+    box-shadow: inset -4px -4px 0px #ddd;
+    margin-bottom: 15px;
+    width: 100%;
+    color: #333;
+}
+
+.pixel-input:focus {
+    border-color: #5d7a54;
+    box-shadow: inset -4px -4px 0px rgba(93, 122, 84, 0.2);
+}
+
+/* 픽셀 스타일 버튼 */
+.pixel-btn {
+    border: var(--pixel-border-width) solid var(--pixel-black);
+    background: #fff;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #000;
+    box-shadow: 4px 4px 0px var(--pixel-black);
+    transition: all 0.1s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.pixel-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--pixel-black);
+}
+
+.pixel-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px var(--pixel-black);
+}
+
+.pixel-btn.primary {
+    background: #5d7a54;
+    color: #fff;
+}
+
+/* 픽셀 텍스트 쉐도우 */
+.pixel-text {
+    text-shadow: 2px 2px 0px var(--pixel-black);
+}
+
+/* 반응형 필드 레이아웃 */
+.game-field {
+    width: 90%;
+    max-width: 420px;
+    margin: 5vh auto;
+    background: rgba(255, 255, 255, 0.85);
+    border: 8px solid var(--pixel-black);
+    padding: 24px;
+    min-height: 70vh;
     display: flex;
+    flex-direction: column;
 }
 
-.main {
-    margin: auto;
-    width: 375px;
-    height: 100vh;
-    max-height: 812px;
+@media (max-width: 480px) {
+    .game-field {
+        width: 95%;
+        padding: 16px;
+        margin: 2vh auto;
+    }
 }
 
 .main.beach {

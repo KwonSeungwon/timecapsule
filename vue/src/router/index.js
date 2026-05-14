@@ -1,13 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Title from '@/components/Title'
-import Login from '@/components/Login'
-import LoginTest from '@/components/LoginTest'
-import Join from '@/components/Join'
-import JoinTest from '@/components/JoinTest'
-import Target from '@/components/Target'
 import MyCapsule from '@/components/myCapsule'
-import SelectCapsule from '@/components/SelectCapsule'
-import SelectLetterPaper from '@/components/SelectLetterPaper'
+import FindCapsule from '@/components/FindCapsule'
 import Tutorial from '@/components/Tutorial'
 import WriteLetter from '@/components/WriteLetter'
 
@@ -19,44 +13,19 @@ const routes = [
     component: Title
   },
   {
-    path: '/login',
-    name: 'cLogin',
-    component: Login
+    path: '/write',
+    name: 'writeLetter',
+    component: WriteLetter
   },
   {
-    path: '/loginTest',
-    name: 'cLoginTest',
-    component: LoginTest
+    path: '/find',
+    name: 'findCapsule',
+    component: FindCapsule
   },
   {
-    path: '/join',
-    name: 'cJoin',
-    component: Join
-  },
-  {
-    path: '/joinTest',
-    name: 'cJoinTest',
-    component: JoinTest
-  },
-  {
-    path: '/target',
-    name: 'cTarget',
-    component: Target
-  },
-  {
-    path: '/mypage',
+    path: '/my-capsule',
     name: 'myCapsule',
     component: MyCapsule
-  },
-  {
-    path: '/join/capsule',
-    name: 'selectCapsule',
-    component: SelectCapsule
-  },
-  {
-    path: '/target/letter',
-    name: 'selectLetterPaper',
-    component: SelectLetterPaper
   },
   {
     path: '/tutorial',
@@ -64,16 +33,12 @@ const routes = [
     component: Tutorial
   },
   {
-    path: '/target/letter/write',
-    name: 'writeLetter',
-    component: WriteLetter
-  },
-  {
     path : "/:catchAll(.*)",
     name : "title",
     component : Title
   },
 ]
+
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

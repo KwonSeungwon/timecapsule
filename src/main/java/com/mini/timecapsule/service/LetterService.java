@@ -35,9 +35,12 @@ public class LetterService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void sendLetter(CapsuleCreateRequest request) {
+    public LetterPaper sendLetter(CapsuleCreateRequest request) {
+        System.out.println("Received CapsuleCreateRequest: " + request);
+        
         // 비속어 필터링 검사
-        int filteringCount = letterFilteringContent(request.getContent());
+        String content = request.getContent() != null ? request.getContent() : "";
+        int filteringCount = letterFilteringContent(content);
         if (filteringCount > 0) {
             throw new CustomException(ExceptionStructure.INVALID_CONTENT);
         }
@@ -53,6 +56,8 @@ public class LetterService {
 
         // 3. 비밀번호 암호화
         String encryptedPassword = passwordEncoder.encode(request.getPassword());
+
+        System.out.println("Creating LetterPaper entity with biome: " + biome);
 
         // 4. 엔티티 생성 및 저장
         LetterPaper letter = LetterPaper.newEntity(
@@ -73,7 +78,9 @@ public class LetterService {
                 request.getIsPublic()
         );
 
-        letterPaperRepository.save(letter);
+        LetterPaper saved = letterPaperRepository.save(letter);
+        System.out.println("Successfully saved letter with ID: " + saved.getId());
+        return saved;
     }
 
     /**

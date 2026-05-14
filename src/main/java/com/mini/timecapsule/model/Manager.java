@@ -21,7 +21,7 @@ import jakarta.persistence.*;
 public class Manager {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "manager_no")
     private Long id;
 

@@ -1,37 +1,29 @@
 <template>
-  <div class="popup" :class="letterType">
-    <div class="body">
-      <span>{{contents}}</span>
+  <transition name="letter-fade">
+    <div class="letter-overlay">
+      <div class="letter-container" :class="letterType?.toLowerCase()">
+        <div class="letter-body">
+          <div class="content-wrapper">
+            <span class="letter-text">{{ contents }}</span>
+          </div>
+        </div>
+        <div class="letter-footer">
+          <button class="pixel-btn primary" @click="close">닫기</button>
+        </div>
+      </div>
     </div>
-    <div class="footer">
-      <button class="btn cancel"
-              @click="cancel_f">닫기</button>
-    </div>
-  </div>
-  <div class="dim"></div>
+  </transition>
 </template>
 
 <script>
 export default {
-  name: "cPopup",
+  name: "LetterView",
   props : {
-    contents : {
-      type : String,
-      default: "종료하시겠습니까?"
-    },
-    letterType : {
-      type : String,
-      default : null
-    }
-  },
-  data() {
-    return {
-      result : true
-    }
+    contents : { type : String, default: "" },
+    letterType : { type : String, default : "LETTER" }
   },
   methods : {
-    cancel_f () {
-      console.log(11);
+    close () {
       this.$emit('popup_res');
     }
   }
@@ -39,84 +31,86 @@ export default {
 </script>
 
 <style scoped>
-.field {
-  margin: 20% auto;
-  width: 90%;
-  height: 80%;
-  background: url(../assets/images/field.png) no-repeat center transparent;
-}
-.popup {
-  z-index: 10;
-  position: relative;
-}
-
-.dim {
+.letter-overlay {
   position: fixed;
-  top : 0;
+  top: 0;
   left: 0;
-  z-index: 1;
-  width: 100vh;
-  height: 100vh;
-  background-color: black;
-  opacity: 0.6;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
 }
 
-.popup .body {
-  width: 225px;
-  height: 322px;
-  padding: 40px;
-  margin: 40% auto 30px;
+.letter-container {
+  width: 90%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: slideUp 0.4s ease-out;
 }
 
-.popup.sheepskin .body {
-  background: url(../assets/images/common/letters/large/sheepskin_large.png) no-repeat center transparent;
-  background-size: cover;
-}
-.popup.letter .body {
-  background: url(../assets/images/common/letters/large/letter_large.png) no-repeat center transparent;
-  background-size: cover;
-}
-.popup.note .body {
-  background: url(../assets/images/common/letters/large/note_large.png) no-repeat center transparent;
-  background-size: cover;
-}
-.popup.polaroid .body {
-  background: url(../assets/images/common/letters/large/polaroid.png) no-repeat center transparent;
-  background-size: cover;
+.letter-body {
+  width: 280px;
+  height: 400px;
+  padding: 40px 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 20px;
 }
 
-.popup .body span {
-  display: inline-block;
+/* Backgrounds for different letter types */
+.letter.letter .letter-body { background-image: url(../assets/images/common/letters/large/letter_large.png); }
+.letter.note .letter-body { background-image: url(../assets/images/common/letters/large/note_large.png); }
+.letter.polaroid .letter-body { background-image: url(../assets/images/common/letters/large/polaroid.png); }
+.letter.sheepskin .letter-body { background-image: url(../assets/images/common/letters/large/sheepskin_large.png); }
+
+.content-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 5px;
 }
 
-.popup.note .body span {
-  margin-top: -16px;
-  line-height: 35.5px;
+/* Custom Scrollbar */
+.content-wrapper::-webkit-scrollbar { width: 4px; }
+.content-wrapper::-webkit-scrollbar-thumb { background: #888; }
+
+.letter-text {
+  color: #333;
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
-.popup.letter .body span {
-  line-height: 41px;
-  margin-top: 12px;
-}
-.popup.polaroid .body span {
-  line-height: 25px;
+.letter.note .letter-text { line-height: 1.8; color: #2c3e50; }
+.letter.sheepskin .letter-text { font-family: 'serif'; color: #4a3728; }
+
+.letter-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-.popup.sheepskin .body span {
-  margin-top: 10px;
-  line-height: 25px;
+/* Animations */
+@keyframes slideUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
-.popup .footer {
-  text-align: center;
+.letter-fade-enter-active, .letter-fade-leave-active {
+  transition: opacity 0.3s;
 }
-
-.btn {
-  width: 100px;
-  height: 45px;
-  border: 0;
-  background: url(../assets/images/field_abled.png) no-repeat center transparent;
-  background-size: cover;
+.letter-fade-enter-from, .letter-fade-leave-to {
+  opacity: 0;
 }
-
 </style>

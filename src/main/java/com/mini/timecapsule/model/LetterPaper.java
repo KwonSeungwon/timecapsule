@@ -12,9 +12,14 @@ import java.time.temporal.ChronoUnit;
 
 /**
  * id : id(auto_increment)
- * name : 보내는사람명
+ * senderName : 보내는사람명
  * title : 타임캡슐 제목
- * userId : 타입캡슐(user) 아이디(FK)
+ * receiverEmail : 받는사람 이메일
+ * password : 비밀번호
+ * xCoord : x좌표
+ * yCoord : y좌표
+ * biome : 바이옴
+ * locationName : 장소명
  * letterTemplateType : 편지지타입
  * capsuleType : 캡슐 외형 타입
  * status : 상태(작성, 오픈, 삭제)
@@ -34,15 +39,25 @@ import java.time.temporal.ChronoUnit;
 public class LetterPaper {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String senderName;
 
     private String title;
 
-    @ManyToOne
-    private User user;
+    private String receiverEmail;
+
+    @Column(length = 255)
+    private String password;
+
+    private Integer xCoord;
+
+    private Integer yCoord;
+
+    private String biome;
+
+    private String locationName;
 
     /**
      * 편지지타입 (내부 디자인)
@@ -76,6 +91,8 @@ public class LetterPaper {
     /**
      * 내용
      */
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     /**
@@ -150,13 +167,19 @@ public class LetterPaper {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public static LetterPaper newEntity(String name, String title, User user, LetterPaperType letterPaperType,
-                                        CapsuleType capsuleType, String content, String imageUrl,
-                                        String requestorInfo, ZonedDateTime openAt, Boolean isPublic) {
+    public static LetterPaper newEntity(String senderName, String title, String receiverEmail, String password,
+                                        Integer xCoord, Integer yCoord, String biome, String locationName,
+                                        LetterPaperType letterPaperType, CapsuleType capsuleType, String content,
+                                        String imageUrl, String requestorInfo, ZonedDateTime openAt, Boolean isPublic) {
         LetterPaper letterPaper = new LetterPaper();
-        letterPaper.name = name;
+        letterPaper.senderName = senderName;
         letterPaper.title = title;
-        letterPaper.user = user;
+        letterPaper.receiverEmail = receiverEmail;
+        letterPaper.password = password;
+        letterPaper.xCoord = xCoord;
+        letterPaper.yCoord = yCoord;
+        letterPaper.biome = biome;
+        letterPaper.locationName = locationName;
         letterPaper.letterPaperType = letterPaperType;
         letterPaper.capsuleType = capsuleType;
         letterPaper.status = LetterStatus.UNOPENED;

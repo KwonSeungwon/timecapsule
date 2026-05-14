@@ -1,6 +1,10 @@
 package com.mini.timecapsule.utils;
 
 public class LocationMapper {
+    private LocationMapper() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * Maps coordinates (x, y) to biomes.
      * Coordinate system assumed to be 1000x1000.

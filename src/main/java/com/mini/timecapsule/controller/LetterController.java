@@ -23,9 +23,8 @@ public class LetterController {
      * 타임캡슐 생성 (보내기)
      */
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @Valid CapsuleCreateRequest request) {
-        letterService.sendLetter(request);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<LetterPaper> create(@RequestBody @Valid CapsuleCreateRequest request) {
+        return ResponseEntity.ok(letterService.sendLetter(request));
     }
 
     /**
