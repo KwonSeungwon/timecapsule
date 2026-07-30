@@ -35,10 +35,6 @@ step_secrets() {
     --from-literal=DB_PASSWORD='${DEPLOY_DB_PASSWORD:-timecapsule_pw}' \
     --dry-run=client -o yaml | $KUBECONFIG apply -f -"
   
-  ssh_k3s "$KUBECONFIG -n $NAMESPACE create secret generic timecapsule-jwt-secret \
-    --from-literal=JWT_SECRET='${DEPLOY_JWT_SECRET:-secret}' \
-    --dry-run=client -o yaml | $KUBECONFIG apply -f -"
-
   # 메일 시크릿은 **항상** 만든다. DEPLOY_MAIL_HOST 가 없으면 in-cluster sink(mailpit)를
   # 가리킨다 — 예전처럼 시크릿이 아예 없으면 앱이 조용히 localhost:25 로 떨어져
   # 메일이 한 통도 안 나가는데 로그도 조용한 상태가 된다.

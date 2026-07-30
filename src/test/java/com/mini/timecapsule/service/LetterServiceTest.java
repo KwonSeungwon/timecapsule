@@ -2,7 +2,6 @@ package com.mini.timecapsule.service;
 
 import com.mini.timecapsule.dao.ContentFilterRepository;
 import com.mini.timecapsule.dao.LetterPaperRepository;
-import com.mini.timecapsule.dao.UserRepository;
 import com.mini.timecapsule.dto.CapsuleCreateRequest;
 import com.mini.timecapsule.exception.CustomException;
 import com.mini.timecapsule.model.LetterPaper;
@@ -23,9 +22,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class LetterServiceTest {
-
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
     private LetterPaperRepository letterPaperRepository;

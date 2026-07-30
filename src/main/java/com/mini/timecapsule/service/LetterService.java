@@ -2,15 +2,12 @@ package com.mini.timecapsule.service;
 
 import com.mini.timecapsule.dao.ContentFilterRepository;
 import com.mini.timecapsule.dao.LetterPaperRepository;
-import com.mini.timecapsule.dao.UserRepository;
 import com.mini.timecapsule.dto.CapsuleCreateRequest;
 import com.mini.timecapsule.dto.LetterDto;
-import com.mini.timecapsule.dto.SendCapsuleDto;
 import com.mini.timecapsule.exception.CustomException;
 import com.mini.timecapsule.exception.ExceptionStructure;
 import com.mini.timecapsule.model.ContentFilter;
 import com.mini.timecapsule.model.LetterPaper;
-import com.mini.timecapsule.model.User;
 import com.mini.timecapsule.utils.LocationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +26,6 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class LetterService {
 
-    private final UserRepository userRepository;
     private final LetterPaperRepository letterPaperRepository;
     private final ContentFilterRepository contentFilterRepository;
     private final PasswordEncoder passwordEncoder;
@@ -77,42 +73,6 @@ public class LetterService {
         return letterPaperRepository.save(letter);
     }
 
-    /**
-     * @deprecated Use {@link #sendLetter(CapsuleCreateRequest)} instead.
-     */
-    @Deprecated
-    @Transactional
-    public void sendLetter(SendCapsuleDto sendCapsuleDto) {
-
-        Optional<User> opUser = userRepository.findById(sendCapsuleDto.getUserId());
-
-        if (!opUser.isPresent()) {
-            throw new CustomException(ExceptionStructure.NOT_FOUND_USER);
-        }
-
-        // 비속어 필터링 검사
-        int filteringCount = letterFilteringContent(sendCapsuleDto.getContent());
-        if (filteringCount > 0) {
-            throw new CustomException(ExceptionStructure.INVALID_CONTENT);
-        }
-
-        // For backward compatibility, we can adapt SendCapsuleDto to CapsuleCreateRequest
-        CapsuleCreateRequest request = CapsuleCreateRequest.builder()
-                .senderName(sendCapsuleDto.getSender())
-                .title(sendCapsuleDto.getTitle())
-                .receiverEmail(opUser.get().getEmail()) // Use user's email as receiver for member flow
-                .password(sendCapsuleDto.getPassword())
-                .content(sendCapsuleDto.getContent())
-                .openAt(sendCapsuleDto.getOpenAt())
-                .isPublic(sendCapsuleDto.getIsPublic())
-                .letterPaperType(sendCapsuleDto.getLetterPaperType())
-                .capsuleType(sendCapsuleDto.getCapsuleType())
-                .imageUrl(sendCapsuleDto.getImageUrl())
-                .requestorInfo(sendCapsuleDto.getRequestorInfo())
-                .build();
-
-        sendLetter(request);
-    }
 
     private int letterFilteringContent(String content) {
         List<String> keywords = contentFilterRepository.findFilterKeywordByUsed(ContentFilter.Used.ACTIVE);

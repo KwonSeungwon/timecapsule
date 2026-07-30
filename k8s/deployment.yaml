@@ -61,11 +61,9 @@ spec:
           value: "sa"
         - name: DB_PASSWORD
           value: ""
-        - name: JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: timecapsule-jwt-secret
-              key: JWT_SECRET
+        # JWT_SECRET 은 없다. 비회원 서비스라 토큰을 발급할 일이 없고,
+        # 발급하던 엔드포인트(/api/timecapsule/login)는 인증 없이 서명 토큰을
+        # 내주고 있어서 통째로 제거했다. NoMemberEndpointsTest 참고.
         - name: MAIL_HOST
           valueFrom:
             secretKeyRef:

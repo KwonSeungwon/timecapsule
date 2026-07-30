@@ -1,24 +1,21 @@
 package com.mini.timecapsule.controller;
 
-import com.mini.timecapsule.service.CoordinatesService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * SPA 셸 진입점. vue-router 가 history mode 라 "/" 는 서버로 들어온다.
+ *
+ * <p>예전엔 여기서 {@code coordinatesService.initializationCoordinate()} 를 호출해
+ * 방문 한 번마다 좌표 10,000 행 시딩을 시도하고 예외는 통째로 삼켰다. 좌표 테이블은
+ * 회원 시절 잔재였고 캡슐 생성 경로({@code LetterService#sendLetter})는 좌표를
+ * {@code Random} 으로 뽑으므로 그 테이블을 읽지 않는다 — 서브시스템째로 제거했다.
+ */
 @Controller
-@RequiredArgsConstructor
 public class HomeController {
 
-    private final CoordinatesService coordinatesService;
-
-    // 루트 경로는 WebConfig의 ViewControllerRegistry에서 처리하도록 맡기거나
-    // 여기서 명시적으로 forward 합니다.
     @GetMapping("/")
-    public String index(){
-        try {
-            coordinatesService.initializationCoordinate();
-        } catch (Exception e) {}
+    public String index() {
         return "forward:/index.html";
     }
-
 }
