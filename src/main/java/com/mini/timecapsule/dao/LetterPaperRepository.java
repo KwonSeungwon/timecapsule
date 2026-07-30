@@ -4,6 +4,7 @@ package com.mini.timecapsule.dao;
 import com.mini.timecapsule.model.LetterPaper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
@@ -55,5 +56,36 @@ public interface LetterPaperRepository extends JpaRepository<LetterPaper, Long>,
                                          @Param("excludedStatus") LetterPaper.LetterStatus excludedStatus,
                                          @Param("maxAttempts") int maxAttempts,
                                          Pageable pageable);
+
+    /**
+     * 재시도 예산이 소진돼 {@code findIdsDueForNotification} 에서 <b>영구히</b> 빠진 캡슐 수.
+     *
+     * <p>이 숫자는 "메일을 영영 못 받는 사용자 수"다. 세지 않으면 조용한 데이터 유실이
+     * 그대로 방치된다 — 기동할 때마다 로그로 알린다.
+     */
+    @Query("""
+            select count(l) from LetterPaper l
+            where (l.isNotified is null or l.isNotified = false)
+              and (l.status is null or l.status <> :excludedStatus)
+              and l.notifyAttempts >= :maxAttempts
+            """)
+    long countExhausted(@Param("excludedStatus") LetterPaper.LetterStatus excludedStatus,
+                        @Param("maxAttempts") int maxAttempts);
+
+    /**
+     * 소진된 캡슐을 대기열로 되돌린다. 되돌린 건수를 반환한다.
+     *
+     * <p>운영자가 명시적으로 켤 때만 실행된다({@code timecapsule.notification.requeue-exhausted-on-start}).
+     * 이미 발송된 캡슐과 삭제된 캡슐은 건드리지 않는다 — 되살리면 중복 발송이 된다.
+     */
+    @Modifying(clearAutomatically = true)
+    @Query("""
+            update LetterPaper l set l.notifyAttempts = 0
+            where (l.isNotified is null or l.isNotified = false)
+              and (l.status is null or l.status <> :excludedStatus)
+              and l.notifyAttempts >= :maxAttempts
+            """)
+    int resetExhaustedNotifyAttempts(@Param("excludedStatus") LetterPaper.LetterStatus excludedStatus,
+                                     @Param("maxAttempts") int maxAttempts);
 
 }

@@ -5,6 +5,8 @@ import com.mini.timecapsule.model.LetterPaper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,41 @@ public class TimecapsuleScheduler {
     private int batchSize;
 
     /**
+     * 켜고 기동하면 재시도 예산이 소진된 캡슐을 대기열로 되돌린다.
+     * 상시로 켜두면 안 된다 — 진짜로 배달 불가능한 주소가 매 재기동마다 되살아난다.
+     */
+    @Value("${timecapsule.notification.requeue-exhausted-on-start:false}")
+    private boolean requeueExhaustedOnStart;
+
+    /**
+     * 기동할 때 "영영 메일을 못 받는 캡슐"이 몇 건인지 알린다.
+     *
+     * <p>{@code notifyAttempts} 가 상한에 닿은 캡슐은 대기열 쿼리에서 영구히 빠지고,
+     * 그걸 되살릴 관리자 화면은 인증 없이 JWT 를 뿌리던 문제로 통째로 제거됐다.
+     * 아무도 세지 않으면 조용한 데이터 유실로 끝난다.
+     *
+     * <p>{@code @Transactional} 을 붙이지 않는다 — 이 클래스는 트랜잭션 경계를 갖지 않는
+     * 오케스트레이터다. 쓰기는 {@link CapsuleNotifier} 안에서 일어난다.
+     */
+    @EventListener(ApplicationReadyEvent.class)
+    public void reviewUndeliverableCapsulesOnStartup() {
+        if (requeueExhaustedOnStart) {
+            int requeued = notifier.requeueExhausted(maxAttempts);
+            log.warn("재시도 예산이 소진됐던 캡슐 {}건을 대기열로 되돌립니다. "
+                    + "원인(대개 메일 설정)을 고친 뒤에만 쓸 것 — 켜둔 채로 두지 말 것", requeued);
+            return;
+        }
+
+        long undeliverable = letterPaperRepository.countExhausted(LetterPaper.LetterStatus.REMOVE, maxAttempts);
+        if (undeliverable > 0) {
+            log.error("재시도 {}회를 모두 소진해 영구 미발송 상태인 캡슐이 {}건 있습니다. "
+                            + "메일 설정을 고친 뒤 TIMECAPSULE_NOTIFICATION_REQUEUE_EXHAUSTED_ON_START=true 로 "
+                            + "한 번 기동하면 대기열로 되돌아갑니다",
+                    maxAttempts, undeliverable);
+        }
+    }
+
+    /**
      * 개봉일이 지난 캡슐에 알림 메일을 보낸다. 코드 기본값은 매시 정각, 운영은 매분.
      *
      * <p>이 메서드에는 {@code @Transactional} 을 붙이지 않는다 — 붙이면 배치 전체가
@@ -47,6 +84,18 @@ public class TimecapsuleScheduler {
      */
     @Scheduled(cron = "${timecapsule.notification.cron:0 0 * * * *}")
     public void checkAndNotifyOpenCapsules() {
+        if (!notifier.isMailConfigured()) {
+            // MAIL_HOST 시크릿 없이 매니페스트만 적용하면 localhost:25 로 떨어진다
+            // (deployment.yaml 의 secretKeyRef ... optional: true). 이때 발송을 시도하면
+            // 전부 즉시 실패하고 그 실패가 캡슐의 재시도 예산을 먹는다. 매분 주기에서는
+            // 10분 만에 그 사이 개봉일이 된 캡슐이 전부 영구 미발송이 된다.
+            // 조용히 넘기지 않고 매 주기 ERROR 를 남긴다 — health 의 mail 인디케이터는
+            // 일부러 꺼져 있어서(메일 장애 = 사이트 다운 방지) 이 로그가 주 관측 수단이다.
+            log.error("메일이 설정되지 않아 개봉 알림 주기를 건너뜁니다. MAIL_HOST 시크릿을 확인하세요 "
+                    + "(상태는 /actuator/health/mail)");
+            return;
+        }
+
         List<Long> dueIds = letterPaperRepository.findIdsDueForNotification(
                 ZonedDateTime.now(), LetterPaper.LetterStatus.REMOVE, maxAttempts, Pageable.ofSize(batchSize));
 

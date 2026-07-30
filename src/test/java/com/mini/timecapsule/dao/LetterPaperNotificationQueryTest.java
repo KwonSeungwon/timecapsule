@@ -119,6 +119,60 @@ class LetterPaperNotificationQueryTest {
         assertThat(due()).isEmpty();
     }
 
+    private LetterPaper exhausted() {
+        LetterPaper capsule = capsule(NOW.minusDays(1));
+        for (int i = 0; i < 10; i++) {
+            capsule.recordNotifyFailure(10);
+        }
+        return capsule;
+    }
+
+    /**
+     * 예산이 소진된 캡슐은 대기열에서 <b>영구히</b> 빠진다. 그 상태를 셀 수 없으면
+     * "몇 명이 영영 메일을 못 받았는지"조차 알 수 없다 — 조용한 데이터 유실이다.
+     */
+    @Test
+    @DisplayName("영구 미발송 캡슐 수를 셀 수 있다")
+    void countsPermanentlyUndeliverableCapsules() {
+        exhausted();
+        capsule(NOW.minusDays(1)); // 아직 재시도 가능
+
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(repository.countExhausted(LetterPaper.LetterStatus.REMOVE, 10)).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("이미 발송됐거나 삭제된 캡슐은 영구 미발송으로 세지 않는다")
+    void doesNotCountNotifiedOrRemovedCapsules() {
+        exhausted().markNotified();
+        exhausted().remove();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(repository.countExhausted(LetterPaper.LetterStatus.REMOVE, 10)).isZero();
+    }
+
+    /**
+     * 복구 경로. 설정 오류로 예산이 소진된 캡슐을 되살리는 유일한 수단이라
+     * 되돌린 뒤 실제로 대기열에 다시 나타나는지까지 확인한다.
+     */
+    @Test
+    @DisplayName("소진된 캡슐의 시도횟수를 0 으로 되돌리면 다시 대기열에 들어온다")
+    void requeuesExhaustedCapsules() {
+        Long id = exhausted().getId();
+        entityManager.flush();
+        entityManager.clear();
+        assertThat(due()).isEmpty();
+
+        int requeued = repository.resetExhaustedNotifyAttempts(LetterPaper.LetterStatus.REMOVE, 10);
+
+        assertThat(requeued).isEqualTo(1);
+        assertThat(due()).containsExactly(id);
+    }
+
     /**
      * 한 주기에 꺼내오는 건수에 상한이 있어야 한다.
      *
