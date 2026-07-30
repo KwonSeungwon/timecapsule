@@ -1,8 +1,10 @@
 package com.mini.timecapsule.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -46,6 +49,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleMessageNotReadable(HttpMessageNotReadableException e) {
+        String message = "요청 형식이 올바르지 않습니다.";
+        Map<String, Object> response = new HashMap<>();
+        response.put("error", message);
+        response.put("message", message);
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneralException(Exception e) {
         // Spring MVC 가 상태코드를 이미 정해서 던지는 예외들(없는 정적자원 404,
@@ -67,9 +80,12 @@ public class GlobalExceptionHandler {
             return ResponseEntity.status(status).body(response);
         }
 
+        log.error("처리되지 않은 예외가 발생했습니다.", e);
+
+        String message = "서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
         Map<String, Object> response = new HashMap<>();
-        response.put("error", "An unexpected error occurred");
-        response.put("message", e.getMessage());
+        response.put("error", message);
+        response.put("message", message);
         response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }

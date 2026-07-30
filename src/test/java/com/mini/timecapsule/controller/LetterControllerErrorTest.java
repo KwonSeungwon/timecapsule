@@ -19,8 +19,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -86,8 +88,8 @@ class LetterControllerErrorTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody(), "본문이 비면 프론트가 사유를 표시할 수 없다");
-        assertTrue(response.getBody().contains("INVALID PASSWORD"),
-                "실제 사유가 담겨야 한다: " + response.getBody());
+        assertTrue(response.getBody().contains("비밀번호가 일치하지 않습니다"),
+                "비밀번호 오류가 한국어로 담겨야 한다: " + response.getBody());
     }
 
     @Test
@@ -106,15 +108,75 @@ class LetterControllerErrorTest {
     void forbiddenKeywordReturnsItsOwnReason() {
         contentFilterRepository.save(ContentFilter.newContentFilter("바보", ContentFilter.Used.ACTIVE));
 
-        ResponseEntity<String> response = postJson("/api/v1/capsule", """
-                {"senderName":"보낸이","title":"제목","receiverEmail":"a@example.com",
-                 "password":"pw","content":"너 바보야","openAt":"2030-01-01T00:00:00+09:00",
-                 "isPublic":false,"letterPaperType":"LETTER","capsuleType":"BOTTLE"}
-                """);
+        ResponseEntity<String> response = postJson("/api/v1/capsule",
+                capsuleJson("a@example.com", ZonedDateTime.now().plusDays(30))
+                        .replace("\"내용입니다\"", "\"너 바보야\""));
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertTrue(response.getBody() != null
-                        && response.getBody().contains("CONTENT CONTAINS FORBIDDEN KEYWORDS"),
-                "비속어 사유가 담겨야 한다: " + response.getBody());
+                        && response.getBody().contains("비속어"),
+                "비속어 사유가 한국어로 담겨야 한다: " + response.getBody());
+    }
+
+    // --- F2: 깨진 JSON 이 500 을 내면 안 된다 ---
+
+    @Test
+    @DisplayName("깨진 JSON 은 400 이다 — 500 이 아니라, 그리고 파싱 에러의 내부 클래스명을 노출하지 않는다")
+    void malformedJsonReturnsBadRequestNotInternalServerError() {
+        // 실제로 JSON 이 아닌 문자열을 보내면 Jackson 이
+        // HttpMessageNotReadableException 을 던진다. 이걸 안 잡으면
+        // handleGeneralException 이 잡고 500 + e.getMessage() 를 뱉어서
+        // 내부 구현이 그대로 밖으로 나간다.
+        ResponseEntity<String> response = postJson("/api/v1/capsule", "이건 JSON이 아니다{{{");
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(),
+                "JSON 파싱 실패는 클라이언트 잘못이므로 400 이어야 한다");
+        assertFalse(response.getBody().contains("HttpMessageNotReadableException"),
+                "내부 예외 클래스명이 응답에 실려 나가면 안 된다: " + response.getBody());
+        assertFalse(response.getBody().contains("JsonParseException"),
+                "Jackson 내부 예외 클래스명이 응답에 실려 나가면 안 된다: " + response.getBody());
+    }
+
+    // --- F3: 이메일/개봉일 검증 ---
+
+    /** 개봉일을 상대 시각으로 만든다 — 리터럴 연도를 박으면 그 해가 오는 순간 테스트가 거짓말을 시작한다. */
+    private static String capsuleJson(String email, ZonedDateTime openAt) {
+        return """
+                {"senderName":"보낸이","title":"제목","receiverEmail":"%s",
+                 "password":"pw","content":"내용입니다","openAt":"%s",
+                 "isPublic":false,"letterPaperType":"LETTER","capsuleType":"BOTTLE"}
+                """.formatted(email, openAt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+    }
+
+    @Test
+    @DisplayName("이메일 형식이 아닌 receiverEmail 은 400 으로 거부한다")
+    void invalidEmailFormatIsRejected() {
+        ResponseEntity<String> response = postJson("/api/v1/capsule",
+                capsuleJson("asdf", ZonedDateTime.now().plusDays(30)));
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.getBody() != null && response.getBody().contains("이메일"),
+                "이메일 형식 오류 안내가 담겨야 한다: " + response.getBody());
+    }
+
+    @Test
+    @DisplayName("과거 날짜의 openAt 은 400 으로 거부한다 — 타임캡슐이니까 미래여야 한다")
+    void pastOpenAtIsRejected() {
+        ResponseEntity<String> response = postJson("/api/v1/capsule",
+                capsuleJson("a@example.com", ZonedDateTime.now().minusDays(1)));
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.getBody() != null && response.getBody().contains("개봉일"),
+                "과거 날짜 거부 안내가 담겨야 한다: " + response.getBody());
+    }
+
+    @Test
+    @DisplayName("정상 요청은 여전히 200 으로 캡슐이 만들어진다")
+    void validRequestStillSucceeds() {
+        ResponseEntity<String> response = postJson("/api/v1/capsule",
+                capsuleJson("valid@example.com", ZonedDateTime.now().plusDays(30)));
+
+        assertEquals(HttpStatus.OK, response.getStatusCode(),
+                "정상 요청이 거부되면 안 된다: " + response.getBody());
     }
 }

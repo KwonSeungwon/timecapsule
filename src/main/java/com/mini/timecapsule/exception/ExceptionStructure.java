@@ -2,10 +2,8 @@ package com.mini.timecapsule.exception;
 
 public abstract class ExceptionStructure {
 
-    //처리하고자 하는 Error를 선언 후 CustomeException 에서 메세지변수로 사용하면됨.
-    public static final String NOT_FOUND_COORDINATE = "COORDINATE NOT FOUND";
-    public static final String NOT_FOUND_USER = "USER NOT FOUND";
-    public static final String INVALID_CONTENT = "CONTENT CONTAINS FORBIDDEN KEYWORDS";
-    public static final String INVALID_PASSWORD = "INVALID PASSWORD";
+    public static final String INVALID_CONTENT = "비속어 또는 금지어가 포함되어 있습니다.";
+    public static final String INVALID_PASSWORD = "비밀번호가 일치하지 않습니다.";
+    public static final String NOT_FOUND_LETTER = "해당 타임캡슐을 찾을 수 없습니다.";
 
 }

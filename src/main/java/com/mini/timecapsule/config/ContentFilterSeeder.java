@@ -35,13 +35,18 @@ public class ContentFilterSeeder implements ApplicationRunner {
 
     private final ContentFilterRepository contentFilterRepository;
 
+    @Transactional
     @Override
     public void run(ApplicationArguments args) {
         seed();
     }
 
-    @Transactional
-    public void seed() {
+    /**
+     * 멱등한 시드 로직. 트랜잭션은 {@link #run} 이 proxy 를 통해 진입할 때 열린다.
+     * 이 메서드에 직접 {@code @Transactional} 을 붙이면 같은 빈 안의 호출이라
+     * proxy 를 타지 않아 어노테이션이 무력화된다.
+     */
+    void seed() {
         Set<String> existing = new HashSet<>();
         for (ContentFilter filter : contentFilterRepository.findAll()) {
             existing.add(filter.getFilterKeyword());

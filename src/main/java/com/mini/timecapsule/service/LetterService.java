@@ -122,7 +122,7 @@ public class LetterService {
         Optional<LetterPaper> opLetter = letterPaperRepository.findById(id);
 
         if (!opLetter.isPresent()) {
-            throw new CustomException("LETTER NOT FOUND");
+            throw new CustomException(ExceptionStructure.NOT_FOUND_LETTER);
         }
 
         return opLetter.get();
