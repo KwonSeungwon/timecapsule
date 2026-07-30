@@ -35,6 +35,17 @@ spring:
           auth: ${MAIL_SMTP_AUTH:false}
           starttls:
             enable: ${MAIL_SMTP_STARTTLS_ENABLE:false}
+          # ⚠️ 이 세 값을 지우지 말 것 — JavaMail 의 기본 타임아웃은 **무한**이다.
+          # egress 방화벽이 SMTP 를 REJECT 가 아니라 DROP 하면(클라우드에서 흔하다)
+          # send() 가 응답 없이 영원히 매달린다. 스케줄러 스레드는 하나뿐이라
+          # 그 순간 알림 파이프라인 전체가 멈추는데, 예외가 없으니 로그도 조용하고
+          # health 의 mail 인디케이터도 꺼져 있어 파드는 계속 Ready 로 보인다.
+          # 캡슐이 한 통도 안 나가는 상태를 아무도 발견하지 못한다.
+          # 10초면 정상 SMTP 왕복(보통 수백 ms)보다 충분히 크고, 매분 주기 안에서
+          # 실패를 빨리 털고 다음 캡슐로 넘어갈 만큼 작다.
+          connectiontimeout: ${MAIL_SMTP_CONNECTIONTIMEOUT:10000}
+          timeout: ${MAIL_SMTP_TIMEOUT:10000}
+          writetimeout: ${MAIL_SMTP_WRITETIMEOUT:10000}
 
 # ⚠️ management / timecapsule 블록은 **이 문서(프로필 무관)**에 있어야 한다.
 # '---' 아래 prod 문서에 두면 prod 에서만 적용돼 dev·test 에서 조용히 빠진다.
