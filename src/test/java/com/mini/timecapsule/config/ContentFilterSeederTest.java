@@ -9,10 +9,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.never;
@@ -95,5 +99,35 @@ class ContentFilterSeederTest {
         seeder.seed();
 
         verify(contentFilterRepository, never()).saveAll(anyList());
+    }
+
+    /**
+     * 트랜잭션 경계는 {@code run(ApplicationArguments)} 에 있어야 한다.
+     *
+     * <p>위의 테스트들은 {@code @InjectMocks} 로 만든 <b>날것의 인스턴스</b>에서
+     * {@code seed()} 를 직접 호출한다. Spring 컨텍스트도 프록시도 없다. 그래서
+     * 이 클래스가 원래 지키려던 수정 — <b>{@code @Transactional} 을 {@code seed()}
+     * 에서 {@code run()} 으로 옮긴 것</b> — 에 대해서는 아무것도 검증하지 못했다.
+     * 어노테이션을 {@code seed()} 로 되돌려놔도 전부 그대로 통과했다.
+     * (자기호출 함정: {@code run()} 안의 {@code this.seed()} 는 프록시를 타지 않으므로
+     * {@code seed()} 에 붙은 {@code @Transactional} 은 조용히 무력화된다.)
+     *
+     * <p>여기서는 어노테이션의 <b>위치</b>를 구조적으로 못 박는다. 실제로 트랜잭션이
+     * 열리는지는 {@code ContentFilterSeederTransactionTest} 가 컨텍스트를 띄워 확인한다.
+     */
+    @Test
+    @DisplayName("@Transactional 은 run() 에 있고 seed() 에는 없다 — 자기호출 함정 방지")
+    void transactionalSitsOnRunNotOnSeed() throws NoSuchMethodException {
+        assertNotNull(
+                ContentFilterSeeder.class.getDeclaredMethod("run", ApplicationArguments.class)
+                        .getAnnotation(Transactional.class),
+                "run(ApplicationArguments) 에 @Transactional 이 없다. 시드가 트랜잭션 없이 돌면 "
+                        + "saveAll 중간에 실패했을 때 일부만 들어간 상태로 남는다");
+
+        assertNull(
+                ContentFilterSeeder.class.getDeclaredMethod("seed").getAnnotation(Transactional.class),
+                "seed() 에 @Transactional 이 붙어 있다. run() 이 this.seed() 로 부르기 때문에 "
+                        + "프록시를 타지 않아 이 어노테이션은 아무 일도 하지 않는다 — "
+                        + "트랜잭션이 걸린 줄 알지만 실제로는 안 걸린 상태가 된다");
     }
 }

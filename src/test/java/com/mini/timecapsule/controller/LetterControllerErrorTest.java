@@ -1,8 +1,6 @@
 package com.mini.timecapsule.controller;
 
-import com.mini.timecapsule.dao.ContentFilterRepository;
 import com.mini.timecapsule.dto.CapsuleCreateRequest;
-import com.mini.timecapsule.model.ContentFilter;
 import com.mini.timecapsule.model.LetterPaper;
 import com.mini.timecapsule.service.LetterService;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,9 +50,6 @@ class LetterControllerErrorTest {
 
     @Autowired
     private LetterService letterService;
-
-    @Autowired
-    private ContentFilterRepository contentFilterRepository;
 
     private Long capsuleId;
 
@@ -106,8 +101,9 @@ class LetterControllerErrorTest {
     @Test
     @DisplayName("비속어가 걸리면 400 과 그 사유를 준다 — 'USER NOT FOUND' 가 아니라")
     void forbiddenKeywordReturnsItsOwnReason() {
-        contentFilterRepository.save(ContentFilter.newContentFilter("바보", ContentFilter.Used.ACTIVE));
-
+        // "바보" 는 ContentFilterSeeder 가 이미 넣어둔다(DEFAULT_KEYWORDS).
+        // 여기서 또 save 하면 공유되는 in-memory DB 에 중복 행이 쌓이고,
+        // 이 테스트는 트랜잭션 롤백이 없어서 그 행이 같은 컨텍스트의 다른 테스트로 샌다.
         ResponseEntity<String> response = postJson("/api/v1/capsule",
                 capsuleJson("a@example.com", ZonedDateTime.now().plusDays(30))
                         .replace("\"내용입니다\"", "\"너 바보야\""));
