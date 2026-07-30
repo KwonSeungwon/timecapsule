@@ -68,22 +68,23 @@ task buildVue(type: Exec) {
     }
 }
 
-// vue-cli 는 번들 파일명에 콘텐츠 해시를 박는다(app.2bf204c7.js). 그래서 그냥 복사만
-// 하면 이전 빌드의 app.<옛해시>.js 가 static 아래에 영원히 남고, 그대로 WAR 에 실려
-// 나간다. static 은 gitignore 대상이라 눈에도 안 띄고, 아무도 참조하지 않는 옛 번들이
-// 배포 산출물에 계속 쌓인다 — 소스맵까지 같이 쌓이므로 증가 속도도 빠르다.
-// 매번 비우고 채우는 게 유일하게 안전한 방법이다(dist 가 곧 완전한 산출물이다).
-task copyVueBuildFiles(type: Copy) {
-    dependsOn buildVue
-    from "$vueDir/dist"
-    into "$projectDir/src/main/resources/static"
-    doFirst {
-        delete "$projectDir/src/main/resources/static"
-    }
-}
-
+// ⚠️ 여기에 vue/dist → static 복사 태스크를 만들지 말 것. 두 번 그랬다가 두 번 다 틀렸다.
+//
+// vue/vue.config.js 의 outputDir 이 이미 ../src/main/resources/static 을 가리킨다.
+// 즉 npm run build 가 **최종 위치에 직접** 쓴다. vue/dist 는 애초에 생기지 않는다.
+// 그래서 from "$vueDir/dist" 로 만든 Copy 태스크는 항상 0개를 복사하는 no-op 이고,
+// 거기에 "옛 해시 번들 청소" 명목으로 doFirst { delete static } 을 붙이면
+// 방금 buildVue 가 만들어낸 산출물을 지운 뒤 아무것도 복사하지 않는다
+// → 프론트엔드가 통째로 빠진 WAR 가 나간다. (-x 플래그로 태스크를 건너뛰던
+//   배포 경로에서만 안 터져서 한동안 안 들켰다.)
+//
+// 옛 번들 누적도 실재하지 않는 문제다 — vue-cli-service build 는 outputDir 을
+// 기본으로 비우고 시작한다(--no-clean 을 줘야 안 비운다). 검증함: static/js 에
+// app.DEADBEEF.js 를 심어두고 빌드하면 사라진다.
+//
+// 따라서 필요한 건 "복사"가 아니라 "순서 보장"뿐이다.
 processResources {
-    dependsOn copyVueBuildFiles
+    dependsOn buildVue
 }
 
 // QueryDSL QClass 생성 경로 설정 (Spring Boot 3 방식)
