@@ -35,3 +35,15 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Generated: Vue 빌드 산출물 (copyVueBuildFiles 가 vue/dist → static 으로 복사)
+### 커밋하면 빌드할 때마다 해시 파일명이 바뀌어 working tree 가 영구히 더러워진다.
+/src/main/resources/static/index.html
+/src/main/resources/static/favicon.ico
+/src/main/resources/static/js/
+/src/main/resources/static/css/
+/src/main/resources/static/img/
+/src/main/resources/static/fonts/
+
+### Generated: QueryDSL Q-class
+/src/main/generated/
