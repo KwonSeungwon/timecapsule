@@ -42,6 +42,16 @@ export default {
 .main-container {
   width: 100%;
   max-width: 480px; /* 조금 더 넓은 모바일 사이즈 */
+
+  /* ⚠️ 이 두 줄은 자식들의 높이 기준점이다. height 를 auto/indefinite 로 바꾸거나
+   * 이 요소와 라우트 루트 사이에 래퍼 div 를 끼워 넣지 말 것.
+   * timecapsulue.css 의 .game-field 는 max-height: calc(100% - 10vh) 로 여기에
+   * 기대어 스크롤 컨테이너를 만들고, Title.vue 의 .home-container 는 height:100% 로
+   * 기댄다. 기준이 indefinite 해지는 순간 % 가 auto 로 풀려서 상한이 사라지고,
+   * 아래 overflow:hidden 이 콘텐츠를 조용히 잘라낸다(스크롤바가 없으니 버그로
+   * 보이지도 않는다). 실측: 래퍼 하나 끼웠더니 패널이 630px → 563.8px 로 줄었다.
+   * height 와 max-height 가 어긋나는 것(100vh vs 900px)도 의도된 것 —
+   * .game-field 가 vh 가 아니라 % 로 재는 이유가 이거다. */
   height: 100vh;
   max-height: 900px;
   position: relative;

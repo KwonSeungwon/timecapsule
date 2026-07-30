@@ -41,8 +41,19 @@ export default {
   z-index: 10000;
   display: flex;
   justify-content: center;
-  align-items: center;
   backdrop-filter: blur(4px);
+
+  /* ⚠️ align-items:center 로 되돌리지 말 것, overflow-y 도 지우지 말 것.
+   * 이 오버레이는 position:fixed 라 문서 스크롤 영역이 0 이다. 편지가 뷰포트보다
+   * 커지는 순간 넘친 부분은 어떤 방법으로도 볼 수 없고, 그 넘치는 부분이 하필
+   * "닫기" 버튼이라 캡슐을 닫지 못해 새로고침 말고는 빠져나갈 수가 없었다.
+   * 실측: 360x400 에서 닫기 버튼이 y=388..432 로 48px 밖에 있었다.
+   * align-items:center 는 넘칠 때 위아래로 동시에 삐져나가 스크롤해도 윗부분에
+   * 닿지 못하는 알려진 함정이라, 대신 .letter-container 의 margin:auto 로 센터링한다
+   * (여유가 있으면 중앙, 넘치면 auto 가 0 이 되어 위부터 스크롤). */
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 16px 0;
 }
 
 .letter-container {
@@ -52,11 +63,16 @@ export default {
   flex-direction: column;
   align-items: center;
   animation: slideUp 0.4s ease-out;
+  /* 위 오버레이 주석 참고 — align-items:center 대신 쓰는 센터링이다. */
+  margin: auto 0;
 }
 
 .letter-body {
   width: 280px;
-  height: 400px;
+  /* 400px 고정이면 세로가 짧은 화면(가로모드 폰)에서 닫기 버튼을 밖으로 밀어낸다.
+   * content-wrapper 가 height:100% 로 안쪽 스크롤을 잡고 있으므로 height 는
+   * auto 로 바꾸지 말 것(auto 로 두면 100% 가 auto 로 풀려 안쪽 스크롤이 죽는다). */
+  height: min(400px, 70vh);
   padding: 40px 30px;
   background-size: contain;
   background-repeat: no-repeat;

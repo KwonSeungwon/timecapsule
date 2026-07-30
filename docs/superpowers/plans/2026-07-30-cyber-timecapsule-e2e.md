@@ -149,7 +149,7 @@ class SpaRoutingTest {
 
 - [ ] **Step 2: 테스트 실패 확인**
 
-Run: `./gradlew test --tests 'com.mini.timecapsule.controller.SpaRoutingTest' -x buildVue -x copyVueBuildFiles`
+Run: `./gradlew test --tests 'com.mini.timecapsule.controller.SpaRoutingTest' -x buildVue`
 Expected: FAIL — `/write` 등이 403.
 
 - [ ] **Step 3: `WebConfig.java`, `MvcConfiguration.java` 삭제**
@@ -262,12 +262,12 @@ management:
 
 - [ ] **Step 7: 테스트 통과 확인**
 
-Run: `./gradlew test --tests 'com.mini.timecapsule.controller.SpaRoutingTest' -x buildVue -x copyVueBuildFiles`
+Run: `./gradlew test --tests 'com.mini.timecapsule.controller.SpaRoutingTest' -x buildVue`
 Expected: PASS (6 tests)
 
 - [ ] **Step 8: 전체 테스트 회귀 확인**
 
-Run: `./gradlew test -x buildVue -x copyVueBuildFiles`
+Run: `./gradlew test -x buildVue`
 Expected: BUILD SUCCESSFUL
 
 - [ ] **Step 9: 커밋**
@@ -496,7 +496,7 @@ class CapsuleNotificationMailerTest {
 
 - [ ] **Step 5: 테스트 실패 확인**
 
-Run: `./gradlew test --tests 'com.mini.timecapsule.service.CapsuleNotificationMailerTest' -x buildVue -x copyVueBuildFiles`
+Run: `./gradlew test --tests 'com.mini.timecapsule.service.CapsuleNotificationMailerTest' -x buildVue`
 Expected: FAIL — `CapsuleNotificationMailer` 클래스 없음(컴파일 에러).
 
 - [ ] **Step 6: `CapsuleNotificationMailer` 구현**
@@ -630,7 +630,7 @@ public class CapsuleNotificationMailer {
 
 - [ ] **Step 7: 테스트 통과 확인**
 
-Run: `./gradlew test --tests 'com.mini.timecapsule.service.CapsuleNotificationMailerTest' -x buildVue -x copyVueBuildFiles`
+Run: `./gradlew test --tests 'com.mini.timecapsule.service.CapsuleNotificationMailerTest' -x buildVue`
 Expected: PASS (3 tests)
 
 - [ ] **Step 8: 스케줄러를 메일러에 위임하도록 재작성**
@@ -759,7 +759,7 @@ timecapsule:
 
 - [ ] **Step 11: 전체 테스트**
 
-Run: `./gradlew test -x buildVue -x copyVueBuildFiles`
+Run: `./gradlew test -x buildVue`
 Expected: BUILD SUCCESSFUL
 
 - [ ] **Step 12: 커밋**
@@ -858,7 +858,7 @@ class LetterControllerPrivacyTest {
 
 - [ ] **Step 2: 실패 확인**
 
-Run: `./gradlew test --tests '*LetterControllerPrivacyTest' -x buildVue -x copyVueBuildFiles`
+Run: `./gradlew test --tests '*LetterControllerPrivacyTest' -x buildVue`
 Expected: FAIL — `receiverEmail` 이 `/public` 응답에 존재.
 
 - [ ] **Step 3: `CapsuleResponse` 에 public 뷰 팩토리 추가**
@@ -907,7 +907,7 @@ Expected: FAIL — `receiverEmail` 이 `/public` 응답에 존재.
 
 - [ ] **Step 5: 통과 확인 + 커밋**
 
-Run: `./gradlew test -x buildVue -x copyVueBuildFiles`
+Run: `./gradlew test -x buildVue`
 
 ```bash
 git add -A
@@ -1084,7 +1084,7 @@ git rm src/main/java/com/mini/timecapsule/controller/StartController.java
 
 - [ ] **Step 3: 빌드/테스트 + 커밋**
 
-Run: `./gradlew test -x buildVue -x copyVueBuildFiles && (cd vue && npm run build)`
+Run: `./gradlew test -x buildVue && (cd vue && npm run build)`
 
 ```bash
 git add -A

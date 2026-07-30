@@ -54,13 +54,31 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+// Dockerfile 이 build/libs/*.war 를 글롭으로 집어간다. war 플러그인이 만드는
+// -plain.war 까지 남아 있으면 `./gradlew build` 후 두 개가 매치돼서
+// COPY 가 실패하거나 엉뚱한(스프링 부트 런처가 없는) WAR 가 실려 나간다.
+// 배포에 쓰는 건 bootWar 하나뿐이라 plain 쪽은 끈다.
+tasks.named('war') {
+    enabled = false
+}
+
 // Vue 빌드 연동 설정
 def vueDir = "$projectDir/vue"
 
+def vueStaticDir = "$projectDir/src/main/resources/static"
+
 task buildVue(type: Exec) {
     workingDir vueDir
-    inputs.dir vueDir
     group = 'build'
+
+    // inputs 를 vueDir 통째로 잡지 말 것 — vue/node_modules 까지 매번 핑거프린팅한다.
+    // 게다가 outputs 가 없으면 Gradle 이 up-to-date 판정을 할 수 없어서
+    // test / bootRun / build / bootWar 를 돌릴 때마다 webpack 풀빌드가 다시 돈다.
+    inputs.dir "$vueDir/src"
+    inputs.dir "$vueDir/public"
+    inputs.files "$vueDir/package.json", "$vueDir/package-lock.json",
+            "$vueDir/vue.config.js", "$vueDir/babel.config.js"
+    outputs.dir vueStaticDir
     if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
         commandLine "npm.cmd", "run", "build"
     } else {

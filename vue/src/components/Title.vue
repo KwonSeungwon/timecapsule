@@ -41,6 +41,16 @@ export default {
   height: 100%;
   justify-content: space-between;
   padding-bottom: 20px;
+
+  /* ⚠️ overflow-y 를 지우지 말 것 — 지우면 콘텐츠가 조용히 잘린다.
+   * 이 화면은 .game-field 를 안 쓰고 프레임(.main-container, overflow:hidden)에
+   * 직접 붙는다. height:100% 라 프레임을 넘지는 않지만, 안쪽 콘텐츠 높이는
+   * 고정 409px(타이틀 80+86 / 메뉴 4개 / 카피라이트)라 뷰포트가 그보다 낮아지면
+   * 그대로 프레임 밖으로 밀려나고, 스크롤 컨테이너가 하나도 없어서
+   * **밀려난 부분에 영영 도달할 수 없다**.
+   * 실측: 740x360 가로모드에서 "공개 캡슐 탐색" 버튼이 y=342..382 로 프레임
+   * 하단(360)을 넘고 .footer-copyright 는 통째로 화면 밖이었다. */
+  overflow-y: auto;
 }
 
 .title,

@@ -43,8 +43,14 @@ export default {
   background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
-  align-items: center;
   backdrop-filter: blur(2px);
+
+  /* Letter.vue 와 같은 이유 — position:fixed 라 문서 스크롤이 0 이고,
+   * 넘친 부분(주로 확인/취소 버튼)에 도달할 방법이 사라진다.
+   * align-items:center 대신 .popup-container 의 margin:auto 로 센터링한다. */
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 16px 0;
 }
 
 .popup-container {
@@ -55,6 +61,8 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  /* 위 주석 참고 — align-items:center 대신 쓰는 센터링이다. */
+  margin: auto 0;
 }
 
 .popup-content {
