@@ -1,3 +1,12 @@
+# ⚠️ 이 디렉터리에 application.properties 를 다시 만들지 말 것.
+# 같은 위치라도 .properties 가 .yml 보다 **나중에** 로드돼서 여기 값을 전부 덮어쓴다.
+# 실제로 ddl-auto=create 가 남아 있던 .properties 때문에 운영에서 파드가 뜰 때마다
+# 테이블이 drop/create 되어 캡슐이 통째로 사라졌다 — PVC 도 붙어 있고 에러 로그도 없었다.
+# 설정은 이 파일 하나로만 관리한다. PersistenceConfigTest 가 병합 결과를 검증한다.
+server:
+  # Dockerfile EXPOSE / k8s readiness·liveness probe 가 같은 값을 본다.
+  port: 3000
+
 spring:
   profiles:
     active: dev
@@ -10,6 +19,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  thymeleaf:
+    cache: false
   mail:
     host: ${MAIL_HOST:localhost}
     port: ${MAIL_PORT:25}
@@ -64,5 +78,11 @@ spring:
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
+      # 절대 create / create-drop 로 바꾸지 말 것 — 캡슐이 전부 사라진다.
       ddl-auto: update
     show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+  thymeleaf:
+    cache: true

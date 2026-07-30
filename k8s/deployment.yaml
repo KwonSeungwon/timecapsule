@@ -44,14 +44,14 @@ spec:
         - name: SPRING_PROFILES_ACTIVE
           value: prod
         - name: DB_URL
-          # 파일 모드 + PVC.
+          # 파일 모드 + PVC. 여기까지만으로는 캡슐이 남지 않는다는 점에 주의 —
+          # 데이터가 사라졌던 진짜 원인은 application.properties 의
+          # ddl-auto=create 였다(application.yml 을 덮어썼다). 자세한 내용은
+          # src/main/resources/application.yml 상단 주석과 PersistenceConfigTest.
           #
           # ⚠️ DB_CLOSE_DELAY=-1 과 DB_CLOSE_ON_EXIT=FALSE 를 같이 쓰지 말 것.
           #    -1 은 "마지막 커넥션이 닫혀도 DB 를 열어둔다", FALSE 는 "JVM 종료
-          #    훅으로도 닫지 않는다" 라서 둘을 합치면 **DB 가 영영 닫히지 않는다**.
-          #    파일 모드에서는 최종 플러시가 없다는 뜻이고, 실제로 파드를
-          #    재시작하니 그 사이 만든 캡슐이 전부 사라졌다(새 파드가 create
-          #    table 을 9번 다시 실행). 인메모리 설정을 그대로 복사한 흔적이다.
+          #    훅으로도 닫지 않는다" 라서 둘을 합치면 DB 가 영영 닫히지 않는다.
           #
           # DB_CLOSE_DELAY=10: 마지막 커넥션이 닫히고 10초 뒤 DB 를 닫는다.
           #    닫힐 때 디스크로 플러시되므로 주기적인 체크포인트가 된다.
