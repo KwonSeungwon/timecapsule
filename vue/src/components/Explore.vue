@@ -142,6 +142,14 @@ export default {
   flex: 1;
   overflow-y: auto;
   padding-right: 4px;
+
+  /* flex 아이템의 min-height 기본값은 0 이 아니라 auto 라서, 콘텐츠보다 작게
+   * 줄어들지 않는다. 그래서 이 min-height:0 이 없으면 바로 위의 overflow-y:auto 가
+   * 영영 발동하지 않는다 — .explore-body 가 캡슐 목록 높이만큼 그대로 늘어나서
+   * 넘칠 것이 없기 때문이다. 그러면 대신 .game-field 쪽이 스크롤되고,
+   * 제목과 하단 버튼까지 같이 밀려 올라간다.
+   * 이 한 줄이 있어야 목록만 스크롤되고 제목·버튼은 제자리에 고정된다. */
+  min-height: 0;
 }
 
 .state-box {
