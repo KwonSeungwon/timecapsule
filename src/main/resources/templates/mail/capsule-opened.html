@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>타임캡슐 개봉 알림</title></head>
+<body style="margin:0;padding:0;background:#f4f1e8;font-family:'Apple SD Gothic Neo',sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f1e8;padding:24px 0;">
+    <tr><td align="center">
+      <table role="presentation" width="480" cellpadding="0" cellspacing="0"
+             style="background:#fff;border:4px solid #000;box-shadow:8px 8px 0 #5d7a54;">
+        <tr><td style="padding:28px 28px 12px;">
+          <p style="margin:0;font-size:13px;letter-spacing:2px;color:#5d7a54;">TIME CAPSULE</p>
+          <h1 style="margin:8px 0 0;font-size:22px;color:#111;">캡슐이 열렸습니다</h1>
+        </td></tr>
+        <tr><td style="padding:0 28px;">
+          <p style="font-size:15px;color:#333;line-height:1.7;margin:16px 0;">
+            <strong th:text="${senderName}">누군가</strong>님이 묻어둔 타임캡슐
+            <strong th:text="${title}">제목</strong>의 개봉일이 되었습니다.
+          </p>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                 style="background:#fffbe6;border:2px dashed #5d7a54;margin:20px 0;">
+            <tr><td style="padding:16px;text-align:center;">
+              <div style="font-size:30px;" th:text="${biomeEmoji}">📍</div>
+              <div style="font-size:17px;font-weight:bold;color:#111;margin-top:6px;"
+                   th:text="${locationName}">고요한 바다</div>
+              <div style="font-size:12px;color:#666;margin-top:4px;"
+                   th:text="'좌표 (' + ${xCoord} + ', ' + ${yCoord} + ')'">좌표 (0, 0)</div>
+            </td></tr>
+          </table>
+          <p style="font-size:13px;color:#666;line-height:1.7;margin:16px 0;">
+            매립할 때 정한 <strong>비밀번호</strong>를 입력하면 내용을 볼 수 있습니다.
+          </p>
+        </td></tr>
+        <tr><td style="padding:8px 28px 32px;" align="center">
+          <a th:href="${capsuleUrl}" target="_blank"
+             style="display:inline-block;background:#ffe24a;border:3px solid #000;
+                    padding:13px 30px;font-size:15px;font-weight:bold;color:#111;text-decoration:none;">
+            캡슐 열어보기
+          </a>
+          <p style="font-size:11px;color:#999;margin:16px 0 0;word-break:break-all;"
+             th:text="${capsuleUrl}">https://timecapsule.chatflow.ai.kr/my-capsule</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>

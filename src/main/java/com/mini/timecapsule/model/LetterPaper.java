@@ -116,6 +116,12 @@ public class LetterPaper {
     private Boolean isNotified = false;
 
     /**
+     * 알림 발송 시도 횟수. SMTP 가 계속 실패하는 캡슐이 매 스케줄마다
+     * 영원히 재시도되는 것을 막는다.
+     */
+    private Integer notifyAttempts = 0;
+
+    /**
      * 공개 여부
      */
     private Boolean isPublic = false;
@@ -165,6 +171,19 @@ public class LetterPaper {
     public void remove() {
         this.status = LetterStatus.REMOVE;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    /** 알림 발송 성공 처리 */
+    public void markNotified() {
+        this.isNotified = true;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /** 알림 발송 실패 1회 기록. 상한에 도달하면 true(=포기) 를 돌려준다. */
+    public boolean recordNotifyFailure(int maxAttempts) {
+        this.notifyAttempts = (this.notifyAttempts == null ? 0 : this.notifyAttempts) + 1;
+        this.updatedAt = LocalDateTime.now();
+        return this.notifyAttempts >= maxAttempts;
     }
 
     public static LetterPaper newEntity(String senderName, String title, String receiverEmail, String password,

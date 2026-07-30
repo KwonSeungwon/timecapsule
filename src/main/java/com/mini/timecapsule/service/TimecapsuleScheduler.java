@@ -4,11 +4,11 @@ import com.mini.timecapsule.dao.LetterPaperRepository;
 import com.mini.timecapsule.model.LetterPaper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -19,40 +19,48 @@ import java.util.List;
 public class TimecapsuleScheduler {
 
     private final LetterPaperRepository letterPaperRepository;
-    private final JavaMailSender mailSender;
+    private final CapsuleNotificationMailer mailer;
+
+    @Value("${timecapsule.notification.max-attempts:10}")
+    private int maxAttempts;
 
     /**
-     * 매 정각마다 개봉 예정인 타임캡슐을 확인하여 사용자에게 알림을 보냅니다.
-     * (cron = "0 0 * * * *")
-     * 테스트를 위해 1분마다 실행되도록 설정할 수 있습니다.
+     * 개봉일이 지난 캡슐에 알림 메일을 보낸다.
+     * 기본 매시 정각. 실패한 캡슐은 isNotified 가 false 로 남아 다음 주기에 재시도되고,
+     * max-attempts 회 실패하면 쿼리 대상에서 빠진다(무한 재시도 방지).
      */
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "${timecapsule.notification.cron:0 0 * * * *}")
     @Transactional
     public void checkAndNotifyOpenCapsules() {
-        log.info("Checking for capsules to open at {}", ZonedDateTime.now());
+        List<LetterPaper> dueCapsules = letterPaperRepository.findDueForNotification(
+                ZonedDateTime.now(), LetterPaper.LetterStatus.UNOPENED, maxAttempts);
 
-        List<LetterPaper> dueCapsules = letterPaperRepository.findAllByOpenAtBeforeAndIsNotifiedFalseAndStatus(
-                ZonedDateTime.now(),
-                LetterPaper.LetterStatus.UNOPENED
-        );
+        if (dueCapsules.isEmpty()) {
+            return;
+        }
+        log.info("개봉 알림 대상 캡슐 {}건", dueCapsules.size());
 
         for (LetterPaper capsule : dueCapsules) {
+            if (!StringUtils.hasText(capsule.getReceiverEmail())) {
+                log.warn("수신 이메일이 없어 알림을 건너뜁니다: capsuleId={}", capsule.getId());
+                capsule.markNotified();
+                continue;
+            }
             try {
-                String receiverEmail = capsule.getReceiverEmail();
-                if (receiverEmail != null && !receiverEmail.isEmpty()) {
-                    SimpleMailMessage message = new SimpleMailMessage();
-                    message.setTo(receiverEmail);
-                    message.setSubject("[TimeCapsule] 당신에게 도착한 비밀 편지가 있습니다.");
-                    message.setText("당신에게 캡슐이 도착했습니다. 확인해 보세요! 링크: http://timecapsule.chatflow.ai.kr/my-capsule?email=" + receiverEmail);
-                    mailSender.send(message);
-
-                    capsule.setIsNotified(true);
-                    letterPaperRepository.save(capsule);
-                    log.info("Notification sent to {} for capsule {}", receiverEmail, capsule.getId());
-                }
+                mailer.send(capsule);
+                capsule.markNotified();
+                log.info("개봉 알림 발송 완료: capsuleId={}", capsule.getId());
             } catch (Exception e) {
-                log.error("Failed to send notification for capsule {}: {}", capsule.getId(), e.getMessage());
+                boolean giveUp = capsule.recordNotifyFailure(maxAttempts);
+                if (giveUp) {
+                    log.error("개봉 알림 발송 {}회 실패 — 재시도를 중단합니다: capsuleId={}",
+                            maxAttempts, capsule.getId(), e);
+                } else {
+                    log.error("개봉 알림 발송 실패({}/{}) — 다음 주기에 재시도합니다: capsuleId={}",
+                            capsule.getNotifyAttempts(), maxAttempts, capsule.getId(), e);
+                }
             }
         }
+        letterPaperRepository.saveAll(dueCapsules);
     }
 }
