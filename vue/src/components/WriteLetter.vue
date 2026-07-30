@@ -80,6 +80,14 @@
           <div class="paper-preview" :class="form.letterPaperType.toLowerCase()">
             <span>💌 {{ paperName }} 편지지가 선택되었습니다.</span>
           </div>
+          <!-- 공개는 반드시 사용자가 켜야 한다. 켜면 보낸이 이름과 제목이 탐색 지도에 뜬다. -->
+          <label class="public-toggle">
+            <input type="checkbox" v-model="form.isPublic">
+            <span>
+              🗺️ 공개 캡슐 탐색 지도에 올리기
+              <em>보낸이 이름 · 제목 · 매립 장소가 공개됩니다. 편지 내용과 이메일은 공개되지 않아요.</em>
+            </span>
+          </label>
         </div>
 
         <!-- 저장 성공 결과 -->
@@ -154,7 +162,9 @@ export default {
         password: '',
         content: '',
         openAt: '',
-        isPublic: true,
+        // 기본은 비공개. 예전엔 true 로 박혀 있고 UI 도 없어서, 사용자가 동의한 적 없는
+        // 보낸이 이름과 제목이 전부 /explore 지도에 올라갔다.
+        isPublic: false,
         letterPaperType: 'LETTER',
         capsuleType: 'BAMBOO'
       },
@@ -418,6 +428,35 @@ export default {
   text-align: center;
   font-size: 11px;
   background: rgba(0,0,0,0.05);
+}
+
+.public-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px;
+  border: 2px solid #333;
+  background: #fff;
+  font-size: 11px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.public-toggle input {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.public-toggle em {
+  display: block;
+  margin-top: 4px;
+  font-style: normal;
+  font-size: 10px;
+  color: #666;
 }
 
 .footer-actions {

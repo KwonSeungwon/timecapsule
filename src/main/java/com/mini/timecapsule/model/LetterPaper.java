@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -37,6 +38,14 @@ import java.time.temporal.ChronoUnit;
 @Table(name = "letter_paper")
 @DynamicUpdate
 public class LetterPaper {
+
+    /**
+     * 이 서비스의 "하루" 경계.
+     *
+     * <p>프론트는 사용자가 고른 날짜의 KST 자정을 openAt 으로 보내고, 사용자도 KST 로 읽는다.
+     * 서버 기본 시간대에 의존하면 컨테이너 TZ 에 따라 D-Day 가 하루씩 밀린다.
+     */
+    public static final ZoneId SERVICE_ZONE = ZoneId.of("Asia/Seoul");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -152,11 +161,22 @@ public class LetterPaper {
     }
 
     /**
-     * 개봉까지 남은 일수 계산 (D-Day)
+     * 개봉까지 남은 일수 (D-Day).
+     *
+     * <p>경과 시간이 아니라 <b>KST 달력 날짜</b> 차이다. 사용자는 달력에서 날짜를 고르고
+     * 프론트는 그 날 KST 자정을 openAt 으로 보낸다. 시간 차를 그대로 잘라 쓰면
+     * (예전 구현) 개봉 전날 저녁에 이미 D-0 이 떠서 오늘 열리는 것처럼 보인다.
      */
     public long getDDay() {
+        return getDDay(ZonedDateTime.now(SERVICE_ZONE));
+    }
+
+    /** 테스트에서 기준 시각을 고정하기 위한 오버로드. */
+    long getDDay(ZonedDateTime now) {
         if (openAt == null) return 0;
-        return ChronoUnit.DAYS.between(ZonedDateTime.now(), openAt);
+        return ChronoUnit.DAYS.between(
+                now.withZoneSameInstant(SERVICE_ZONE).toLocalDate(),
+                openAt.withZoneSameInstant(SERVICE_ZONE).toLocalDate());
     }
 
     public void read() {

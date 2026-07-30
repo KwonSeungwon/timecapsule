@@ -24,7 +24,10 @@
           <template v-else>
             <div class="no-data">
               <div class="empty-icon">🌬️</div>
-              <p>아직 묻힌 캡슐이 없어요.</p>
+              <!-- 이메일 없이 이 화면에 오면(직접 URL / 오래된 북마크) 조회할 방법이 없다.
+                   빈 목록만 띄우고 끝내지 말고 찾기 화면으로 돌려보낸다. -->
+              <p>{{ email ? '아직 묻힌 캡슐이 없어요.' : '조회할 이메일이 없어요.' }}</p>
+              <button class="pixel-btn" @click="$router.push('/find')">🔍 이메일로 찾기</button>
             </div>
           </template>
         </div>
@@ -308,6 +311,7 @@ export default {
 }
 
 .empty-icon { font-size: 48px; margin-bottom: 10px; }
+.no-data .pixel-btn { margin-top: 14px; font-size: 11px; }
 
 .footer-actions {
   margin-top: auto;
