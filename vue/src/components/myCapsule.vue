@@ -13,11 +13,11 @@
       <transition :name="transitionName" mode="out-in">
         <div class="capsule-grid" :key="selectIdx">
           <template v-if="letters.length">
-            <div v-for="(letter, i) in currentPageLetters" :key="letter.id" class="capsule-item">
-              <div class="capsule-wrapper" :class="{'is-opened': letter.isOpened}" @click="promptPassword(letter)">
-                <div class="capsule-icon" :class="letter.letterPaperType.toLowerCase()"></div>
+            <div v-for="letter in currentPageLetters" :key="letter.id" class="capsule-item">
+              <div class="capsule-wrapper" :class="{'is-opened': isOpened(letter)}" @click="promptPassword(letter)">
+                <div class="capsule-icon" :class="capsuleClass(letter)"></div>
                 <span class="sender-name">{{letter.senderName}}</span>
-                <div class="d-day" v-if="!isPast(letter.openAt)">D-{{ getDDay(letter.openAt) }}</div>
+                <div class="d-day" v-if="!letter.openable">D-{{ letter.dday }}</div>
               </div>
             </div>
           </template>
@@ -131,9 +131,13 @@ export default {
       axios.post(`/api/v1/capsule/${id}/open`, { password: this.passwordPopup.input })
       .then(response => {
         self.selectLetter = response.data;
+        if (!self.selectLetter.openable) {
+          alert('아직 개봉할 수 없는 날짜입니다.');
+          return;
+        }
         if (!self.selectLetter.content) {
-            alert('아직 개봉할 수 없는 날짜입니다.');
-            return;
+          alert('편지 내용이 비어 있습니다.');
+          return;
         }
         self.openLetter = true;
         self.passwordPopup.open = false;
@@ -142,6 +146,12 @@ export default {
         alert('비밀번호가 틀렸거나 오류가 발생했습니다.');
         console.error(error);
       });
+    },
+    isOpened(letter) {
+      return letter.status === 'OPENED';
+    },
+    capsuleClass(letter) {
+      return (letter.capsuleType || 'BAMBOO').toLowerCase();
     },
     closeLetter() {
       this.openLetter = false;
@@ -249,9 +259,10 @@ export default {
   margin-bottom: 8px;
 }
 
-.capsule-icon.letter { background-image: url(../assets/images/letter_a.png); }
-.capsule-icon.note { background-image: url(../assets/images/letter_b.png); }
-.capsule-icon.polaroid { background-image: url(../assets/images/letter_c.png); }
+.capsule-icon.bamboo { background-image: url(../assets/images/common/capsule/bamboo.png); }
+.capsule-icon.bottle { background-image: url(../assets/images/common/capsule/bottle.png); }
+.capsule-icon.egg { background-image: url(../assets/images/common/capsule/egg.png); }
+.capsule-icon.candybox { background-image: url(../assets/images/common/capsule/candybox.png); }
 
 .is-opened .capsule-icon {
   opacity: 0.6;

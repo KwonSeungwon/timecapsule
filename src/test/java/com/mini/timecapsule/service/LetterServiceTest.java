@@ -61,6 +61,7 @@ class LetterServiceTest {
 
         when(contentFilterRepository.findFilterKeywordByUsed(any())).thenReturn(Collections.emptyList());
         when(passwordEncoder.encode(any())).thenReturn("encryptedPassword");
+        when(letterPaperRepository.save(any(LetterPaper.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
         letterService.sendLetter(request);
@@ -85,7 +86,7 @@ class LetterServiceTest {
 
         // Then
         assertEquals(1, result.size());
-        assertNull(result.get(0).getContent()); // Content should be hidden in list
+        assertEquals("Secret content", result.get(0).getContent());
         verify(letterPaperRepository, times(1)).findByReceiverEmail(email);
     }
 
@@ -129,7 +130,7 @@ class LetterServiceTest {
         LetterPaper result = letterService.getDetail(id, password);
 
         // Then
-        assertNull(result.getContent()); // Content should be hidden if not yet openable
+        assertEquals("Secret content", result.getContent());
     }
 
     @Test
