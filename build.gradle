@@ -68,10 +68,18 @@ task buildVue(type: Exec) {
     }
 }
 
+// vue-cli 는 번들 파일명에 콘텐츠 해시를 박는다(app.2bf204c7.js). 그래서 그냥 복사만
+// 하면 이전 빌드의 app.<옛해시>.js 가 static 아래에 영원히 남고, 그대로 WAR 에 실려
+// 나간다. static 은 gitignore 대상이라 눈에도 안 띄고, 아무도 참조하지 않는 옛 번들이
+// 배포 산출물에 계속 쌓인다 — 소스맵까지 같이 쌓이므로 증가 속도도 빠르다.
+// 매번 비우고 채우는 게 유일하게 안전한 방법이다(dist 가 곧 완전한 산출물이다).
 task copyVueBuildFiles(type: Copy) {
     dependsOn buildVue
     from "$vueDir/dist"
     into "$projectDir/src/main/resources/static"
+    doFirst {
+        delete "$projectDir/src/main/resources/static"
+    }
 }
 
 processResources {
