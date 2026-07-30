@@ -105,6 +105,16 @@ processResources {
     dependsOn buildVue
 }
 
+// 참고: 아래 clean 은 static 을 지우지 않는다. 이게 이상해 보여서 "clean 인데 왜
+// 안 지우지" 하고 clean { delete file(vueStaticDir) } 를 붙이고 싶어지는데, 붙이지 말 것.
+// 실측(./gradlew clean bootWar --no-daemon — deploy-k3s.sh:72 / DEPLOYMENT.md:112 가 쓰는 그 명령):
+//   clean 후 static 에 19개 파일이 그대로 남고 :buildVue 는 UP-TO-DATE 로 스킵되지만,
+//   그 남은 산출물이 곧 최신 산출물이라 WAR 에는 static 이 정상적으로 24개 들어간다.
+// 즉 지금 상태로 이미 올바른 WAR 가 나온다. 반면 clean 에 delete 를 걸면 위 89행부터의
+// 사고("프론트엔드가 통째로 빠진 WAR")를 다른 문으로 다시 불러들이게 된다 —
+// buildVue 를 -x 로 건너뛰는 경로가 실재하기 때문이다.
+
+
 // QueryDSL QClass 생성 경로 설정 (Spring Boot 3 방식)
 def querydslSrcDir = 'src/main/generated'
 

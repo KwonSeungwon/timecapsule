@@ -232,7 +232,25 @@ export default {
 
 .capsule-grid-container {
   flex: 1;
-  min-height: 320px;
+
+  /* ⚠️ 여기에 min-height 를 다시 박지 말 것 — 특히 320px 같은 고정값.
+   * 이 요소는 .game-field(스크롤 컨테이너) 안의 flex 아이템이고, 안쪽 .capsule-grid 는
+   * 3행짜리 그리드라 실측 415px 를 요구한다. flex 아이템의 min-height 기본값은 auto,
+   * 즉 "콘텐츠보다 작아지지 않는다" 인데, 320px 를 명시하면 그 자동 최소값을 **덮어써서**
+   * 320px 까지 찌부러진다. 줄어든 건 컨테이너뿐이고 그리드는 그대로 415px 라
+   * 95px 가 overflow:visible 로 아래 형제(.pagination / .footer-actions) 위로 삐져나온다.
+   * 겹친 영역의 히트테스트는 트리 순서상 뒤에 오는 .pagination 이 가져가므로
+   * 마지막 줄 캡슐 2개가 클릭을 통째로 잃는다. 배경이 투명해서 눈에는 멀쩡해 보인다.
+   *
+   * 게다가 삐져나온 부분은 .game-field 의 스크롤 범위에 잡히지 않는다 —
+   * 스크롤을 끝까지 내려도 도달할 수 없고, 1366x768 에서는 스크롤 범위 자체가 0 이라
+   * 스크롤바조차 안 생긴다("스크롤이 안 먹는다"의 정체).
+   * 실측(공개 캡슐 7개 = 2페이지, min-height:320px 상태에서 5·6번 캡슐 도달 불가):
+   *   1366x768(스크롤범위 0) / 1366x700 / 1280x720 / 844x390 / 360x560 / 320x480.
+   * min-height 선언을 지워 auto 로 되돌리면 위 6종 전부에서 도달 가능해진다.
+   *
+   * min-height:0 도 답이 아니다 — 그건 오히려 261px 까지 더 찌부러뜨려서
+   * 겹침을 키운다(그때는 .footer-actions 가 클릭을 가져갔다). 필요한 건 auto 다. */
   display: flex;
   flex-direction: column;
 }
