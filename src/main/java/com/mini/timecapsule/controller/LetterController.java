@@ -12,10 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 
+// @CrossOrigin(origins = "*") 를 다시 붙이지 말 것.
+// SPA 는 이 앱이 같은 origin 에서 서빙하고(정적 자원 + /api 가 한 WAR),
+// dev 는 vue.config.js 의 devServer.proxy 가 같은 origin 으로 만들어 준다.
+// 즉 CORS 가 필요한 호출자가 없다. 반면 "*" 를 열어두면 임의의 사이트에 심긴
+// 스크립트가 /api/v1/capsule/list?email= 응답을 읽어갈 수 있다
+// (인증이 없으므로 쿠키 없이도 성공한다 — 이메일만 알면 목록이 털린다).
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/capsule")
-@CrossOrigin(origins = "*")
 public class LetterController {
 
     private final LetterService letterService;
