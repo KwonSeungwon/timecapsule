@@ -36,8 +36,6 @@ public class LetterService {
 
     @Transactional
     public LetterPaper sendLetter(CapsuleCreateRequest request) {
-        System.out.println("Received CapsuleCreateRequest: " + request);
-        
         // 비속어 필터링 검사
         String content = request.getContent() != null ? request.getContent() : "";
         int filteringCount = letterFilteringContent(content);
@@ -56,8 +54,6 @@ public class LetterService {
 
         // 3. 비밀번호 암호화
         String encryptedPassword = passwordEncoder.encode(request.getPassword());
-
-        System.out.println("Creating LetterPaper entity with biome: " + biome);
 
         // 4. 엔티티 생성 및 저장
         LetterPaper letter = LetterPaper.newEntity(
@@ -78,9 +74,7 @@ public class LetterService {
                 request.getIsPublic()
         );
 
-        LetterPaper saved = letterPaperRepository.save(letter);
-        System.out.println("Successfully saved letter with ID: " + saved.getId());
-        return saved;
+        return letterPaperRepository.save(letter);
     }
 
     /**
@@ -136,16 +130,13 @@ public class LetterService {
      */
     @Transactional(readOnly = true)
     public List<LetterPaper> listByEmail(String email) {
-        List<LetterPaper> letters = letterPaperRepository.findByReceiverEmail(email);
-        // 리스트에서는 내용을 숨김 처리
-        letters.forEach(letter -> letter.setContent(null));
-        return letters;
+        return letterPaperRepository.findByReceiverEmail(email);
     }
 
     /**
      * 편지 상세 조회 (비밀번호 확인 포함)
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public LetterPaper getDetail(Long id, String password) {
         LetterPaper letter = getLetter(id);
 
@@ -153,12 +144,13 @@ public class LetterService {
             throw new CustomException(ExceptionStructure.INVALID_PASSWORD);
         }
 
-        // 개봉 예정일 확인 및 내용 숨김 처리
         if (letter.getOpenAt() != null && ZonedDateTime.now().isBefore(letter.getOpenAt())) {
-            letter.setContent(null);
-            letter.setImageUrl(null);
+            return letter;
         }
 
+        if (letter.getStatus() != LetterPaper.LetterStatus.OPENED) {
+            letter.read();
+        }
         return letter;
     }
 
@@ -174,16 +166,6 @@ public class LetterService {
         }
 
         return opLetter.get();
-    }
-
-    /**
-     * 편지 리스트를 가져오는 함수
-     */
-    public List<LetterPaper> list(LetterDto letterDto) {
-        // TODO: 세션을 통해 유저 정보를 가져오는 로직 구현 필요
-        // User user = null; 
-        // return letterPaperRepository.findByUser(user);
-        return null;
     }
 
     /**
