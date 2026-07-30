@@ -24,9 +24,16 @@ public class SpringSecurity {
             .httpBasic(AbstractHttpConfigurer::disable)
             .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
             .authorizeHttpRequests(auth -> auth
-                // 정적 리소스 및 메인 페이지 허용 (AntPathRequestMatcher 자동 적용)
-                .requestMatchers("/", "/index.html", "/static/**", "/css/**", "/js/**", "/img/**", "/fonts/**", "/favicon.ico").permitAll()
+                // SPA 셸과 정적 자원 — 비회원 서비스라 인증 대상이 아니다.
+                // vue-router 가 history mode 라 아래 라우트들이 서버로 그대로 들어온다.
+                .requestMatchers(
+                        "/", "/index.html", "/favicon.ico",
+                        "/write", "/find", "/my-capsule", "/tutorial", "/explore",
+                        "/static/**", "/css/**", "/js/**", "/img/**", "/images/**", "/fonts/**"
+                ).permitAll()
                 .requestMatchers("/api/v1/**", "/api/timecapsule/**", "/h2-console/**").permitAll()
+                // k8s probe 용 — health/info 만 연다. env/beans 등은 계속 막는다.
+                .requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
                 .anyRequest().authenticated()
             );
 

@@ -11,8 +11,47 @@ spring:
       ddl-auto: update
     show-sql: true
   mail:
-    host: localhost
-    port: 25
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:25}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_SMTP_AUTH:false}
+          starttls:
+            enable: ${MAIL_SMTP_STARTTLS_ENABLE:false}
+
+# ⚠️ management / timecapsule 블록은 **이 문서(프로필 무관)**에 있어야 한다.
+# '---' 아래 prod 문서에 두면 prod 에서만 적용돼 dev·test 에서 조용히 빠진다.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  health:
+    mail:
+      # SMTP 도달성으로 앱의 health 를 판정하면 안 된다.
+      # 메일이 안 나가도 캡슐 생성/조회/개봉은 전부 정상 동작하는데,
+      # 이걸 켜두면 /actuator/health 가 503 이 되고 k8s readinessProbe 가
+      # 영원히 실패해 **사이트 전체가 내려간다**.
+      # 메일 실패는 스케줄러 로그와 notifyAttempts 로 관측한다.
+      enabled: false
+
+timecapsule:
+  notification:
+    # 매시 정각. 예전 기본값은 1분마다(0 * * * * *)였는데 테스트용 설정이 그대로 굳은 것이다.
+    cron: ${TIMECAPSULE_NOTIFICATION_CRON:0 0 * * * *}
+    from: ${MAIL_FROM:${MAIL_USERNAME:noreply@timecapsule.chatflow.ai.kr}}
+    # 메일 본문 링크의 기준 URL. https 여야 한다 — Cloudflare 가 앞단에서 TLS 를 종단한다.
+    base-url: ${TIMECAPSULE_BASE_URL:https://timecapsule.chatflow.ai.kr}
+    # 이 횟수만큼 발송에 실패하면 재시도를 멈춘다(무한 재시도 방지).
+    max-attempts: ${TIMECAPSULE_NOTIFICATION_MAX_ATTEMPTS:10}
 
 ---
 spring:
@@ -27,6 +66,3 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
-  mail:
-    host: localhost
-    port: 25
