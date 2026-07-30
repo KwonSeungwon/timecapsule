@@ -135,11 +135,18 @@ public class LetterService {
         return letterPaperRepository.findAllByIsPublicTrue();
     }
 
+    /**
+     * ⚠️ 현재 호출자가 없다(컨트롤러는 {@link #getDetail} 만 쓴다).
+     *
+     * <p>{@link #getDetail} 과 달리 개봉일 전이어도 {@code read()} 를 그대로 부르므로
+     * {@code IllegalStateException} 이 나갈 수 있다. 그 예외는 더 이상 사용자 문구로
+     * 번역되지 않고 일반 500 으로 처리된다. 이 메서드를 다시 배선할 거라면
+     * {@link #getDetail} 처럼 개봉일을 먼저 확인하도록 고친 뒤에 쓸 것.
+     */
     @Transactional
     public void readLetter(LetterDto letterDto) {
         LetterPaper letter = getLetter(letterDto.getId());
-        
-        // 개봉 가능 시점 체크는 LetterPaper.read() 엔티티 내부에서 수행
+
         letter.read();
         letterPaperRepository.save(letter);
     }

@@ -179,6 +179,24 @@ public class LetterPaper {
                 openAt.withZoneSameInstant(SERVICE_ZONE).toLocalDate());
     }
 
+    /**
+     * 캡슐을 개봉 상태로 바꾼다.
+     *
+     * <p>여기서 던지는 {@code IllegalStateException} 은 <b>내부 불변식 위반</b>이지
+     * 사용자에게 보여줄 메시지가 아니다. API 경로에서는 도달할 수 없다 —
+     * {@code LetterService#getDetail} 이 개봉일 전이면 {@code read()} 를 부르지 않고
+     * 그대로 반환하고, 컨트롤러가 {@code openable:false} + {@code content} 없음으로
+     * 200 을 내려준다. 그게 프론트가 소비하는 계약이다.
+     *
+     * <p>예전엔 {@code GlobalExceptionHandler} 에 이 예외를 <b>403 + e.getMessage()</b> 로
+     * 내보내는 핸들러가 있었고, "D-N 을 사용자에게 알려주려는 것"이라고 정당화됐다.
+     * 그 정당화는 사실이 아니었다(위 경로 때문에 도달 불가). 남은 건 Spring/Hibernate/
+     * Jackson 이 던지는 <b>임의의</b> {@code IllegalStateException} 메시지를 그대로
+     * 클라이언트에 흘려보내는 통로였고, 상태코드도 의미상 틀렸다. 그래서 제거했다.
+     *
+     * <p><b>이 예외를 다시 사용자 문구로 쓰지 말 것.</b> 개봉 가능 여부는 200 응답의
+     * {@code openable} / {@code dday} 필드로 전달한다.
+     */
     public void read() {
         if (openAt != null && ZonedDateTime.now().isBefore(openAt)) {
             throw new IllegalStateException("아직 개봉할 수 없는 타임캡슐입니다. D-" + getDDay());
