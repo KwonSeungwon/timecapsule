@@ -132,20 +132,37 @@
 import Popup from "@/components/Popup";
 import axios from 'axios';
 
-// toISOString() 은 UTC 기준이라 KST(UTC+9) 오전 9시 이전엔 하루 전 날짜가 나온다.
-// 날짜 입력값(YYYY-MM-DD)은 항상 로컬 기준으로 만들어야 한다.
-function toLocalDateString(date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
+// 이 서비스의 "하루" 경계는 KST 다 (백엔드 LetterPaper.SERVICE_ZONE).
+// 서버는 개봉 가능 여부를 openAt 인스턴트로, D-Day 를 KST 달력 날짜로 계산한다.
+// 그래서 날짜 계산을 브라우저 로컬 시간대로 하면 KST 밖 사용자에게 둘이 어긋난다 —
+// 화면엔 D-0 이라고 떠 있는데 열어보면 403 "아직 개봉할 수 없습니다" 가 난다.
+// 날짜는 전부 'YYYY-MM-DD' 문자열로, 서버로 보낼 때만 KST 자정 인스턴트로 바꾼다.
+// KST 는 서머타임이 없어 고정 오프셋으로 충분하다.
+const SERVICE_UTC_OFFSET = '+09:00';
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+// 'YYYY-MM-DD' → 그 날 KST 자정의 ISO 인스턴트.
+function toServiceZoneInstant(dateString) {
+  return new Date(`${dateString}T00:00:00${SERVICE_UTC_OFFSET}`).toISOString();
 }
 
-// 'YYYY-MM-DD' 를 그대로 new Date() 에 넣으면 **UTC 자정**으로 파싱된다.
-// KST 에선 사용자가 고른 날짜보다 9시간 앞선 시각이 되어 하루 일찍 개봉된다.
-// 'T00:00:00' 을 붙이면 로컬 자정으로 파싱된다.
-function parseLocalDate(dateString) {
-  return new Date(`${dateString}T00:00:00`);
+// 오늘 날짜를 KST 달력 기준 'YYYY-MM-DD' 로. en-CA 로케일이 YYYY-MM-DD 를 준다.
+function serviceToday() {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date());
+}
+
+// 'YYYY-MM-DD' 에서 n 일 뒤. 두 값 모두 UTC 자정으로 파싱해 빼므로
+// 로컬 시간대나 서머타임의 영향을 받지 않는다.
+function addDays(dateString, days) {
+  return new Date(Date.parse(`${dateString}T00:00:00Z`) + days * MS_PER_DAY)
+      .toISOString()
+      .slice(0, 10);
+}
+
+// 달력 날짜 사이의 일수. 서버의 D-Day(ChronoUnit.DAYS.between) 와 같은 정의다.
+function daysBetween(fromDateString, toDateString) {
+  return Math.round(
+      (Date.parse(`${toDateString}T00:00:00Z`) - Date.parse(`${fromDateString}T00:00:00Z`)) / MS_PER_DAY);
 }
 
 export default {
@@ -154,7 +171,7 @@ export default {
   data () {
     return {
       currentStep: 1,
-      openDate: toLocalDateString(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)),
+      openDate: addDays(serviceToday(), 7),
       form: {
         title: '',
         senderName: '',
@@ -217,16 +234,10 @@ export default {
     },
     calculatedDDay() {
       if (!this.openDate) return 0;
-      const target = parseLocalDate(this.openDate);
-      const today = new Date();
-      today.setHours(0,0,0,0);
-      const diffTime = target - today;
-      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return daysBetween(serviceToday(), this.openDate);
     },
     minDate() {
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      return toLocalDateString(tomorrow);
+      return addDays(serviceToday(), 1);
     },
     biomeEmoji() {
       const biomeMap = { 'BEACH': '🌊', 'MOUNTAIN': '⛰️', 'DESERT': '🏜️', 'FOREST': '🌲' };
@@ -235,9 +246,7 @@ export default {
   },
   methods : {
     setQuickDate(days) {
-      const target = new Date();
-      target.setDate(target.getDate() + days);
-      this.openDate = toLocalDateString(target);
+      this.openDate = addDays(serviceToday(), days);
     },
     nextStep() {
       if (this.currentStep < 5) {
@@ -258,7 +267,7 @@ export default {
       if (this.isLoading) return;
       this.isLoading = true;
       
-      this.form.openAt = parseLocalDate(this.openDate).toISOString();
+      this.form.openAt = toServiceZoneInstant(this.openDate);
 
       const self = this;
       axios.post('/api/v1/capsule', this.form)

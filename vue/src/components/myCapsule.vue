@@ -76,6 +76,12 @@ import Letter from "@/components/Letter";
 import Popup from "@/components/Popup";
 import axios from 'axios';
 
+// 백엔드 GlobalExceptionHandler 는 { error, message, status } 를 내려준다.
+// 네트워크 단절이면 response 자체가 없으므로 호출부에서 기본 문구로 대체한다.
+function serverMessage(error) {
+  return error && error.response && error.response.data && error.response.data.message;
+}
+
 export default {
   name: "MyCapsule",
   components : {Letter, Popup},
@@ -146,7 +152,9 @@ export default {
         self.passwordPopup.open = false;
       })
       .catch(error => {
-        alert('비밀번호가 틀렸거나 오류가 발생했습니다.');
+        // 서버 메시지를 버리면 "아직 개봉일이 아닙니다(403)" 와 "비밀번호가 틀렸습니다(400)"
+        // 가 사용자에게 똑같이 보인다. 개봉일까지 남은 날짜를 알려주는 건 서버뿐이다.
+        alert(serverMessage(error) || '비밀번호가 틀렸거나 오류가 발생했습니다.');
         console.error(error);
       });
     },

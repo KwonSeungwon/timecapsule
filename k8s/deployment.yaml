@@ -53,9 +53,12 @@ spec:
           #    -1 은 "마지막 커넥션이 닫혀도 DB 를 열어둔다", FALSE 는 "JVM 종료
           #    훅으로도 닫지 않는다" 라서 둘을 합치면 DB 가 영영 닫히지 않는다.
           #
-          # DB_CLOSE_DELAY=10: 마지막 커넥션이 닫히고 10초 뒤 DB 를 닫는다.
-          #    닫힐 때 디스크로 플러시되므로 주기적인 체크포인트가 된다.
-          #    0 으로 두면 커넥션이 잠깐 다 반납될 때마다 열고 닫기를 반복한다.
+          # DB_CLOSE_DELAY=10: 마지막 커넥션이 닫히고 10초 뒤 DB 를 닫는다. 0 이면
+          #    풀이 잠깐 비는 순간마다 열고 닫기를 반복하므로 그걸 막는 값이다.
+          #    실제로는 Hikari 가 idle 커넥션을 유지해서 파드가 살아 있는 동안
+          #    DB 가 닫힐 일은 거의 없다 — 즉 이 값은 체크포인트 장치가 아니다.
+          #    영속성은 파일 모드(jdbc:h2:file) + WAL 이 담당하고, 종료 시 플러시는
+          #    DB_CLOSE_ON_EXIT=TRUE 가 담당한다.
           value: "jdbc:h2:file:/data/timecapsule;DB_CLOSE_DELAY=10;DB_CLOSE_ON_EXIT=TRUE"
         - name: DB_USERNAME
           value: "sa"
