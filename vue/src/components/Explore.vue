@@ -201,7 +201,34 @@ export default {
 
 .capsule-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+
+  /* ⚠️ minmax 의 첫 인자를 고정 길이(220px)로 되돌리지 말 것.
+   * 1fr 은 최대값일 뿐이라 트랙은 220px 밑으로 못 내려가고, 그리드가 그보다
+   * 좁아지는 순간 카드가 그대로 삐져나간다. auto-fill 도 못 구한다 — 어떤
+   * 반복 수로도 넘치면 1열로 떨어질 뿐 하한 자체는 그대로다.
+   * min(220px, 100%) 로 감싸야 넓을 때는 220px 하한이 살고 좁을 때만 내려간다.
+   *
+   * 여기가 늘 1열인 건 "폭이 좁아서"가 아니라 timecapsulue.css 의
+   * .game-field { max-width: 420px } 때문이다. 그 상한 탓에 .explore-body 는
+   * 아무리 넓은 화면에서도 372px(뷰포트 8400/19≈442.11 ~ 480px, 0.95*뷰포트폭 이
+   * max-width 420 에 닿으면서 padding 이 아직 16px 인 구간이 최대)를 못 넘고,
+   * padding-right:4px 를 뺀 그리드는 368px 다.
+   * 2열엔 220+12+220=452px 이 필요하니 368px 로는 어림도 없다.
+   * max-width 를 올리면 이 문단은 아무 신호 없이 거짓이 된다.
+   *
+   * 실측(.explore-body 기준 가로 넘침, 수정 전 → 후):
+   *   뷰포트 280px  컨테이너 218px   2px → 0 (카드 220 → 214)
+   *   뷰포트 250px  컨테이너 189.5px 30px → 0 (카드 220 → 185.5)
+   *   뷰포트 220px  컨테이너 161px  59px → 0 (카드 220 → 157)
+   *   1366/844 컨테이너 356·카드 352, 320 은 256·252 — 전후 완전 동일
+   * 전후가 같아지는 경계는 컨테이너가 아니라 **그리드 폭 220px** 이고,
+   * .explore-body 의 padding-right:4px 만큼 밀려 컨테이너로는 224px 이다.
+   * 그 사이(컨테이너 220~223px)는 넘침이 양쪽 다 0 이면서 카드 폭만 다르다.
+   *
+   * myCapsule.vue:268 에도 동명의 .capsule-grid 가 있다(repeat(2, 1fr), 다른
+   * scope). 정의는 그 둘뿐이지만 클래스명으로 grep 하면 템플릿 사용처와
+   * 별개 클래스인 .capsule-grid-container 까지 딸려 오니 헷갈리지 말 것. */
+  grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
   gap: 12px;
 }
 
