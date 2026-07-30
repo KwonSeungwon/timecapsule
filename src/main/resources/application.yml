@@ -35,6 +35,17 @@ spring:
           auth: ${MAIL_SMTP_AUTH:false}
           starttls:
             enable: ${MAIL_SMTP_STARTTLS_ENABLE:false}
+          # ⚠️ 이 세 값을 지우지 말 것 — JavaMail 의 기본 타임아웃은 **무한**이다.
+          # egress 방화벽이 SMTP 를 REJECT 가 아니라 DROP 하면(클라우드에서 흔하다)
+          # send() 가 응답 없이 영원히 매달린다. 스케줄러 스레드는 하나뿐이라
+          # 그 순간 알림 파이프라인 전체가 멈추는데, 예외가 없으니 로그도 조용하고
+          # health 의 mail 인디케이터도 꺼져 있어 파드는 계속 Ready 로 보인다.
+          # 캡슐이 한 통도 안 나가는 상태를 아무도 발견하지 못한다.
+          # 10초면 정상 SMTP 왕복(보통 수백 ms)보다 충분히 크고, 매분 주기 안에서
+          # 실패를 빨리 털고 다음 캡슐로 넘어갈 만큼 작다.
+          connectiontimeout: ${MAIL_SMTP_CONNECTIONTIMEOUT:10000}
+          timeout: ${MAIL_SMTP_TIMEOUT:10000}
+          writetimeout: ${MAIL_SMTP_WRITETIMEOUT:10000}
 
 # ⚠️ management / timecapsule 블록은 **이 문서(프로필 무관)**에 있어야 한다.
 # '---' 아래 prod 문서에 두면 prod 에서만 적용돼 dev·test 에서 조용히 빠진다.
@@ -48,6 +59,15 @@ management:
       probes:
         enabled: true
       show-details: never
+      group:
+        # 메일 배선 상태(SMTP / SINK / UNCONFIGURED)를 보는 전용 그룹.
+        # readiness/liveness 그룹과 분리돼 있어 probe 에 영향을 주지 않는다.
+        # 루트 /actuator/health 는 show-details: never 라 상태가 안 보이는데,
+        # 이 그룹만 details 를 열어 "메일이 실제로 나갈 수 있는가"를 노출한다.
+        # 인디케이터는 절대 DOWN 을 내지 않는다 — CapsuleNotificationMailer.health() 참고.
+        mail:
+          include: capsuleNotificationMailer
+          show-details: always
   health:
     mail:
       # SMTP 도달성으로 앱의 health 를 판정하면 안 된다.
@@ -66,6 +86,15 @@ timecapsule:
     base-url: ${TIMECAPSULE_BASE_URL:https://timecapsule.chatflow.ai.kr}
     # 이 횟수만큼 발송에 실패하면 재시도를 멈춘다(무한 재시도 방지).
     max-attempts: ${TIMECAPSULE_NOTIFICATION_MAX_ATTEMPTS:10}
+    # 한 주기에 발송할 최대 건수. 상한이 없으면 배포 직후 첫 tick 이 밀린 캡슐을
+    # 전부 한 번에 내보낸다 — 실제 SMTP 에서는 스팸 발송처럼 보인다.
+    # 100 을 고른 근거는 TimecapsuleScheduler.batchSize 주석 참고.
+    batch-size: ${TIMECAPSULE_NOTIFICATION_BATCH_SIZE:100}
+    # 켜고 기동하면 재시도 예산이 소진된 캡슐을 대기열로 되돌린다(1회성 복구 수단).
+    # 비회원 서비스라 인증된 관리자 API 를 열 수 없어 기동 옵션으로 뒀다.
+    # 원인을 고치기 전에 켜면 같은 실패를 반복할 뿐이고, 켜둔 채로 두면
+    # 진짜 배달 불가 주소가 매 재기동마다 되살아난다.
+    requeue-exhausted-on-start: ${TIMECAPSULE_NOTIFICATION_REQUEUE_EXHAUSTED_ON_START:false}
 
 ---
 spring:

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.thymeleaf.ITemplateEngine;
 
 import java.io.ByteArrayOutputStream;
@@ -87,6 +88,21 @@ class CapsuleNotificationMailerTest {
         LetterPaper c = capsule();
         c.setBiome("VOLCANO");
         assertThat(mailer.renderBody(c)).contains("📍");
+    }
+
+    /**
+     * application.yml 의 {@code spring.mail.properties.mail.smtp.*} 가 실제로
+     * 조립된 JavaMailSenderImpl 세션까지 도달하는지 본다.
+     *
+     * <p>설정 파일만 읽는 검사(MailTimeoutConfigTest)는 "yml 에 값이 있다"까지만 보장한다.
+     * 키 경로를 한 단계 잘못 넣으면(예: properties 아래가 아니라 spring.mail 바로 아래)
+     * 값은 Environment 에 남지만 JavaMail 세션에는 안 실려서 타임아웃이 다시 무한이 된다.
+     */
+    @Test
+    void smtpTimeoutsReachTheActualMailSession() {
+        JavaMailSenderImpl impl = (JavaMailSenderImpl) mailSender;
+        assertThat(impl.getJavaMailProperties())
+                .containsKeys("mail.smtp.connectiontimeout", "mail.smtp.timeout", "mail.smtp.writetimeout");
     }
 
     @Test
