@@ -20,14 +20,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 그래서 {@code management.health.mail.enabled: false} 는 그대로 두고,
  * 별도 그룹({@code /actuator/health/mail})으로만 상태를 노출한다.
  *
- * <p>테스트 환경은 MAIL_HOST 가 없어 localhost 로 떨어지므로 자연히 UNCONFIGURED 다 —
- * 즉 여기서 보는 게 정확히 "시크릿 없이 배포한 파드"의 모습이다.
+ * <p>메일 호스트를 localhost 로 고정한다 = "MAIL_HOST 시크릿 없이 매니페스트만 적용한
+ * 파드". 검증하려는 위험 상태가 바로 이것이라, 실행 환경에 MAIL_HOST 가 떠 있으면
+ * 무해한 상태를 검사하며 통과해버린다.
  *
  * <p>이 테스트가 깨진다면 십중팔구 인디케이터가 DOWN 을 내기 시작한 것이다.
  * 그러면 루트 health 가 503 이 되고, 누군가 probe 경로를 루트로 바꾸는 순간
  * 메일 오설정이 곧 전면 장애가 된다.
  */
-@SpringBootTest
+@SpringBootTest(properties = "spring.mail.host=localhost")
 @AutoConfigureMockMvc
 class MailHealthVisibilityTest {
 
