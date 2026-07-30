@@ -47,3 +47,13 @@ out/
 
 ### Generated: QueryDSL Q-class
 /src/main/generated/
+
+### 배포 시크릿 — 절대 커밋 금지
+### docs/DEPLOYMENT.md 는 이 파일이 gitignored 라고 적어 놨지만 실제로는 커밋돼
+### 있었다. DB 비밀번호 / JWT 서명키 / 배포 서버 호스트가 그대로 노출됐다.
+### 템플릿은 scripts/.env.deploy.example 로 커밋한다.
+/scripts/.env.deploy
+
+### node_modules — front/ 에 21,271 개(≈102MB)가 추적되고 있었다.
+### 실제 프론트엔드는 vue/ 다.
+node_modules/

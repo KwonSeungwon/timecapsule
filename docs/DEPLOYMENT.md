@@ -16,9 +16,17 @@
 # 또는 단계별: infra | secrets | images | deploy
 ```
 
-`scripts/.env.deploy` (gitignored) 에서 `K3S_HOST` / `K3S_USER` / `NAMESPACE` /
-`KUBECONFIG` 와 아래 메일 변수를 읽는다. **실제 시크릿 값은 이 파일에만 두고
-저장소에 커밋하지 않는다.**
+`scripts/.env.deploy` 에서 `K3S_HOST` / `K3S_USER` / `NAMESPACE` / `KUBECONFIG`
+와 아래 메일 변수를 읽는다. 신규 체크아웃이라면 템플릿을 복사해서 시작한다:
+
+```bash
+cp scripts/.env.deploy.example scripts/.env.deploy
+```
+
+**실제 시크릿 값은 이 파일에만 두고 저장소에 커밋하지 않는다.** 이 문서는 한동안
+이 파일을 "(gitignored)"라고 적어 놨지만 실제로는 추적되고 있었고, DB 비밀번호와
+배포 서버 계정이 저장소에 그대로 남아 있었다. 지금은 `.gitignore` 에 등재돼 있다 —
+`git check-ignore -v scripts/.env.deploy` 로 확인할 수 있다.
 
 ## 2. 데이터 영속성 (PVC)
 
