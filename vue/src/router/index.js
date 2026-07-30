@@ -4,6 +4,7 @@ import MyCapsule from '@/components/myCapsule'
 import FindCapsule from '@/components/FindCapsule'
 import Tutorial from '@/components/Tutorial'
 import WriteLetter from '@/components/WriteLetter'
+import Explore from '@/components/Explore'
 
 
 const routes = [
@@ -31,6 +32,11 @@ const routes = [
     path: '/tutorial',
     name: 'tutorial',
     component: Tutorial
+  },
+  {
+    path: '/explore',
+    name: 'explore',
+    component: Explore
   },
   {
     path : "/:catchAll(.*)",

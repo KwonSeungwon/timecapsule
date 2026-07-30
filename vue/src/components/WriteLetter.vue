@@ -1,7 +1,7 @@
 <template>
   <div class="game-field wizard-container">
     <div class="field-title">
-      <h2 class="pixel-text">{{ stepTitle }} ({{ currentStep }}/5)</h2>
+      <h2 class="pixel-text">{{ stepTitle }}<span v-if="currentStep < 6"> ({{ currentStep }}/5)</span></h2>
     </div>
 
     <!-- 단계별 전환 애니메이션 -->
@@ -92,6 +92,9 @@
               <p class="coords">📍 위도 {{ result.xCoord }} / 경도 {{ result.yCoord }}</p>
               <p class="location-desc">"{{ result.title }}"</p>
             </div>
+            <p class="notify-note">
+              📮 개봉일이 되면 <strong>{{ form.receiverEmail }}</strong> 로 알림 메일이 도착합니다.
+            </p>
           </div>
           <button class="pixel-btn primary full-width" @click="goHome">🏠 홈으로 돌아가기</button>
         </div>
@@ -121,13 +124,29 @@
 import Popup from "@/components/Popup";
 import axios from 'axios';
 
+// toISOString() 은 UTC 기준이라 KST(UTC+9) 오전 9시 이전엔 하루 전 날짜가 나온다.
+// 날짜 입력값(YYYY-MM-DD)은 항상 로컬 기준으로 만들어야 한다.
+function toLocalDateString(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+// 'YYYY-MM-DD' 를 그대로 new Date() 에 넣으면 **UTC 자정**으로 파싱된다.
+// KST 에선 사용자가 고른 날짜보다 9시간 앞선 시각이 되어 하루 일찍 개봉된다.
+// 'T00:00:00' 을 붙이면 로컬 자정으로 파싱된다.
+function parseLocalDate(dateString) {
+  return new Date(`${dateString}T00:00:00`);
+}
+
 export default {
   name: "WriteLetter",
   components : {Popup},
   data () {
     return {
       currentStep: 1,
-      openDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      openDate: toLocalDateString(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)),
       form: {
         title: '',
         senderName: '',
@@ -188,7 +207,7 @@ export default {
     },
     calculatedDDay() {
       if (!this.openDate) return 0;
-      const target = new Date(this.openDate);
+      const target = parseLocalDate(this.openDate);
       const today = new Date();
       today.setHours(0,0,0,0);
       const diffTime = target - today;
@@ -197,7 +216,7 @@ export default {
     minDate() {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
-      return tomorrow.toISOString().split('T')[0];
+      return toLocalDateString(tomorrow);
     },
     biomeEmoji() {
       const biomeMap = { 'BEACH': '🌊', 'MOUNTAIN': '⛰️', 'DESERT': '🏜️', 'FOREST': '🌲' };
@@ -208,7 +227,7 @@ export default {
     setQuickDate(days) {
       const target = new Date();
       target.setDate(target.getDate() + days);
-      this.openDate = target.toISOString().split('T')[0];
+      this.openDate = toLocalDateString(target);
     },
     nextStep() {
       if (this.currentStep < 5) {
@@ -229,7 +248,7 @@ export default {
       if (this.isLoading) return;
       this.isLoading = true;
       
-      this.form.openAt = new Date(this.openDate).toISOString();
+      this.form.openAt = parseLocalDate(this.openDate).toISOString();
 
       const self = this;
       axios.post('/api/v1/capsule', this.form)
@@ -242,6 +261,8 @@ export default {
           yCoord: data.yCoord,
           biome: data.biome
         };
+        // 6단계 = 좌표·바이옴이 찍힌 매립 결과 카드. 이 서비스의 핵심 연출인데
+        // 예전엔 여기서 홈으로 replace 해버려서 한 번도 보인 적이 없었다.
         self.currentStep = 6;
       }).catch(function (error){
         self.popup.content = '전송에 실패했습니다: ' + (error.response?.data?.message || '알 수 없는 오류');
@@ -435,6 +456,7 @@ export default {
 .biome-icon { font-size: 48px; }
 .biome-name { font-size: 20px; font-weight: bold; color: #5d7a54; }
 .location-desc { font-style: italic; font-size: 16px; margin-top: 10px; border-top: 1px dashed #ccc; padding-top: 10px;}
+.notify-note { font-size: 13px; color: #666; margin-top: 16px; line-height: 1.6; word-break: break-all; }
 
 .full-width { width: 100%; }
 

@@ -17,6 +17,10 @@
         <button id="tutorial" class="tutorial" @click="$router.push('/tutorial')"></button>
         <label for="tutorial"></label>
       </div>
+      <!-- 다른 메뉴는 스프라이트 이미지 버튼이지만 탐색용 에셋이 없어 텍스트 버튼으로 둔다. -->
+      <div class="holder">
+        <button id="explore" class="explore-btn" @click="$router.push('/explore')">🗺️ 공개 캡슐 탐색</button>
+      </div>
     </div>
     <div class="footer-copyright">
       <img src="../assets/images/copyright.png">
@@ -112,6 +116,22 @@ export default {
 .mountain .menu .send { width: 180px; background-image: url(../assets/images/btn_start_mt.png); }
 .desert .menu .send { width: 180px; background-image: url(../assets/images/btn_start_dt.png); }
 .space .menu .send { width: 180px; background-image: url(../assets/images/btn_start_sc.png); }
+
+.explore-btn {
+  width: 180px;
+  height: 40px;
+  background: #fff;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  color: #111;
+}
+
+.explore-btn:hover {
+  background: #ffe24a;
+}
 
 .menu label {
   position: absolute;
