@@ -131,47 +131,24 @@
 <script>
 import Popup from "@/components/Popup";
 import axios from 'axios';
+import { addDays, daysBetween, serviceToday, toServiceZoneInstant } from "@/utils/serviceDate";
 
-// 이 서비스의 "하루" 경계는 KST 다 (백엔드 LetterPaper.SERVICE_ZONE).
-// 서버는 개봉 가능 여부를 openAt 인스턴트로, D-Day 를 KST 달력 날짜로 계산한다.
-// 그래서 날짜 계산을 브라우저 로컬 시간대로 하면 KST 밖 사용자에게 둘이 어긋난다 —
-// 화면엔 D-0 이라고 떠 있는데 열어보면 403 "아직 개봉할 수 없습니다" 가 난다.
-// 날짜는 전부 'YYYY-MM-DD' 문자열로, 서버로 보낼 때만 KST 자정 인스턴트로 바꾼다.
-// KST 는 서머타임이 없어 고정 오프셋으로 충분하다.
-const SERVICE_UTC_OFFSET = '+09:00';
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
-
-// 'YYYY-MM-DD' → 그 날 KST 자정의 ISO 인스턴트.
-function toServiceZoneInstant(dateString) {
-  return new Date(`${dateString}T00:00:00${SERVICE_UTC_OFFSET}`).toISOString();
-}
-
-// 오늘 날짜를 KST 달력 기준 'YYYY-MM-DD' 로. en-CA 로케일이 YYYY-MM-DD 를 준다.
-function serviceToday() {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date());
-}
-
-// 'YYYY-MM-DD' 에서 n 일 뒤. 두 값 모두 UTC 자정으로 파싱해 빼므로
-// 로컬 시간대나 서머타임의 영향을 받지 않는다.
-function addDays(dateString, days) {
-  return new Date(Date.parse(`${dateString}T00:00:00Z`) + days * MS_PER_DAY)
-      .toISOString()
-      .slice(0, 10);
-}
-
-// 달력 날짜 사이의 일수. 서버의 D-Day(ChronoUnit.DAYS.between) 와 같은 정의다.
-function daysBetween(fromDateString, toDateString) {
-  return Math.round(
-      (Date.parse(`${toDateString}T00:00:00Z`) - Date.parse(`${fromDateString}T00:00:00Z`)) / MS_PER_DAY);
-}
+// KST 자정을 넘겨도 D-Day 와 :min 이 따라가도록 갱신하는 주기.
+// 1분이면 자정 직후 최대 1분만 어긋나고, 그 어긋남은 submitLetter 가 어차피 한 번 더 막는다.
+const TODAY_REFRESH_MS = 60 * 1000;
 
 export default {
   name: "WriteLetter",
   components : {Popup},
   data () {
+    const today = serviceToday();
     return {
       currentStep: 1,
-      openDate: addDays(serviceToday(), 7),
+      // serviceToday() 를 computed 안에서 직접 부르면 반응형 의존성이 하나도 없어
+      // 최초 1회 평가 후 영원히 캐시된다 — 자정을 넘겨도 D-Day 와 :min 이 어제 값에 멈춘다.
+      // 기준일을 data 로 들고 주기적으로 갱신해야 두 computed 가 무효화된다.
+      today,
+      openDate: addDays(today, 7),
       form: {
         title: '',
         senderName: '',
@@ -234,19 +211,26 @@ export default {
     },
     calculatedDDay() {
       if (!this.openDate) return 0;
-      return daysBetween(serviceToday(), this.openDate);
+      return daysBetween(this.today, this.openDate);
     },
     minDate() {
-      return addDays(serviceToday(), 1);
+      return addDays(this.today, 1);
     },
     biomeEmoji() {
       const biomeMap = { 'BEACH': '🌊', 'MOUNTAIN': '⛰️', 'DESERT': '🏜️', 'FOREST': '🌲' };
       return biomeMap[this.result.biome] || '📍';
     }
   },
+  mounted() {
+    this.todayTimer = setInterval(() => { this.today = serviceToday(); }, TODAY_REFRESH_MS);
+  },
+  beforeUnmount() {
+    clearInterval(this.todayTimer);
+  },
   methods : {
     setQuickDate(days) {
-      this.openDate = addDays(serviceToday(), days);
+      this.today = serviceToday();
+      this.openDate = addDays(this.today, days);
     },
     nextStep() {
       if (this.currentStep < 5) {
@@ -266,7 +250,16 @@ export default {
     submitLetter() {
       if (this.isLoading) return;
       this.isLoading = true;
-      
+
+      // 23:55 KST 에 "내일" 을 고르고 자정을 넘겨 제출하면 그 날짜는 이미 과거다.
+      // 서버 @Future 가 400 "개봉일은 현재보다 미래여야 합니다" 로 되돌려보내는데,
+      // 사용자는 5단계에 남아 있어서 어디를 고쳐야 하는지 알 수 없다.
+      // 렌더 시점 값을 믿지 말고 제출 순간의 KST 오늘로 다시 재어, 하루 뒤로 끌어올린다.
+      // openDate 를 실제로 바꾸므로 화면의 D-Day 도 보낸 값과 같아진다.
+      this.today = serviceToday();
+      if (daysBetween(this.today, this.openDate) < 1) {
+        this.openDate = addDays(this.today, 1);
+      }
       this.form.openAt = toServiceZoneInstant(this.openDate);
 
       const self = this;

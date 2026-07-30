@@ -55,8 +55,8 @@
           <div class="input-with-icon">
             <input type="password" v-model="passwordPopup.input" class="pixel-input" placeholder="비밀번호 입력" @keyup.enter="handlePasswordResponse(true)">
           </div>
-          <p class="unlock-date" v-if="!isPast(selectLetter.openAt)">
-            📅 개봉일: {{ formatDate(selectLetter.openAt) }}
+          <p class="unlock-date" v-if="!selectLetter.openable">
+            📅 개봉일: {{ formatDate(selectLetter.openAt) }} (D-{{ selectLetter.dday }})
           </p>
         </div>
       </template>
@@ -75,11 +75,20 @@
 import Letter from "@/components/Letter";
 import Popup from "@/components/Popup";
 import axios from 'axios';
+import { formatServiceDateLocalized } from "@/utils/serviceDate";
 
 // 백엔드 GlobalExceptionHandler 는 { error, message, status } 를 내려준다.
 // 네트워크 단절이면 response 자체가 없으므로 호출부에서 기본 문구로 대체한다.
 function serverMessage(error) {
   return error && error.response && error.response.data && error.response.data.message;
+}
+
+// 서버 dday 는 KST 달력 날짜 차이(LetterPaper.getDDay)고 openable 은 인스턴트 비교라,
+// openAt 이 자정이 아닌 옛날 데이터에서는 dday=0 인데 아직 못 여는 구간이 존재한다.
+function notYetOpenMessage(dday) {
+  return dday > 0
+      ? `아직 개봉할 수 없어요. 개봉까지 D-${dday} 남았습니다.`
+      : '아직 개봉할 수 없어요. 오늘 중 개봉 시각이 지나면 열립니다.';
 }
 
 export default {
@@ -139,9 +148,13 @@ export default {
       const id = this.selectLetter.id;
       axios.post(`/api/v1/capsule/${id}/open`, { password: this.passwordPopup.input })
       .then(response => {
+        // 개봉 전이라도 이 요청은 200 이다 — LetterService.getDetail 이 비밀번호만 맞으면
+        // 조기 반환하고, 컨트롤러가 content 를 뺀 채 dday/openable 을 실어 보낸다.
+        // 그래서 남은 날짜를 아는 유일한 경로가 이 성공 응답이다. 여기서 버리면 사용자는
+        // "언제 열리는지" 를 어디서도 볼 수 없다.
         self.selectLetter = response.data;
         if (!self.selectLetter.openable) {
-          alert('아직 개봉할 수 없는 날짜입니다.');
+          alert(notYetOpenMessage(self.selectLetter.dday));
           return;
         }
         if (!self.selectLetter.content) {
@@ -152,8 +165,8 @@ export default {
         self.passwordPopup.open = false;
       })
       .catch(error => {
-        // 서버 메시지를 버리면 "아직 개봉일이 아닙니다(403)" 와 "비밀번호가 틀렸습니다(400)"
-        // 가 사용자에게 똑같이 보인다. 개봉일까지 남은 날짜를 알려주는 건 서버뿐이다.
+        // 여기로 오는 건 비밀번호 불일치·없는 캡슐 같은 400 뿐이다(개봉 전은 위의 200 경로).
+        // 서버 메시지를 버리면 그 400 들이 전부 한 문장으로 뭉개진다.
         alert(serverMessage(error) || '비밀번호가 틀렸거나 오류가 발생했습니다.');
         console.error(error);
       });
@@ -181,14 +194,7 @@ export default {
       }
     },
     formatDate(dateStr) {
-      return new Date(dateStr).toLocaleDateString();
-    },
-    isPast(dateStr) {
-      return new Date(dateStr) <= new Date();
-    },
-    getDDay(dateStr) {
-      const diff = new Date(dateStr) - new Date();
-      return Math.ceil(diff / (1000 * 60 * 60 * 24));
+      return formatServiceDateLocalized(dateStr) || '날짜 미정';
     }
   },
   created() {

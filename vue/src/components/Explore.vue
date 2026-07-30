@@ -60,6 +60,7 @@
 
 <script>
 import axios from 'axios';
+import { toServiceDate } from "@/utils/serviceDate";
 
 // 백엔드 LocationMapper 의 바이옴과 1:1 로 맞춘다.
 const BIOME_META = {
@@ -122,13 +123,10 @@ export default {
         });
     },
     formatDate(value) {
-      if (!value) return '날짜 미정';
-      const date = new Date(value);
-      if (Number.isNaN(date.getTime())) return '날짜 미정';
-      const y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, '0');
-      const d = String(date.getDate()).padStart(2, '0');
-      return `${y}.${m}.${d}`;
+      // 바로 옆 뱃지의 D-Day 는 서버가 KST 로 센 값이다. 여기만 브라우저 로컬로 찍으면
+      // 미국 서부에서 "2026.07.31 개봉" 옆에 8/1 까지 세는 D-Day 가 나란히 붙는다.
+      const serviceDate = toServiceDate(value);
+      return serviceDate ? serviceDate.split('-').join('.') : '날짜 미정';
     }
   }
 }
