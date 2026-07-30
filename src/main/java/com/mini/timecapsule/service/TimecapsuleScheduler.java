@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -19,48 +17,37 @@ import java.util.List;
 public class TimecapsuleScheduler {
 
     private final LetterPaperRepository letterPaperRepository;
-    private final CapsuleNotificationMailer mailer;
+    private final CapsuleNotifier notifier;
 
     @Value("${timecapsule.notification.max-attempts:10}")
     private int maxAttempts;
 
     /**
-     * 개봉일이 지난 캡슐에 알림 메일을 보낸다.
-     * 기본 매시 정각. 실패한 캡슐은 isNotified 가 false 로 남아 다음 주기에 재시도되고,
-     * max-attempts 회 실패하면 쿼리 대상에서 빠진다(무한 재시도 방지).
+     * 개봉일이 지난 캡슐에 알림 메일을 보낸다. 기본 매시 정각.
+     *
+     * <p>이 메서드에는 {@code @Transactional} 을 붙이지 않는다 — 붙이면 배치 전체가
+     * 한 트랜잭션이 되어, 중간에 한 건이 터질 때 이미 발송한 메일들의 발송완료 표시까지
+     * 롤백된다(= 다음 주기에 전원 중복 발송). 커밋 단위는 {@link CapsuleNotifier} 가
+     * 캡슐 한 건으로 잡는다.
      */
     @Scheduled(cron = "${timecapsule.notification.cron:0 0 * * * *}")
-    @Transactional
     public void checkAndNotifyOpenCapsules() {
-        List<LetterPaper> dueCapsules = letterPaperRepository.findDueForNotification(
-                ZonedDateTime.now(), LetterPaper.LetterStatus.UNOPENED, maxAttempts);
+        List<Long> dueIds = letterPaperRepository.findIdsDueForNotification(
+                ZonedDateTime.now(), LetterPaper.LetterStatus.REMOVE, maxAttempts);
 
-        if (dueCapsules.isEmpty()) {
+        if (dueIds.isEmpty()) {
             return;
         }
-        log.info("개봉 알림 대상 캡슐 {}건", dueCapsules.size());
+        log.info("개봉 알림 대상 캡슐 {}건", dueIds.size());
 
-        for (LetterPaper capsule : dueCapsules) {
-            if (!StringUtils.hasText(capsule.getReceiverEmail())) {
-                log.warn("수신 이메일이 없어 알림을 건너뜁니다: capsuleId={}", capsule.getId());
-                capsule.markNotified();
-                continue;
-            }
+        for (Long capsuleId : dueIds) {
             try {
-                mailer.send(capsule);
-                capsule.markNotified();
-                log.info("개봉 알림 발송 완료: capsuleId={}", capsule.getId());
+                notifier.notifyOne(capsuleId, maxAttempts);
             } catch (Exception e) {
-                boolean giveUp = capsule.recordNotifyFailure(maxAttempts);
-                if (giveUp) {
-                    log.error("개봉 알림 발송 {}회 실패 — 재시도를 중단합니다: capsuleId={}",
-                            maxAttempts, capsule.getId(), e);
-                } else {
-                    log.error("개봉 알림 발송 실패({}/{}) — 다음 주기에 재시도합니다: capsuleId={}",
-                            capsule.getNotifyAttempts(), maxAttempts, capsule.getId(), e);
-                }
+                // notifyOne 내부에서 메일 실패는 이미 삼킨다. 여기까지 올라오는 건
+                // 커밋 실패 같은 트랜잭션 레벨 문제 — 한 건 때문에 배치를 멈추지 않는다.
+                log.error("개봉 알림 처리 실패: capsuleId={}", capsuleId, e);
             }
         }
-        letterPaperRepository.saveAll(dueCapsules);
     }
 }
