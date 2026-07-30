@@ -77,6 +77,10 @@ timecapsule:
     base-url: ${TIMECAPSULE_BASE_URL:https://timecapsule.chatflow.ai.kr}
     # 이 횟수만큼 발송에 실패하면 재시도를 멈춘다(무한 재시도 방지).
     max-attempts: ${TIMECAPSULE_NOTIFICATION_MAX_ATTEMPTS:10}
+    # 한 주기에 발송할 최대 건수. 상한이 없으면 배포 직후 첫 tick 이 밀린 캡슐을
+    # 전부 한 번에 내보낸다 — 실제 SMTP 에서는 스팸 발송처럼 보인다.
+    # 100 을 고른 근거는 TimecapsuleScheduler.batchSize 주석 참고.
+    batch-size: ${TIMECAPSULE_NOTIFICATION_BATCH_SIZE:100}
 
 ---
 spring:
