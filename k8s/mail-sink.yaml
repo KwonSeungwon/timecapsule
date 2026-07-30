@@ -1,0 +1,50 @@
+# in-cluster SMTP sink.
+# 실제 SMTP 자격증명이 없을 때 메일 경로 전체(조립 → SMTP 왕복 → 렌더)를
+# 실제로 동작시키고 눈으로 확인하기 위한 것이다.
+#
+# ⚠️ ingress 로 노출하지 않는다. 캡슐 본문이 담긴 메일 뷰어를 공개하면
+#    비밀번호 없이 내용이 새어나간다. 확인은 port-forward 로 한다:
+#    kubectl -n timecapsule port-forward svc/timecapsule-mailpit 8025:8025
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timecapsule-mailpit
+  namespace: timecapsule
+  labels: { app: timecapsule-mailpit }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: timecapsule-mailpit }
+  template:
+    metadata:
+      labels: { app: timecapsule-mailpit }
+    spec:
+      containers:
+      - name: mailpit
+        image: axllent/mailpit:v1.20
+        ports:
+        - { name: smtp, containerPort: 1025 }
+        - { name: http, containerPort: 8025 }
+        env:
+        - { name: MP_MAX_MESSAGES, value: "500" }
+        - { name: MP_SMTP_AUTH_ACCEPT_ANY, value: "1" }
+        - { name: MP_SMTP_AUTH_ALLOW_INSECURE, value: "1" }
+        readinessProbe:
+          httpGet: { path: /readyz, port: 8025 }
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests: { cpu: 10m, memory: 32Mi }
+          limits:   { cpu: 200m, memory: 128Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: timecapsule-mailpit
+  namespace: timecapsule
+spec:
+  type: ClusterIP
+  selector: { app: timecapsule-mailpit }
+  ports:
+  - { name: smtp, port: 1025, targetPort: 1025 }
+  - { name: http, port: 8025, targetPort: 8025 }

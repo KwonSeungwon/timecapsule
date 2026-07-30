@@ -1,3 +1,18 @@
+# 캡슐 데이터를 담는 H2 파일이 사는 곳.
+# 예전엔 DB_URL 이 jdbc:h2:mem: 이라 파드가 재시작될 때마다 묻어둔 캡슐이
+# 전부 사라졌다. 타임캡슐 서비스에서 이건 제품 자체의 부정이다.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: timecapsule-data
+  namespace: timecapsule
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,6 +22,10 @@ metadata:
     app: timecapsule
 spec:
   replicas: 1
+  strategy:
+    # RWO 볼륨 + 단일 replica — 롤링 업데이트는 새 파드가 볼륨을 못 잡고
+    # 두 프로세스가 같은 H2 파일을 열려다 실패한다.
+    type: Recreate
   selector:
     matchLabels:
       app: timecapsule
@@ -25,7 +44,9 @@ spec:
         - name: SPRING_PROFILES_ACTIVE
           value: prod
         - name: DB_URL
-          value: "jdbc:h2:mem:timecapsule;DB_CLOSE_DELAY=-1"
+          # 파일 모드 + PVC. DB_CLOSE_ON_EXIT=FALSE 는 JVM 종료 훅이 아니라
+          # 스프링 컨텍스트 종료 시점에 정상적으로 닫히도록 하기 위한 것이다.
+          value: "jdbc:h2:file:/data/timecapsule;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"
         - name: DB_USERNAME
           value: "sa"
         - name: DB_PASSWORD
@@ -35,6 +56,70 @@ spec:
             secretKeyRef:
               name: timecapsule-jwt-secret
               key: JWT_SECRET
+        - name: MAIL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: timecapsule-mail-secret
+              key: MAIL_HOST
+              optional: true
+        - name: MAIL_PORT
+          valueFrom:
+            secretKeyRef:
+              name: timecapsule-mail-secret
+              key: MAIL_PORT
+              optional: true
+        - name: MAIL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: timecapsule-mail-secret
+              key: MAIL_USERNAME
+              optional: true
+        - name: MAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: timecapsule-mail-secret
+              key: MAIL_PASSWORD
+              optional: true
+        - name: MAIL_FROM
+          valueFrom:
+            secretKeyRef:
+              name: timecapsule-mail-secret
+              key: MAIL_FROM
+              optional: true
+        - name: MAIL_SMTP_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: timecapsule-mail-secret
+              key: MAIL_SMTP_AUTH
+              optional: true
+        - name: MAIL_SMTP_STARTTLS_ENABLE
+          valueFrom:
+            secretKeyRef:
+              name: timecapsule-mail-secret
+              key: MAIL_SMTP_STARTTLS_ENABLE
+              optional: true
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        # health 에서 mail 인디케이터는 꺼져 있다(application.yml).
+        # SMTP 도달성으로 readiness 를 판정하면 메일 장애가 곧 사이트 전체 다운이 된다.
+        readinessProbe:
+          httpGet: { path: /actuator/health/readiness, port: 3000 }
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          failureThreshold: 6
+        livenessProbe:
+          httpGet: { path: /actuator/health/liveness, port: 3000 }
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          failureThreshold: 6
+        resources:
+          requests: { cpu: 100m, memory: 384Mi }
+          limits:   { cpu: "1",  memory: 768Mi }
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: timecapsule-data
 ---
 apiVersion: v1
 kind: Service

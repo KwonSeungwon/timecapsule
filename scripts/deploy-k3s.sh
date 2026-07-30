@@ -38,6 +38,34 @@ step_secrets() {
   ssh_k3s "$KUBECONFIG -n $NAMESPACE create secret generic timecapsule-jwt-secret \
     --from-literal=JWT_SECRET='${DEPLOY_JWT_SECRET:-secret}' \
     --dry-run=client -o yaml | $KUBECONFIG apply -f -"
+
+  # 메일 시크릿은 **항상** 만든다. DEPLOY_MAIL_HOST 가 없으면 in-cluster sink(mailpit)를
+  # 가리킨다 — 예전처럼 시크릿이 아예 없으면 앱이 조용히 localhost:25 로 떨어져
+  # 메일이 한 통도 안 나가는데 로그도 조용한 상태가 된다.
+  if [ -n "${DEPLOY_MAIL_HOST:-}" ]; then
+    MAIL_HOST="$DEPLOY_MAIL_HOST"
+    MAIL_PORT="${DEPLOY_MAIL_PORT:-587}"
+    MAIL_SMTP_AUTH="${DEPLOY_MAIL_SMTP_AUTH:-true}"
+    MAIL_STARTTLS="${DEPLOY_MAIL_SMTP_STARTTLS_ENABLE:-true}"
+  else
+    MAIL_HOST="timecapsule-mailpit.${NAMESPACE}.svc.cluster.local"
+    MAIL_PORT="1025"
+    MAIL_SMTP_AUTH="false"
+    MAIL_STARTTLS="false"
+    echo "[!] DEPLOY_MAIL_HOST 미설정 — in-cluster sink($MAIL_HOST:$MAIL_PORT)로 붙습니다."
+    echo "[!] 메일은 실제 수신함이 아니라 mailpit 에 쌓입니다:"
+    echo "[!]   kubectl -n $NAMESPACE port-forward svc/timecapsule-mailpit 8025:8025"
+  fi
+
+  ssh_k3s "$KUBECONFIG -n $NAMESPACE create secret generic timecapsule-mail-secret \
+    --from-literal=MAIL_HOST='${MAIL_HOST}' \
+    --from-literal=MAIL_PORT='${MAIL_PORT}' \
+    --from-literal=MAIL_USERNAME='${DEPLOY_MAIL_USERNAME:-}' \
+    --from-literal=MAIL_PASSWORD='${DEPLOY_MAIL_PASSWORD:-}' \
+    --from-literal=MAIL_FROM='${DEPLOY_MAIL_FROM:-noreply@timecapsule.chatflow.ai.kr}' \
+    --from-literal=MAIL_SMTP_AUTH='${MAIL_SMTP_AUTH}' \
+    --from-literal=MAIL_SMTP_STARTTLS_ENABLE='${MAIL_STARTTLS}' \
+    --dry-run=client -o yaml | $KUBECONFIG apply -f -"
 }
 
 step_images() {
@@ -58,12 +86,17 @@ step_images() {
 
 step_deploy() {
   echo "=== Step 4: Kubernetes Deploy ==="
-  # Ingress 및 Deployment 적용
+  # 메일 sink 를 먼저 올린다 — 앱이 부팅하며 SMTP 대상을 잡을 때 이미 떠 있어야 한다.
+  # 실제 SMTP 를 쓰더라도 남아 있어서 해로울 게 없는 리소스다(ingress 노출 안 함).
+  ssh_k3s "$KUBECONFIG apply -f -" < "$PROJECT_ROOT/k8s/mail-sink.yaml"
+
+  # PVC / Ingress / Deployment 적용
   ssh_k3s "$KUBECONFIG apply -f -" < "$PROJECT_ROOT/k8s/deployment.yaml"
-  
+
   echo "Restarting deployment to apply new image..."
   ssh_k3s "$KUBECONFIG rollout restart deployment/timecapsule-deployment -n $NAMESPACE"
-  ssh_k3s "$KUBECONFIG rollout status deployment/timecapsule-deployment -n $NAMESPACE --timeout=2m"
+  # Recreate + PVC 바인딩이라 롤링보다 느리다. 2분은 빠듯하다.
+  ssh_k3s "$KUBECONFIG rollout status deployment/timecapsule-deployment -n $NAMESPACE --timeout=5m"
 }
 
 case "${1:-all}" in
