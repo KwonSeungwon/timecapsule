@@ -20,8 +20,14 @@ import java.io.IOException;
 @Configuration
 public class SpaForwardingConfig implements WebMvcConfigurer {
 
-    /** SPA 셸로 fallback 하면 안 되는 경로 — 실물이 없으면 404 가 맞다. */
-    private static final String[] NON_SPA_PREFIXES = {
+    /**
+     * SPA 셸로 fallback 하면 안 되는 경로 — 실물이 없으면 404 가 맞다.
+     *
+     * <p>"무엇이 SPA 라우트가 아닌가" 의 <b>단일 출처</b>다.
+     * {@code SpringSecurity} 가 이 목록을 그대로 읽어서, 여기 적힌 것 중
+     * 공개 정적 자원이 아닌 것을 잠근다. 목록을 두 곳에 복사하지 말 것.
+     */
+    public static final String[] NON_SPA_PREFIXES = {
             "api/", "actuator/", "js/", "css/", "img/", "fonts/", "images/", "h2-console/"
     };
 
