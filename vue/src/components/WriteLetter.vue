@@ -1,5 +1,5 @@
 <template>
-  <div class="game-field wizard-container">
+  <div class="game-field">
     <div class="field-title">
       <h2 class="pixel-text">{{ stepTitle }}<span v-if="currentStep < 6"> ({{ currentStep }}/5)</span></h2>
     </div>
@@ -291,11 +291,15 @@ export default {
 </script>
 
 <style scoped>
-.wizard-container {
-  min-height: 80vh;
-  display: flex;
-  flex-direction: column;
-}
+/* ⚠️ 여기에 .wizard-container { min-height: 80vh } 를 되살리지 말 것.
+ * scoped 스타일이라 .game-field 보다 특이도가 높아서, 공용 .game-field 가
+ * 프레임 높이에 맞춰 잡아둔 바닥값을 이 한 줄이 조용히 덮어썼다.
+ * 부모 프레임은 min(100vh, 900px) 인데 80vh 는 뷰포트를 따라 계속 자라고,
+ * CSS 는 min-height 를 max-height 보다 우선하므로 상한도 같이 무력화됐다.
+ * 실측: 820x1180 에서 103px, 1280x1400 에서 290px 이 프레임 밖으로 잘려
+ * 마지막 단계의 "캡슐 묻기" 버튼을 누를 수 없었다.
+ * display:flex / flex-direction:column 도 .game-field 가 이미 갖고 있어
+ * 이 규칙은 버그 한 줄 말고는 전부 중복이었다. */
 
 .step-content {
   flex: 1;

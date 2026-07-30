@@ -93,9 +93,17 @@
     background: rgba(255, 255, 255, 0.85);
     border: 8px solid var(--pixel-black);
     padding: 24px;
-    min-height: 70vh;
     display: flex;
     flex-direction: column;
+
+    /* ⚠️ 바닥값(min-height)을 그냥 70vh 로 되돌리지 말 것.
+     * 부모 프레임의 높이는 min(100vh, 900px) 인데 여기만 vh 로 재면,
+     * 뷰포트가 900px 를 넘는 순간 바닥값이 프레임보다 커진다(1400px 화면에서 70vh=980px).
+     * 게다가 CSS 는 min-height 를 max-height 보다 **우선** 적용하므로, 그 순간부터
+     * 아래 max-height 가 통째로 무력화되고 콘텐츠가 다시 프레임 밖으로 잘려나간다.
+     * 실측: 1280x1400 에서 /find, /tutorial, /explore 가 150px 씩 잘렸다.
+     * 그래서 바닥값도 상한과 같은 기준(프레임 %)으로 묶어 둔다. */
+    min-height: min(70vh, calc(100% - 10vh));
 
     /* ⚠️ max-height 와 overflow-y 를 지우지 말 것 — 지우면 콘텐츠가 조용히 잘린다.
      * .game-field 의 부모인 .main-container(HomeView.vue)는 게임기 프레임을 흉내내려고
@@ -118,7 +126,8 @@
         width: 95%;
         padding: 16px;
         margin: 2vh auto;
-        /* margin 이 2vh 로 줄었으니 상한도 그만큼 돌려준다(2vh * 2). */
+        /* margin 이 2vh 로 줄었으니 바닥값·상한도 그만큼 돌려준다(2vh * 2). */
+        min-height: min(70vh, calc(100% - 4vh));
         max-height: calc(100% - 4vh);
     }
 }
