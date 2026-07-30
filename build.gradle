@@ -93,8 +93,10 @@ task buildVue(type: Exec) {
 // 그래서 from "$vueDir/dist" 로 만든 Copy 태스크는 항상 0개를 복사하는 no-op 이고,
 // 거기에 "옛 해시 번들 청소" 명목으로 doFirst { delete static } 을 붙이면
 // 방금 buildVue 가 만들어낸 산출물을 지운 뒤 아무것도 복사하지 않는다
-// → 프론트엔드가 통째로 빠진 WAR 가 나간다. (-x 플래그로 태스크를 건너뛰던
-//   배포 경로에서만 안 터져서 한동안 안 들켰다.)
+// → 프론트엔드가 통째로 빠진 WAR 가 나간다.
+//   (예전 주석은 "-x 로 태스크를 건너뛰던 배포 경로에서만 안 터져서 안 들켰다"고
+//    적어 뒀는데 사실이 아니다 — 리포의 -x buildVue 는 plans 문서의 ./gradlew test
+//    에만 붙어 있고 배포 경로에는 없다. 왜 늦게 발견됐는지는 확인된 바 없다.)
 //
 // 옛 번들 누적도 실재하지 않는 문제다 — vue-cli-service build 는 outputDir 을
 // 기본으로 비우고 시작한다(--no-clean 을 줘야 안 비운다). 검증함: static/js 에
@@ -105,19 +107,24 @@ processResources {
     dependsOn buildVue
 }
 
-// 참고: 아래 clean 은 static 을 지우지 않는다. 이게 이상해 보여서 "clean 인데 왜
-// 안 지우지" 하고 clean { delete file(vueStaticDir) } 를 붙이고 싶어지는데, 붙이지 말 것.
-// 실측(./gradlew clean bootWar --no-daemon — deploy-k3s.sh:72 / DEPLOYMENT.md:112 가 쓰는 그 명령):
-//   clean 후 static 에 19개 파일이 그대로 남고 :buildVue 는 UP-TO-DATE 로 스킵되지만,
-//   그 남은 산출물이 곧 최신 산출물이라 WAR 에는 static 이 정상적으로 24개 들어간다.
-// 즉 지금 상태로 이미 올바른 WAR 가 나온다. 반면 clean 에 delete 를 걸면 위 89행부터의
-// 사고("프론트엔드가 통째로 빠진 WAR")를 다른 문으로 다시 불러들이게 된다 —
-// buildVue 를 -x 로 건너뛰는 경로가 실재하기 때문이다.
-
-
 // QueryDSL QClass 생성 경로 설정 (Spring Boot 3 방식)
 def querydslSrcDir = 'src/main/generated'
 
+// 참고: 아래 clean 은 static(=buildVue 산출물)을 지우지 않는다. 의도한 것이다.
+// "clean 인데 왜 안 지우지" 싶어 clean { delete file(vueStaticDir) } 를 붙이고 싶어지는데,
+// 고쳐지는 건 없고 매번 느려지기만 한다.
+// 실측(scripts/deploy-k3s.sh / docs/DEPLOYMENT.md 가 쓰는 `./gradlew clean bootWar --no-daemon`):
+//   clean 후 static 에 파일이 그대로 남고 :buildVue 는 UP-TO-DATE 로 스킵되지만,
+//   그 남은 산출물이 곧 최신 산출물이라 WAR 에는 static 이 정상적으로 들어간다.
+// delete 를 걸어도 WAR 가 깨지지는 않는다 — Gradle 은 inputs 뿐 아니라 outputs 도
+// 핑거프린팅해서, 산출물을 지우거나 고치면 :buildVue 가 다시 돈다
+// (실측: static 을 rm -rf 한 뒤 bootWar → :buildVue 재실행 / 산출물 1개만 수정해도 재실행).
+// 대신 clean 할 때마다 webpack 풀빌드가 강제된다. 그래서 안 건다.
+//
+// 진짜 위험한 건 clean 이 아니라 **buildVue 뒤에 static 을 지우는** 태스크다
+// (위 processResources 주석의 "프론트엔드가 통째로 빠진 WAR" 사고가 그 경우).
+// 참고로 outputs 추적은 "Gradle 이 기록해 둔 산출물"만 본다 — static 에 낯선 파일을
+// 새로 끼워 넣는 건 감지하지 않는다(실측: app.DEADBEEF.js 를 심어도 UP-TO-DATE).
 clean {
     delete file(querydslSrcDir)
 }

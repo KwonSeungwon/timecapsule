@@ -249,8 +249,18 @@ export default {
    *   1366x768(스크롤범위 0) / 1366x700 / 1280x720 / 844x390 / 360x560 / 320x480.
    * min-height 선언을 지워 auto 로 되돌리면 위 6종 전부에서 도달 가능해진다.
    *
-   * min-height:0 도 답이 아니다 — 그건 오히려 261px 까지 더 찌부러뜨려서
-   * 겹침을 키운다(그때는 .footer-actions 가 클릭을 가져갔다). 필요한 건 auto 다. */
+   * min-height:0 도 답이 아니다 — 여긴 overflow 가 visible 이라, 0 을 주면 오히려
+   * 261px 까지 더 찌부러져 겹침만 커진다(그때는 .footer-actions 가 클릭을 가져갔다).
+   * 필요한 건 auto 다.
+   *
+   * 단, "min-height:0 은 나쁘다" 로 일반화하지 말 것. Explore.vue 의 .explore-body 는
+   * 정반대로 min-height:0 이 **필수**다 — 거긴 overflow-y:auto 가 같이 걸려 있어서
+   * 찌부러진 만큼을 안쪽 스크롤로 회수한다. 판단 기준은 overflow 가 visible 이냐 auto 냐다.
+   *
+   * 여기서 Explore 처럼 안쪽 스크롤(overflow-y:auto + min-height:0)을 쓰지 않은 이유:
+   * 이 패널은 페이지네이션으로 한 화면에 6개만 보여줘서 목록이 무한정 길어지지 않는다.
+   * 그 대신 .game-field 통째로 스크롤되므로, 화면이 짧으면 ◀/▶ 페이지 버튼과 하단
+   * 액션이 화면 밖으로 밀린다 — 스크롤하면 도달 가능하다(위 6종 뷰포트에서 확인). */
   display: flex;
   flex-direction: column;
 }
