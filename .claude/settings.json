@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew test)",
+      "Bash(./gradlew check)",
+      "Bash(npm test)",
+      "Bash(npm run lint)"
+    ]
+  }
+}

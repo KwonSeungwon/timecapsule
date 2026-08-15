@@ -1,0 +1,33 @@
+---
+name: feature-pipeline
+description: "기능 개발 전체 파이프라인 오케스트레이터. '새 기능 추가', '기능 개선' 요청 시 사용한다. superpowers 체인(브레인스톰→플랜→서브에이전트 실행)에 kit role 에이전트를 배선한다."
+---
+<!-- harness:managed v0.2.0 — 이 표시를 지우면 harness update가 이 파일을 덮어쓰지 않는다 -->
+
+
+# Feature Pipeline
+
+## 전제
+
+- superpowers 플러그인 설치 (Claude Code). Codex에서는 이 스킬 대신 AGENTS.md의
+  워크플로 섹션을 따른다.
+- `mkdir -p _workspace` (gitignored — 에이전트 간 인수인계 파일)
+
+## 파이프라인
+
+1. **스코프가 불명확하면** superpowers:brainstorming → 스펙 확정
+2. **설계**: `Agent(subagent_type: "architect", run_in_background: false)` —
+   `_workspace/01_architect_*.md` 3종 생성 확인 후 다음 단계
+3. **플랜**: superpowers:writing-plans — 설계를 바이트사이즈 태스크로
+4. **실행**: superpowers:subagent-driven-development —
+   - 구현: `subagent_type: "implementer"` (TDD 필수)
+   - 1차 리뷰: `subagent_type: "spec-reviewer"` (스펙 부합)
+   - 2차 리뷰: `subagent_type: "quality-reviewer"` (품질, 1차 PASS 후에만)
+   - 리뷰어는 작성 컨텍스트와 항상 분리 — 자가 승인 금지
+5. **통합 검증**: `subagent_type: "integration-qa"` → `_workspace/04_qa_report.md` PASS 필수
+6. **배포(선택)**: 사용자 확인 후 `subagent_type: "infra-deploy"`
+
+## 에러 루프
+
+- 리뷰/QA FAIL → 담당 implementer에 SendMessage로 수정 요청 → 재검증 (최대 2회,
+  이후 설계 재검토로 회귀)

@@ -57,3 +57,11 @@ out/
 ### node_modules — front/ 에 21,271 개(≈102MB)가 추적되고 있었다.
 ### 실제 프론트엔드는 vue/ 다.
 node_modules/
+
+### Harness (personal-harness-kit) — secrets-policy 표준 ignore
+### .claude/ 는 로컬 시크릿 보관처(CLAUDE.local.md, settings.local.json)를 겸한다.
+### 공유 지침(settings.json)과 소스 롤/스킬(agents/, skills/)만 예외로 커밋한다.
+.claude/*
+!.claude/settings.json
+!.claude/agents/
+!.claude/skills/

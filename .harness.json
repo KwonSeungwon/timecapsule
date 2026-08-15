@@ -1,0 +1,13 @@
+{
+  "kit": "personal-harness-kit",
+  "scaffoldedWith": "0.2.0",
+  "presets": [
+    "spring",
+    "vue"
+  ],
+  "features": {
+    "codexAgents": true,
+    "agentsSkills": true
+  },
+  "secretPatterns": []
+}

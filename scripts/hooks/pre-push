@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Pre-push gate — preset 테스트를 push 전에 돌린다.
+# 활성화: git config core.hooksPath scripts/hooks
+# 건너뛰기: PRE_PUSH_SKIP=1 git push
+#
+# harness:managed 마커 제거됨 — timecapsule 전용으로 소유권 이전 (2026-08-15).
+# 이유: vue 프론트엔드가 루트가 아니라 vue/ 하위에 있어 preset 기본값(`npm test`,
+# `npm run lint`)이 루트에서 그대로 실행되면 package.json을 못 찾고 ENOENT로 죽는다.
+# 게다가 vue/package.json에는 애초에 "test" 스크립트가 없다(jest/vitest 미도입) —
+# 대체할 실제 테스트가 없으므로 그 줄은 뺐다. `npm run lint`는 `(cd vue && ...)`로
+# 감싸 실측 통과시켰다. gradle 두 줄(test/check)은 루트 실행 그대로 동작 확인됨.
+# 참고: 실측 시점 기준 vue lint는 기존 Explore.vue 컴포넌트명 규칙 위반 1건으로
+# 실패한다(무관한 선재 이슈) — 훅을 활성화하기 전에 별도로 고쳐야 한다.
+set -euo pipefail
+
+if [ "${PRE_PUSH_SKIP:-}" = "1" ]; then
+  echo "[pre-push] PRE_PUSH_SKIP=1 — skipping"
+  exit 0
+fi
+
+cd "$(git rev-parse --show-toplevel)"
+
+./gradlew test
+./gradlew check
+(cd vue && npm run lint)
+
+echo "[pre-push] all checks PASS"
